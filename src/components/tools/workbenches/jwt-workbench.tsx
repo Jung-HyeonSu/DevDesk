@@ -1,8 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
+import { handoffMessages } from '@/i18n/handoff';
 import { workbenchMessages } from '@/i18n/workbench';
 import { encodeBase64 } from '@/lib/tools/base64';
 import { decodeJwt, getJwtTemporalInfo, JwtToolError, type JwtDecoded, type JwtTemporalStatus } from '@/lib/tools/jwt';
@@ -21,6 +24,9 @@ function makeSampleToken() {
 
 export function JwtWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
+  const handoffText = handoffMessages[locale];
+  const router = useRouter();
+  const { sendHandoff } = useToolHandoff();
   const [input, setInput] = useState('');
   const [decoded, setDecoded] = useState<JwtDecoded | null>(null);
   const [decodedAt, setDecodedAt] = useState<number | null>(null);
@@ -78,6 +84,11 @@ export function JwtWorkbench({ locale }: { locale: Locale }) {
     'not-yet-valid': text.jwtStatusNotYetValid,
     unknown: text.jwtStatusUnknown,
   })[value];
+
+  const openPayloadInJson = () => {
+    sendHandoff('json-formatter', payloadText);
+    router.push(`/${locale}/tools/json-formatter/`);
+  };
 
   const copy = async () => {
     if (!payloadText) return;
@@ -146,6 +157,7 @@ export function JwtWorkbench({ locale }: { locale: Locale }) {
           <ActionToolbar>
             <ActionButton onClick={() => void copy()} disabled={!payloadText}>{text.copy}</ActionButton>
             <ActionButton onClick={download} disabled={!payloadText}>{text.downloadText}</ActionButton>
+            <ActionButton onClick={openPayloadInJson} disabled={!payloadText}>{handoffText.openPayload}</ActionButton>
           </ActionToolbar>
         </div>
       )}

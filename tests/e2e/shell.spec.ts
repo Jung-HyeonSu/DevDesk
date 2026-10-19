@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 test('root landing provides explicit links for all four languages', async ({ page }) => {
   await page.goto('/');
@@ -20,22 +20,30 @@ test('tool search, favorites, theme, and locale switching preserve the selected 
   await page.goto('/ko/tools/');
   await expect(page.getByRole('article')).toHaveCount(12);
 
-  await page.getByRole('button', { name: /도구 검색/ }).click();
+  await page.keyboard.press('ControlOrMeta+k');
   const dialog = page.getByRole('dialog');
-  await dialog.getByRole('textbox', { name: '도구 검색' }).fill('JSON');
-  await dialog.getByRole('link', { name: /JSON 포맷터/ }).click();
+  await dialog.getByRole('textbox', { name: '도구 검색' }).fill('json-formatter');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/ko\/tools\/json-formatter\/$/);
   await expect(page.getByRole('heading', { name: 'JSON 포맷터' })).toBeVisible();
 
   await page.getByRole('button', { name: /JSON 포맷터.*즐겨찾기 추가/ }).click();
   await expect(page.getByRole('button', { name: /즐겨찾기 해제/ })).toHaveAttribute('aria-pressed', 'true');
+  const sidebar = page.getByRole('complementary');
+  await expect(sidebar.getByRole('link', { name: 'JSON 포맷터' })).toHaveCount(2);
   await page.getByRole('button', { name: /테마: 시스템/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+
+  await page.reload();
+  await expect(page.getByRole('button', { name: /즐겨찾기 해제/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('complementary').getByRole('link', { name: 'JSON 포맷터' })).toHaveCount(2);
 
   await page.getByLabel('언어').selectOption('ja');
   await expect(page).toHaveURL(/\/ja\/tools\/json-formatter\/$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'ja');
   await expect(page.getByRole('heading', { name: 'JSONフォーマッター' })).toBeVisible();
+  await expect(page.getByRole('complementary').getByRole('link', { name: 'JSONフォーマッター' })).toHaveCount(2);
 });
 
 test('localized tool and guide pages render their own static SEO metadata and useful content', async ({ page }) => {
@@ -76,6 +84,49 @@ test('ads remain absent and tool inputs stay on the local origin by default', as
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('browser-only');
   expect(page.url()).not.toContain('browser-only');
+});
+
+test('JSON, YAML, and JWT data hand off between tools without entering URLs or browser storage', async ({ page }) => {
+  const cases = [
+    ['ko', 'YAML 변환기로 열기', 'JSON 포맷터에서 열기', 'Payload를 JSON 포맷터에서 열기', '변환', '예제 불러오기', 'JWT 디코딩'],
+    ['en', 'Open in YAML converter', 'Open in JSON formatter', 'Open payload in JSON formatter', 'Convert', 'Load sample', 'Decode JWT'],
+    ['ja', 'YAML 変換ツールで開く', 'JSON フォーマッターで開く', 'Payload を JSON フォーマッターで開く', '変換', 'サンプルを読み込む', 'JWT をデコード'],
+    ['zh', '在 YAML 转换工具中打开', '在 JSON 格式化工具中打开', '在 JSON 格式化工具中打开 Payload', '转换', '载入示例', '解码 JWT'],
+  ];
+  const replaceEditor = async (editor: Locator, value: string) => {
+    await editor.click();
+    await editor.press('ControlOrMeta+A');
+    await editor.pressSequentially(value);
+  };
+
+  for (const [locale, openYaml, openJson, openPayload, convertLabel, sampleLabel, decodeLabel] of cases) {
+    const privateValue = `handoff-${locale}-local-only`;
+    await page.goto(`/${locale}/tools/json-formatter/`);
+    await replaceEditor(page.locator('.json-workbench .editor-panel').first().locator('.cm-content'), `{"handoff":"${privateValue}"}`);
+    await page.getByRole('button', { name: openYaml, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/yaml-json/$`));
+    await expect(page.locator('#yaml-json-direction')).toHaveValue('json-to-yaml');
+    await expect(page.locator('.yaml-json-workbench .editor-panel').first().locator('.cm-content')).toContainText(privateValue);
+    await page.getByRole('button', { name: convertLabel, exact: true }).click();
+    await expect(page.locator('.yaml-json-workbench .editor-panel').nth(1)).toContainText(privateValue);
+
+    await page.goto(`/${locale}/tools/yaml-json/`);
+    await replaceEditor(page.locator('.yaml-json-workbench .editor-panel').first().locator('.cm-content'), `handoff: ${privateValue}`);
+    await page.getByRole('button', { name: convertLabel, exact: true }).click();
+    await page.getByRole('button', { name: openJson, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/json-formatter/$`));
+    await expect(page.locator('.json-workbench .editor-panel').first().locator('.cm-content')).toContainText(privateValue);
+
+    await page.goto(`/${locale}/tools/jwt-decoder/`);
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await page.getByRole('button', { name: openPayload, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/json-formatter/$`));
+    await expect(page.locator('.json-workbench .editor-panel').first().locator('.cm-content')).toContainText('Developer');
+    expect(page.url()).not.toContain(privateValue);
+    expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain(privateValue);
+    expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('Developer');
+  }
 });
 
 test('SQL formatter supports the displayed dialects, formatting, copy, download, and safe parser errors in every locale', async ({ page }) => {

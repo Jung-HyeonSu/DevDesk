@@ -1,8 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
+import { handoffMessages } from '@/i18n/handoff';
 import { workbenchMessages } from '@/i18n/workbench';
 import { jsonToYaml, YamlJsonToolError, yamlToJson } from '@/lib/tools/yaml-json';
 
@@ -12,11 +15,21 @@ const jsonSample = '{\n  "name": "DevDesk",\n  "enabled": true,\n  "version": "1
 
 export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
-  const [direction, setDirection] = useState<ConversionDirection>('yaml-to-json');
+  const handoffText = handoffMessages[locale];
+  const router = useRouter();
+  const { sendHandoff, peekHandoff, receiveHandoff } = useToolHandoff();
+  const [initialHandoff] = useState(() => peekHandoff('yaml-json'));
+  const [direction, setDirection] = useState<ConversionDirection>(initialHandoff?.mode === 'json-to-yaml' ? 'json-to-yaml' : 'yaml-to-json');
   const [indent, setIndent] = useState<2 | 4>(2);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(initialHandoff?.value ?? '');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(
+    initialHandoff ? { kind: 'info', message: handoffText.received } : null,
+  );
+
+  useEffect(() => {
+    if (initialHandoff) receiveHandoff('yaml-json');
+  }, [initialHandoff, receiveHandoff]);
   const inputLabel = text.input;
   const outputLabel = text.output;
   const isYamlInput = direction === 'yaml-to-json';
@@ -120,6 +133,10 @@ export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     setStatus({ kind: 'success', message: text.downloaded });
   };
+  const openInJson = () => {
+    sendHandoff('json-formatter', output);
+    router.push(`/${locale}/tools/json-formatter/`);
+  };
 
   return (
     <section className="yaml-json-workbench" aria-label={text.yamlToolLabel}>
@@ -154,6 +171,7 @@ export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
       <ActionToolbar>
         <ActionButton onClick={() => void copy()} disabled={!output}>{text.copy}</ActionButton>
         <ActionButton onClick={download} disabled={!output}>{text.downloadText}</ActionButton>
+        <ActionButton onClick={openInJson} disabled={!output || !isYamlInput}>{handoffText.openJson}</ActionButton>
       </ActionToolbar>
     </section>
   );

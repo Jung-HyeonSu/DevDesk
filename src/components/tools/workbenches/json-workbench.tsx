@@ -1,8 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { EditorPanel, ActionButton, ActionToolbar, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
+import { handoffMessages } from '@/i18n/handoff';
 import { workbenchMessages } from '@/i18n/workbench';
 import { formatJson, JsonToolError, minifyJson, validateJson } from '@/lib/tools/json';
 
@@ -10,10 +13,20 @@ const sample = '{"name":"DevDesk","active":true,"count":3}';
 
 export function JsonWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
-  const [input, setInput] = useState('');
+  const handoffText = handoffMessages[locale];
+  const router = useRouter();
+  const { sendHandoff, peekHandoff, receiveHandoff } = useToolHandoff();
+  const [initialHandoff] = useState(() => peekHandoff('json-formatter'));
+  const [input, setInput] = useState(initialHandoff?.value ?? '');
   const [output, setOutput] = useState('');
   const [indent, setIndent] = useState<2 | 4>(2);
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(
+    initialHandoff ? { kind: 'info', message: handoffText.received } : null,
+  );
+
+  useEffect(() => {
+    if (initialHandoff) receiveHandoff('json-formatter');
+  }, [initialHandoff, receiveHandoff]);
 
   const loadSample = () => {
     setInput(sample);
@@ -103,6 +116,11 @@ export function JsonWorkbench({ locale }: { locale: Locale }) {
     setStatus({ kind: 'success', message: text.downloaded });
   };
 
+  const openInYaml = () => {
+    sendHandoff('yaml-json', input, 'json-to-yaml');
+    router.push(`/${locale}/tools/yaml-json/`);
+  };
+
   return (
     <section className="json-workbench" aria-label={text.jsonToolLabel}>
       <div className="workbench-settings">
@@ -117,6 +135,7 @@ export function JsonWorkbench({ locale }: { locale: Locale }) {
         <ActionButton onClick={() => run('beautify')} variant="primary">{text.beautify}</ActionButton>
         <ActionButton onClick={() => run('minify')}>{text.minify}</ActionButton>
         <ActionButton onClick={() => run('validate')}>{text.validate}</ActionButton>
+        <ActionButton onClick={openInYaml} disabled={!input.trim()}>{handoffText.openYaml}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>
       </ActionToolbar>
       {status && <StatusMessage kind={status.kind}>{status.message}</StatusMessage>}

@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { localeMetadata, locales, type Locale } from '@/i18n/config';
 import { shellMessages } from '@/i18n/shell';
 import { toolById, toolRegistry, type ToolCategory } from '@/data/tools';
+import { ToolHandoffProvider, useToolHandoff } from '@/components/tools/tool-handoff';
 
 type Preferences = {
   favoriteIds: string[];
@@ -150,6 +151,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   const pathname = usePathname() || `/${locale}/`;
   const router = useRouter();
   const { favoriteIds, recentIds, markRecent } = useToolPreferences();
+  const { discardUnlessTarget } = useToolHandoff();
   const theme = useSyncExternalStore(subscribePreferences, getThemeSnapshot, () => 'system');
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -164,6 +166,12 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
     const tool = match ? toolRegistry.find((item) => item.slug === match[1]) : undefined;
     if (tool) markRecent(tool.id);
   }, [markRecent, pathname]);
+
+  useEffect(() => {
+    const match = pathname.match(/^\/[a-z]{2}\/tools\/([^/]+)/);
+    const target = match ? toolRegistry.find((item) => item.slug === match[1]) : undefined;
+    discardUnlessTarget(target?.id ?? null);
+  }, [discardUnlessTarget, pathname]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -255,5 +263,5 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
 }
 
 export function AppShell({ locale, children }: { locale: Locale; children: ReactNode }) {
-  return <PreferencesProvider><AppShellFrame locale={locale}>{children}</AppShellFrame></PreferencesProvider>;
+  return <PreferencesProvider><ToolHandoffProvider><AppShellFrame locale={locale}>{children}</AppShellFrame></ToolHandoffProvider></PreferencesProvider>;
 }
