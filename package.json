@@ -23,7 +23,8 @@
     "@uiw/react-codemirror": "^4.25.12",
     "next": "16.4.2",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "sql-formatter": "^15.9.0"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

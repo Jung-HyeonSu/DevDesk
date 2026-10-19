@@ -23,6 +23,9 @@ export type WorkbenchMessages = {
   hashToolLabel: string; hashAlgorithmLabel: string; hashGenerate: string; hashIncludeBase64: string;
   hashGenerated: string; hashUnavailable: string; hashSecurityNote: string; hashInputHint: string;
   hashHexLabel: string; hashBase64Label: string;
+  sqlToolLabel: string; sqlDialectLabel: string; sqlGeneric: string; sqlMysql: string; sqlMariadb: string;
+  sqlPostgresql: string; sqlOracle: string; sqlFormat: string; sqlFormatted: string; sqlFormatError: string;
+  sqlNotice: string; sqlInputHint: string; sqlEmptyInput: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -60,6 +63,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     hashGenerated: '브라우저에서 해시를 생성했습니다.', hashUnavailable: '이 브라우저에서는 Web Crypto 해시를 사용할 수 없습니다.',
     hashSecurityNote: '해시는 되돌릴 수 없는 변환이며 암호화나 비밀번호 저장용 KDF가 아닙니다. 비밀값을 입력하지 마세요. 처리는 브라우저 안에서만 수행합니다.',
     hashInputHint: '해시할 텍스트를 입력하세요. 빈 문자열도 입력값으로 처리할 수 있습니다.', hashHexLabel: 'hex', hashBase64Label: 'Base64',
+    sqlToolLabel: 'SQL 포맷터', sqlDialectLabel: 'SQL 방언', sqlGeneric: '일반 SQL', sqlMysql: 'MySQL', sqlMariadb: 'MariaDB',
+    sqlPostgresql: 'PostgreSQL', sqlOracle: 'Oracle PL/SQL', sqlFormat: 'SQL 정렬', sqlFormatted: 'SQL 형식을 정리했습니다.',
+    sqlFormatError: '이 방언으로 SQL을 정리하지 못했습니다. 방언과 구문을 확인하세요.',
+    sqlNotice: '이 도구는 서식만 정리하며 SQL을 실행하거나 유효성을 보장하지 않습니다. 쿼리는 브라우저에서 처리됩니다.',
+    sqlInputHint: '정리할 SQL을 붙여넣으세요.', sqlEmptyInput: '먼저 SQL을 입력하거나 예제를 불러오세요.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -95,6 +103,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     hashGenerated: 'Generated the hash in your browser.', hashUnavailable: 'Web Crypto hashing is unavailable in this browser.',
     hashSecurityNote: 'A hash is a one-way transform, not encryption or a password-storage KDF. Do not enter secrets. Processing stays in your browser.',
     hashInputHint: 'Enter text to hash. An empty string is also a valid input.', hashHexLabel: 'hex', hashBase64Label: 'Base64',
+    sqlToolLabel: 'SQL formatter', sqlDialectLabel: 'SQL dialect', sqlGeneric: 'Generic SQL', sqlMysql: 'MySQL', sqlMariadb: 'MariaDB',
+    sqlPostgresql: 'PostgreSQL', sqlOracle: 'Oracle PL/SQL', sqlFormat: 'Format SQL', sqlFormatted: 'Formatted the SQL.',
+    sqlFormatError: 'Could not format this SQL for the selected dialect. Check the dialect and syntax.',
+    sqlNotice: 'This tool formats SQL only; it does not execute queries or guarantee validity. Queries are processed in your browser.',
+    sqlInputHint: 'Paste SQL to format.', sqlEmptyInput: 'Enter SQL or load a sample first.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -130,6 +143,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     hashGenerated: 'ブラウザー内でハッシュを生成しました。', hashUnavailable: 'このブラウザーでは Web Crypto ハッシュを利用できません。',
     hashSecurityNote: 'ハッシュは一方向変換であり、暗号化やパスワード保存用 KDF ではありません。秘密情報を入力しないでください。処理はブラウザー内で行います。',
     hashInputHint: 'ハッシュ化するテキストを入力します。空文字列も入力として使えます。', hashHexLabel: 'hex', hashBase64Label: 'Base64',
+    sqlToolLabel: 'SQL フォーマッター', sqlDialectLabel: 'SQL 方言', sqlGeneric: '汎用 SQL', sqlMysql: 'MySQL', sqlMariadb: 'MariaDB',
+    sqlPostgresql: 'PostgreSQL', sqlOracle: 'Oracle PL/SQL', sqlFormat: 'SQL を整形', sqlFormatted: 'SQL を整形しました。',
+    sqlFormatError: '選択した方言で SQL を整形できません。方言と構文を確認してください。',
+    sqlNotice: 'このツールは SQL の整形のみを行い、実行や妥当性の保証はしません。クエリはブラウザー内で処理します。',
+    sqlInputHint: '整形する SQL を貼り付けます。', sqlEmptyInput: 'SQL を入力するか、サンプルを読み込んでください。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -165,5 +183,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     hashGenerated: '已在浏览器中生成哈希。', hashUnavailable: '此浏览器无法使用 Web Crypto 哈希功能。',
     hashSecurityNote: '哈希是不可逆的单向转换，不是加密或密码存储 KDF。请勿输入机密。所有处理仅在浏览器中进行。',
     hashInputHint: '输入要计算哈希的文本。空字符串也可以作为输入。', hashHexLabel: 'hex', hashBase64Label: 'Base64',
+    sqlToolLabel: 'SQL 格式化工具', sqlDialectLabel: 'SQL 方言', sqlGeneric: '通用 SQL', sqlMysql: 'MySQL', sqlMariadb: 'MariaDB',
+    sqlPostgresql: 'PostgreSQL', sqlOracle: 'Oracle PL/SQL', sqlFormat: '格式化 SQL', sqlFormatted: '已格式化 SQL。',
+    sqlFormatError: '无法按所选方言格式化 SQL，请检查方言和语法。',
+    sqlNotice: '此工具只格式化 SQL，不执行查询，也不保证语法有效。查询仅在浏览器中处理。',
+    sqlInputHint: '粘贴要格式化的 SQL。', sqlEmptyInput: '请输入 SQL 或载入示例。',
   },
 };

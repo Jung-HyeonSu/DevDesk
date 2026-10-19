@@ -217,7 +217,7 @@ html[data-theme="dark"] .status-error { background: #472a2c; color: #ffaaa5; }
 .json-workbench { display: grid; gap: 12px; min-width: 0; }
 .workbench-settings { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
 .workbench-settings select { min-height: 36px; max-width: 100%; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
-.base64-workbench, .url-workbench, .timestamp-workbench, .uuid-workbench, .hash-workbench { display: grid; gap: 12px; min-width: 0; }
+.base64-workbench, .url-workbench, .timestamp-workbench, .uuid-workbench, .hash-workbench, .sql-workbench { display: grid; gap: 12px; min-width: 0; }
 .timestamp-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .workbench-field { display: grid; min-width: 0; gap: 7px; color: var(--muted); font-size: 12px; }
 .workbench-field > span, .workbench-field > label { font-weight: 700; }

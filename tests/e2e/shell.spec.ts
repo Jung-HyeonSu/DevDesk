@@ -59,6 +59,46 @@ test('localized tool and guide pages render their own static SEO metadata and us
   await expect(page.locator('.faq-item')).toHaveCount(3);
 });
 
+test('SQL formatter supports the displayed dialects, formatting, copy, download, and safe parser errors in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', 'SQL 방언', '일반 SQL', 'MariaDB', 'Oracle PL/SQL', '예제 불러오기', 'SQL 정렬', '결과 복사', '텍스트 다운로드', 'SQL 형식을 정리했습니다.', '이 방언으로 SQL을 정리하지 못했습니다.'],
+    ['en', 'SQL dialect', 'Generic SQL', 'MariaDB', 'Oracle PL/SQL', 'Load sample', 'Format SQL', 'Copy result', 'Download text', 'Formatted the SQL.', 'Could not format this SQL for the selected dialect.'],
+    ['ja', 'SQL 方言', '汎用 SQL', 'MariaDB', 'Oracle PL/SQL', 'サンプルを読み込む', 'SQL を整形', '結果をコピー', 'テキストをダウンロード', 'SQL を整形しました。', '選択した方言で SQL を整形できません。'],
+    ['zh', 'SQL 方言', '通用 SQL', 'MariaDB', 'Oracle PL/SQL', '载入示例', '格式化 SQL', '复制结果', '下载文本', '已格式化 SQL。', '无法按所选方言格式化 SQL'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, dialectLabel, genericLabel, mariadbLabel, oracleLabel, sampleLabel, formatLabel, copyLabel, downloadLabel, formattedMessage, errorMessage] of cases) {
+    await page.goto(`/${locale}/tools/sql-formatter/`);
+    const workbench = page.locator('.sql-workbench');
+    const dialect = workbench.locator('#sql-dialect');
+    const editors = workbench.locator('.editor-panel');
+    await expect(dialect).toHaveAccessibleName(dialectLabel);
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await dialect.selectOption({ label: mariadbLabel });
+    await page.getByRole('button', { name: formatLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(formattedMessage);
+    const result = editors.nth(1).locator('.cm-content');
+    await expect(result).toContainText('WITH');
+    await expect(result).toContainText('LEFT JOIN payments');
+    await expect(result).toContainText("u.name = 'DevDesk'");
+    const copiedText = await result.innerText();
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(copiedText);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('formatted.sql');
+
+    await dialect.selectOption({ label: oracleLabel });
+    await page.getByRole('button', { name: formatLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(formattedMessage);
+    await dialect.selectOption({ label: genericLabel });
+    await editors.nth(0).locator('.cm-content').fill("SELECT 'unfinished");
+    await page.getByRole('button', { name: formatLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(errorMessage);
+  }
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],
