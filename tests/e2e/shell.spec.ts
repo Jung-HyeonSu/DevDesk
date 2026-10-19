@@ -140,6 +140,41 @@ test('Base64 encodes and decodes UTF-8, supports URL-safe mode, and reports inva
   }
 });
 
+test('URL encoder treats input as one component, round trips Unicode, and reports malformed escapes in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '인코딩', '디코딩', '입력과 결과 교환', '결과 복사', '텍스트 다운로드', 'URL component를 텍스트로 디코딩했습니다.', '퍼센트 인코딩 문자열이 올바르지 않습니다.', 'name=DevDesk &tag=tools 🌏'],
+    ['en', 'Load sample', 'Encode', 'Decode', 'Swap input and output', 'Copy result', 'Download text', 'Decoded the URL component as text.', 'The percent-encoded string is invalid.', 'name=DevDesk &tag=tools 🌏'],
+    ['ja', 'サンプルを読み込む', 'エンコード', 'デコード', '入力と結果を入れ替え', '結果をコピー', 'テキストをダウンロード', 'URL component をテキストにデコードしました。', 'パーセントエンコード文字列が正しくありません。', 'name=DevDesk &tag=tools 🌏'],
+    ['zh', '载入示例', '编码', '解码', '交换输入和结果', '复制结果', '下载文本', '已将 URL component 解码为文本。', '百分号编码字符串无效。', 'name=DevDesk &tag=tools 🌏'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, encodeLabel, decodeLabel, swapLabel, copyLabel, downloadLabel, decodedMessage, invalidMessage, sampleText] of cases) {
+    await page.goto(`/${locale}/tools/url-encoder/`);
+    const workbench = page.locator('.url-workbench');
+    const editors = workbench.locator('.editor-panel');
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: encodeLabel, exact: true }).click();
+    const encoded = await editors.nth(1).locator('.cm-content').innerText();
+    expect(encoded).toContain('%26');
+    expect(encoded).toContain('%20');
+    expect(encoded).toContain('%F0%9F%8C%8F');
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(encoded);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('url-component.txt');
+    await page.getByRole('button', { name: swapLabel, exact: true }).click();
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(decodedMessage);
+    await expect(editors.nth(1).locator('.cm-content')).toContainText(sampleText);
+
+    await editors.nth(0).locator('.cm-content').fill('%');
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidMessage);
+  }
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

@@ -81,6 +81,7 @@ for (const locale of locales) {
       if (!html.includes('content-steps')) throw new Error(`${label} is missing its static usage steps`);
       if (type === 'tools' && slug === 'json-formatter' && !html.includes('class="json-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
       if (type === 'tools' && slug === 'base64' && !html.includes('class="base64-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
+      if (type === 'tools' && slug === 'url-encoder' && !html.includes('class="url-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
     }
   }
 }

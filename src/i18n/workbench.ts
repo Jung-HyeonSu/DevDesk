@@ -9,6 +9,9 @@ export type WorkbenchMessages = {
   base64ToolLabel: string; encode: string; decode: string; swap: string; urlSafe: string;
   base64InputHint: string; base64OutputHint: string; base64EmptyInput: string; invalidBase64: string; invalidUtf8: string;
   encodingSuccess: string; decodingSuccess: string; swapped: string; downloadText: string;
+  urlToolLabel: string; urlEncode: string; urlDecode: string; urlInputHint: string; urlOutputHint: string;
+  urlEmptyInput: string; urlInvalidEscape: string; urlInvalidUnicode: string; urlEncodeSuccess: string;
+  urlDecodeSuccess: string; urlComponentNotice: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -26,6 +29,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidBase64: '올바르지 않은 Base64 문자열입니다.', invalidUtf8: 'Base64 데이터가 유효한 UTF-8 텍스트가 아닙니다.',
     encodingSuccess: 'UTF-8 텍스트를 Base64로 인코딩했습니다.', decodingSuccess: 'Base64를 UTF-8 텍스트로 디코딩했습니다.',
     swapped: '입력과 결과를 교환했습니다.', downloadText: '텍스트 다운로드',
+    urlToolLabel: 'URL component 인코더 및 디코더', urlEncode: '인코딩', urlDecode: '디코딩',
+    urlInputHint: 'URL의 한 부분으로 사용할 텍스트를 입력하세요.', urlOutputHint: '변환 결과가 여기에 표시됩니다.',
+    urlEmptyInput: '먼저 텍스트를 입력하거나 예제를 불러오세요.', urlInvalidEscape: '퍼센트 인코딩 문자열이 올바르지 않습니다.',
+    urlInvalidUnicode: '입력에 올바르지 않은 Unicode 문자가 있습니다.', urlEncodeSuccess: '텍스트를 URL component로 인코딩했습니다.',
+    urlDecodeSuccess: 'URL component를 텍스트로 디코딩했습니다.', urlComponentNotice: '전체 URL이 아닌 단일 component를 처리합니다. 공백은 %20으로 인코딩하고 + 기호는 그대로 유지합니다.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -41,6 +49,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidBase64: 'The Base64 string is invalid.', invalidUtf8: 'The Base64 data is not valid UTF-8 text.',
     encodingSuccess: 'Encoded UTF-8 text as Base64.', decodingSuccess: 'Decoded Base64 as UTF-8 text.',
     swapped: 'Swapped the input and output.', downloadText: 'Download text',
+    urlToolLabel: 'URL component encoder and decoder', urlEncode: 'Encode', urlDecode: 'Decode',
+    urlInputHint: 'Enter text to use as one part of a URL.', urlOutputHint: 'The converted result will appear here.',
+    urlEmptyInput: 'Enter text or load a sample first.', urlInvalidEscape: 'The percent-encoded string is invalid.',
+    urlInvalidUnicode: 'The input contains an invalid Unicode character.', urlEncodeSuccess: 'Encoded text as a URL component.',
+    urlDecodeSuccess: 'Decoded the URL component as text.', urlComponentNotice: 'This handles one URL component, not a full URL. Spaces become %20, and + remains a literal plus sign.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -56,6 +69,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidBase64: 'Base64 文字列が正しくありません。', invalidUtf8: 'Base64 データは有効な UTF-8 テキストではありません。',
     encodingSuccess: 'UTF-8 テキストを Base64 にエンコードしました。', decodingSuccess: 'Base64 を UTF-8 テキストにデコードしました。',
     swapped: '入力と結果を入れ替えました。', downloadText: 'テキストをダウンロード',
+    urlToolLabel: 'URL component エンコーダーとデコーダー', urlEncode: 'エンコード', urlDecode: 'デコード',
+    urlInputHint: 'URL の一部として使うテキストを入力します。', urlOutputHint: '変換結果をここに表示します。',
+    urlEmptyInput: 'テキストを入力するか、サンプルを読み込んでください。', urlInvalidEscape: 'パーセントエンコード文字列が正しくありません。',
+    urlInvalidUnicode: '入力に正しくない Unicode 文字があります。', urlEncodeSuccess: 'テキストを URL component にエンコードしました。',
+    urlDecodeSuccess: 'URL component をテキストにデコードしました。', urlComponentNotice: '完全な URL ではなく、1 つの component を処理します。空白は %20 になり、+ はそのまま保持します。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -71,5 +89,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidBase64: 'Base64 字符串无效。', invalidUtf8: 'Base64 数据不是有效的 UTF-8 文本。',
     encodingSuccess: '已将 UTF-8 文本编码为 Base64。', decodingSuccess: '已将 Base64 解码为 UTF-8 文本。',
     swapped: '已交换输入和结果。', downloadText: '下载文本',
+    urlToolLabel: 'URL component 编码和解码工具', urlEncode: '编码', urlDecode: '解码',
+    urlInputHint: '输入要作为 URL 单个部分使用的文本。', urlOutputHint: '转换结果会显示在这里。',
+    urlEmptyInput: '请输入文本或载入示例。', urlInvalidEscape: '百分号编码字符串无效。',
+    urlInvalidUnicode: '输入中包含无效的 Unicode 字符。', urlEncodeSuccess: '已将文本编码为 URL component。',
+    urlDecodeSuccess: '已将 URL component 解码为文本。', urlComponentNotice: '此工具处理单个 URL component，不解析完整 URL。空格会编码为 %20，+ 符号会保留为普通字符。',
   },
 };
