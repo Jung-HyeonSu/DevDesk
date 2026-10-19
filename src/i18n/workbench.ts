@@ -6,6 +6,9 @@ export type WorkbenchMessages = {
   emptyInput: string; inputTooLarge: string; invalidJson: string; validJson: string; beautify: string;
   minify: string; validate: string; indentation: string; twoSpaces: string; fourSpaces: string;
   jsonToolLabel: string; jsonInputHint: string; jsonOutputHint: string;
+  base64ToolLabel: string; encode: string; decode: string; swap: string; urlSafe: string;
+  base64InputHint: string; base64OutputHint: string; base64EmptyInput: string; invalidBase64: string; invalidUtf8: string;
+  encodingSuccess: string; decodingSuccess: string; swapped: string; downloadText: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -18,6 +21,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     indentation: '들여쓰기', twoSpaces: '2칸', fourSpaces: '4칸',
     jsonToolLabel: 'JSON 포맷터',
     jsonInputHint: 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', jsonOutputHint: '실행 결과가 여기에 표시됩니다.',
+    base64ToolLabel: 'Base64 인코더 및 디코더', encode: '인코딩', decode: '디코딩', swap: '입력과 결과 교환', urlSafe: 'URL-safe Base64',
+    base64InputHint: 'UTF-8 텍스트 또는 Base64 문자열을 입력하세요.', base64OutputHint: '변환 결과가 여기에 표시됩니다.', base64EmptyInput: '먼저 텍스트를 입력하거나 예제를 불러오세요.',
+    invalidBase64: '올바르지 않은 Base64 문자열입니다.', invalidUtf8: 'Base64 데이터가 유효한 UTF-8 텍스트가 아닙니다.',
+    encodingSuccess: 'UTF-8 텍스트를 Base64로 인코딩했습니다.', decodingSuccess: 'Base64를 UTF-8 텍스트로 디코딩했습니다.',
+    swapped: '입력과 결과를 교환했습니다.', downloadText: '텍스트 다운로드',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -28,6 +36,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     indentation: 'Indentation', twoSpaces: '2 spaces', fourSpaces: '4 spaces',
     jsonToolLabel: 'JSON Formatter',
     jsonInputHint: 'Paste a JSON object, array, or primitive value.', jsonOutputHint: 'The result will appear here.',
+    base64ToolLabel: 'Base64 encoder and decoder', encode: 'Encode', decode: 'Decode', swap: 'Swap input and output', urlSafe: 'URL-safe Base64',
+    base64InputHint: 'Enter UTF-8 text or a Base64 string.', base64OutputHint: 'The converted result will appear here.', base64EmptyInput: 'Enter text or load a sample first.',
+    invalidBase64: 'The Base64 string is invalid.', invalidUtf8: 'The Base64 data is not valid UTF-8 text.',
+    encodingSuccess: 'Encoded UTF-8 text as Base64.', decodingSuccess: 'Decoded Base64 as UTF-8 text.',
+    swapped: 'Swapped the input and output.', downloadText: 'Download text',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -38,6 +51,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     indentation: 'インデント', twoSpaces: '2 スペース', fourSpaces: '4 スペース',
     jsonToolLabel: 'JSON フォーマッター',
     jsonInputHint: 'JSON オブジェクト、配列、またはプリミティブ値を貼り付けます。', jsonOutputHint: '実行結果をここに表示します。',
+    base64ToolLabel: 'Base64 エンコーダーとデコーダー', encode: 'エンコード', decode: 'デコード', swap: '入力と結果を入れ替え', urlSafe: 'URL-safe Base64',
+    base64InputHint: 'UTF-8 テキストまたは Base64 文字列を入力します。', base64OutputHint: '変換結果をここに表示します。', base64EmptyInput: 'テキストを入力するか、サンプルを読み込んでください。',
+    invalidBase64: 'Base64 文字列が正しくありません。', invalidUtf8: 'Base64 データは有効な UTF-8 テキストではありません。',
+    encodingSuccess: 'UTF-8 テキストを Base64 にエンコードしました。', decodingSuccess: 'Base64 を UTF-8 テキストにデコードしました。',
+    swapped: '入力と結果を入れ替えました。', downloadText: 'テキストをダウンロード',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -48,5 +66,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     indentation: '缩进', twoSpaces: '2 个空格', fourSpaces: '4 个空格',
     jsonToolLabel: 'JSON 格式化工具',
     jsonInputHint: '粘贴 JSON 对象、数组或基本值。', jsonOutputHint: '执行结果会显示在这里。',
+    base64ToolLabel: 'Base64 编码和解码工具', encode: '编码', decode: '解码', swap: '交换输入和结果', urlSafe: 'URL-safe Base64',
+    base64InputHint: '输入 UTF-8 文本或 Base64 字符串。', base64OutputHint: '转换结果会显示在这里。', base64EmptyInput: '请输入文本或载入示例。',
+    invalidBase64: 'Base64 字符串无效。', invalidUtf8: 'Base64 数据不是有效的 UTF-8 文本。',
+    encodingSuccess: '已将 UTF-8 文本编码为 Base64。', decodingSuccess: '已将 Base64 解码为 UTF-8 文本。',
+    swapped: '已交换输入和结果。', downloadText: '下载文本',
   },
 };

@@ -9,6 +9,7 @@ type WorkbenchProps = { locale: Locale };
 
 const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'json-formatter': dynamic(() => import('./workbenches/json-workbench').then((module) => module.JsonWorkbench)),
+  base64: dynamic(() => import('./workbenches/base64-workbench').then((module) => module.Base64Workbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {

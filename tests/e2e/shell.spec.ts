@@ -95,6 +95,51 @@ test('JSON formatter beautifies, minifies, validates, and safely reports errors 
   }
 });
 
+test('Base64 encodes and decodes UTF-8, supports URL-safe mode, and reports invalid input in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '인코딩', '디코딩', '입력과 결과 교환', 'URL-safe Base64', '결과 복사', '텍스트 다운로드', '초기화', '입력과 결과를 초기화했습니다.', 'UTF-8 텍스트를 Base64로 인코딩했습니다.', 'Base64를 UTF-8 텍스트로 디코딩했습니다.', '올바르지 않은 Base64 문자열입니다.', '안녕하세요, DevDesk 👋'],
+    ['en', 'Load sample', 'Encode', 'Decode', 'Swap input and output', 'URL-safe Base64', 'Copy result', 'Download text', 'Clear', 'Input and output cleared.', 'Encoded UTF-8 text as Base64.', 'Decoded Base64 as UTF-8 text.', 'The Base64 string is invalid.', '안녕하세요, DevDesk 👋'],
+    ['ja', 'サンプルを読み込む', 'エンコード', 'デコード', '入力と結果を入れ替え', 'URL-safe Base64', '結果をコピー', 'テキストをダウンロード', 'クリア', '入力と結果をクリアしました。', 'UTF-8 テキストを Base64 にエンコードしました。', 'Base64 を UTF-8 テキストにデコードしました。', 'Base64 文字列が正しくありません。', '안녕하세요, DevDesk 👋'],
+    ['zh', '载入示例', '编码', '解码', '交换输入和结果', 'URL-safe Base64', '复制结果', '下载文本', '清空', '已清空输入和结果。', '已将 UTF-8 文本编码为 Base64。', '已将 Base64 解码为 UTF-8 文本。', 'Base64 字符串无效。', '안녕하세요, DevDesk 👋'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, encodeLabel, decodeLabel, swapLabel, urlSafeLabel, copyLabel, downloadLabel, clearLabel, clearedMessage, encodedMessage, decodedMessage, invalidMessage, sampleText] of cases) {
+    await page.goto(`/${locale}/tools/base64/`);
+    const workbench = page.locator('.base64-workbench');
+    const editors = workbench.locator('.editor-panel');
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: encodeLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(encodedMessage);
+    const encoded = await editors.nth(1).locator('.cm-content').innerText();
+    expect(encoded.trim().length).toBeGreaterThan(0);
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(encoded);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('base64-result.txt');
+    await page.getByRole('button', { name: swapLabel, exact: true }).click();
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(decodedMessage);
+    await expect(editors.nth(1).locator('.cm-content')).toContainText(sampleText);
+
+    await editors.nth(0).locator('.cm-content').fill('%%%');
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidMessage);
+
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(clearedMessage);
+    await page.getByLabel(urlSafeLabel).check();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: encodeLabel, exact: true }).click();
+    const urlSafeOutput = await editors.nth(1).locator('.cm-content').innerText();
+    expect(urlSafeOutput.trim().length).toBeGreaterThan(0);
+    expect(urlSafeOutput).not.toMatch(/[+/=]/);
+    await page.getByRole('button', { name: swapLabel, exact: true }).click();
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(editors.nth(1).locator('.cm-content')).toContainText(sampleText);
+  }
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

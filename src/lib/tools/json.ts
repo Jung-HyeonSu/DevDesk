@@ -1,4 +1,6 @@
-export const MAX_TOOL_INPUT_BYTES = 1024 * 1024;
+import { isWithinInputLimit, MAX_TEXT_INPUT_BYTES } from './limits';
+
+export const MAX_TOOL_INPUT_BYTES = MAX_TEXT_INPUT_BYTES;
 
 export type JsonToolErrorCode = 'too-large' | 'syntax';
 
@@ -14,7 +16,7 @@ export class JsonToolError extends Error {
 }
 
 function assertInputSize(input: string) {
-  if (new TextEncoder().encode(input).byteLength > MAX_TOOL_INPUT_BYTES) {
+  if (!isWithinInputLimit(input)) {
     throw new JsonToolError('too-large');
   }
 }
