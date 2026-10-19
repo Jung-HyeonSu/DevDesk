@@ -26,6 +26,11 @@ export type WorkbenchMessages = {
   sqlToolLabel: string; sqlDialectLabel: string; sqlGeneric: string; sqlMysql: string; sqlMariadb: string;
   sqlPostgresql: string; sqlOracle: string; sqlFormat: string; sqlFormatted: string; sqlFormatError: string;
   sqlNotice: string; sqlInputHint: string; sqlEmptyInput: string;
+  jwtToolLabel: string; jwtInputHint: string; jwtNotice: string; jwtEmptyInput: string; jwtDecode: string;
+  jwtInvalidToken: string; jwtDecoded: string; jwtHeader: string; jwtPayload: string; jwtSignature: string;
+  jwtTemporalStatus: string; jwtStatusActive: string; jwtStatusExpired: string; jwtStatusNotYetValid: string;
+  jwtStatusUnknown: string; jwtIssuedAt: string; jwtNotBefore: string; jwtExpiresAt: string;
+  jwtUtc: string; jwtLocal: string; jwtInvalidClaim: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -68,6 +73,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     sqlFormatError: '이 방언으로 SQL을 정리하지 못했습니다. 방언과 구문을 확인하세요.',
     sqlNotice: '이 도구는 서식만 정리하며 SQL을 실행하거나 유효성을 보장하지 않습니다. 쿼리는 브라우저에서 처리됩니다.',
     sqlInputHint: '정리할 SQL을 붙여넣으세요.', sqlEmptyInput: '먼저 SQL을 입력하거나 예제를 불러오세요.',
+    jwtToolLabel: 'JWT 디코더', jwtInputHint: 'header.payload.signature 형식의 JWT를 붙여넣으세요.', jwtNotice: '디코딩은 서명, 발급자 또는 신뢰성을 검증하지 않습니다. 위조된 값이 표시될 수 있으므로 서버가 검증하기 전까지 내용을 신뢰하지 마세요. 토큰은 브라우저 안에서만 처리하고 저장하거나 전송하지 않습니다.',
+    jwtEmptyInput: 'JWT를 입력하거나 예제를 불러오세요.', jwtDecode: 'JWT 디코딩', jwtInvalidToken: 'JWT 형식이 올바르지 않습니다. 세 개의 Base64URL 세그먼트와 JSON 객체를 확인하세요.',
+    jwtDecoded: 'JWT 내용을 디코딩했습니다. 서명은 검증되지 않았습니다.', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '서명 세그먼트 (미검증)',
+    jwtTemporalStatus: '브라우저 시간 기준 상태', jwtStatusActive: '만료되지 않았고 아직 유효 시작 전이 아닙니다', jwtStatusExpired: '만료됨', jwtStatusNotYetValid: '아직 유효하지 않음', jwtStatusUnknown: '상태를 판단할 시간 클레임이 없습니다',
+    jwtIssuedAt: '발급 시각 (iat)', jwtNotBefore: '유효 시작 시각 (nbf)', jwtExpiresAt: '만료 시각 (exp)', jwtUtc: 'UTC', jwtLocal: '브라우저 현지 시간', jwtInvalidClaim: '유효하지 않은 NumericDate',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -108,6 +118,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     sqlFormatError: 'Could not format this SQL for the selected dialect. Check the dialect and syntax.',
     sqlNotice: 'This tool formats SQL only; it does not execute queries or guarantee validity. Queries are processed in your browser.',
     sqlInputHint: 'Paste SQL to format.', sqlEmptyInput: 'Enter SQL or load a sample first.',
+    jwtToolLabel: 'JWT decoder', jwtInputHint: 'Paste a JWT in header.payload.signature format.', jwtNotice: 'Decoding does not verify the signature, issuer, or trustworthiness. Forged values can be displayed, so do not trust claims until your server verifies the token. The token is processed only in this browser and is not stored or sent.',
+    jwtEmptyInput: 'Enter a JWT or load the sample.', jwtDecode: 'Decode JWT', jwtInvalidToken: 'The JWT format is invalid. Check its three Base64URL segments and JSON objects.',
+    jwtDecoded: 'Decoded the JWT content. The signature was not verified.', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: 'Signature segment (unverified)',
+    jwtTemporalStatus: 'Status by browser clock', jwtStatusActive: 'Not expired and past its not-before time', jwtStatusExpired: 'Expired', jwtStatusNotYetValid: 'Not yet valid', jwtStatusUnknown: 'No time claims are available to determine status',
+    jwtIssuedAt: 'Issued at (iat)', jwtNotBefore: 'Not before (nbf)', jwtExpiresAt: 'Expires at (exp)', jwtUtc: 'UTC', jwtLocal: 'Browser local time', jwtInvalidClaim: 'Invalid NumericDate',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -148,6 +163,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     sqlFormatError: '選択した方言で SQL を整形できません。方言と構文を確認してください。',
     sqlNotice: 'このツールは SQL の整形のみを行い、実行や妥当性の保証はしません。クエリはブラウザー内で処理します。',
     sqlInputHint: '整形する SQL を貼り付けます。', sqlEmptyInput: 'SQL を入力するか、サンプルを読み込んでください。',
+    jwtToolLabel: 'JWT デコーダー', jwtInputHint: 'header.payload.signature 形式の JWT を貼り付けます。', jwtNotice: 'デコードでは署名、発行者、信頼性を検証しません。偽造された値が表示される場合があります。サーバーがトークンを検証するまでは内容を信頼しないでください。トークンはこのブラウザー内でのみ処理し、保存や送信はしません。',
+    jwtEmptyInput: 'JWT を入力するか、サンプルを読み込んでください。', jwtDecode: 'JWT をデコード', jwtInvalidToken: 'JWT の形式が正しくありません。3 つの Base64URL セグメントと JSON オブジェクトを確認してください。',
+    jwtDecoded: 'JWT の内容をデコードしました。署名は検証されていません。', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '署名セグメント (未検証)',
+    jwtTemporalStatus: 'ブラウザー時刻による状態', jwtStatusActive: '期限内で有効開始時刻を過ぎています', jwtStatusExpired: '期限切れ', jwtStatusNotYetValid: 'まだ有効ではありません', jwtStatusUnknown: '状態を判断できる時刻クレームがありません',
+    jwtIssuedAt: '発行時刻 (iat)', jwtNotBefore: '有効開始時刻 (nbf)', jwtExpiresAt: '有効期限 (exp)', jwtUtc: 'UTC', jwtLocal: 'ブラウザーのローカル時刻', jwtInvalidClaim: '無効な NumericDate',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -188,5 +208,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     sqlFormatError: '无法按所选方言格式化 SQL，请检查方言和语法。',
     sqlNotice: '此工具只格式化 SQL，不执行查询，也不保证语法有效。查询仅在浏览器中处理。',
     sqlInputHint: '粘贴要格式化的 SQL。', sqlEmptyInput: '请输入 SQL 或载入示例。',
+    jwtToolLabel: 'JWT 解码器', jwtInputHint: '粘贴 header.payload.signature 格式的 JWT。', jwtNotice: '解码不会验证签名、签发者或可信度。伪造的值也可能显示出来，因此在服务器验证令牌前请勿信任其内容。令牌仅在此浏览器中处理，不会保存或发送。',
+    jwtEmptyInput: '请输入 JWT 或载入示例。', jwtDecode: '解码 JWT', jwtInvalidToken: 'JWT 格式无效。请检查三个 Base64URL 片段和 JSON 对象。',
+    jwtDecoded: '已解码 JWT 内容。签名未经验证。', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '签名片段 (未经验证)',
+    jwtTemporalStatus: '按浏览器时间判断的状态', jwtStatusActive: '未过期且已达到生效时间', jwtStatusExpired: '已过期', jwtStatusNotYetValid: '尚未生效', jwtStatusUnknown: '没有可用于判断状态的时间声明',
+    jwtIssuedAt: '签发时间 (iat)', jwtNotBefore: '生效时间 (nbf)', jwtExpiresAt: '过期时间 (exp)', jwtUtc: 'UTC', jwtLocal: '浏览器本地时间', jwtInvalidClaim: '无效的 NumericDate',
   },
 };

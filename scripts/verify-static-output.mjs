@@ -86,6 +86,7 @@ for (const locale of locales) {
       if (type === 'tools' && slug === 'uuid-generator' && !html.includes('class="uuid-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
       if (type === 'tools' && slug === 'hash-generator' && !html.includes('class="hash-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
       if (type === 'tools' && slug === 'sql-formatter' && !html.includes('class="sql-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
+      if (type === 'tools' && slug === 'jwt-decoder' && !html.includes('class="jwt-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
     }
   }
 }

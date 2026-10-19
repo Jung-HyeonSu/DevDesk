@@ -99,6 +99,47 @@ test('SQL formatter supports the displayed dialects, formatting, copy, download,
   }
 });
 
+test('JWT decoder shows UTF-8 claims, time status, and the unverified-signature warning in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', 'JWT 디코딩', '초기화', '결과 복사', '텍스트 다운로드', 'JWT 내용을 디코딩했습니다. 서명은 검증되지 않았습니다.', '브라우저 시간 기준 상태: 만료되지 않았고 아직 유효 시작 전이 아닙니다', 'JWT 형식이 올바르지 않습니다.', 'Header JSON', 'Payload JSON', 'UTC', '브라우저 현지 시간', 'header.payload.signature 형식의 JWT를 붙여넣으세요.'],
+    ['en', 'Load sample', 'Decode JWT', 'Clear', 'Copy result', 'Download text', 'Decoded the JWT content. The signature was not verified.', 'Status by browser clock: Not expired and past its not-before time', 'The JWT format is invalid.', 'Header JSON', 'Payload JSON', 'UTC', 'Browser local time', 'Paste a JWT in header.payload.signature format.'],
+    ['ja', 'サンプルを読み込む', 'JWT をデコード', 'クリア', '結果をコピー', 'テキストをダウンロード', 'JWT の内容をデコードしました。署名は検証されていません。', 'ブラウザー時刻による状態: 期限内で有効開始時刻を過ぎています', 'JWT の形式が正しくありません。', 'Header JSON', 'Payload JSON', 'UTC', 'ブラウザーのローカル時刻', 'header.payload.signature 形式の JWT を貼り付けます。'],
+    ['zh', '载入示例', '解码 JWT', '清空', '复制结果', '下载文本', '已解码 JWT 内容。签名未经验证。', '按浏览器时间判断的状态: 未过期且已达到生效时间', 'JWT 格式无效。', 'Header JSON', 'Payload JSON', 'UTC', '浏览器本地时间', '粘贴 header.payload.signature 格式的 JWT。'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, decodeLabel, clearLabel, copyLabel, downloadLabel, decodedMessage, activeMessage, invalidMessage, headerLabel, payloadLabel, utcLabel, localLabel, inputPlaceholder] of cases) {
+    await page.goto('/' + locale + '/tools/jwt-decoder/');
+    const workbench = page.locator('.jwt-workbench');
+    const editors = workbench.locator('.editor-panel');
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(workbench.getByRole('status').first()).toContainText(decodedMessage);
+    await expect(workbench.getByRole('status').nth(1)).toContainText(activeMessage);
+    await expect(editors.nth(1)).toContainText(headerLabel);
+    await expect(editors.nth(1).locator('.cm-content')).toContainText('HS256');
+    await expect(editors.nth(2)).toContainText(payloadLabel);
+    await expect(editors.nth(2).locator('.cm-content')).toContainText('Developer');
+    await expect(editors.nth(2).locator('.cm-content')).toContainText('👋');
+    await expect(workbench.locator('.jwt-claims')).toContainText(utcLabel);
+    await expect(workbench.locator('.jwt-claims')).toContainText(localLabel);
+    await expect(workbench.locator('.jwt-claims')).toContainText('2023-11-14T22:13:20.000Z');
+
+    const payload = await editors.nth(2).locator('.cm-content').innerText();
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(payload);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('jwt-payload.json');
+
+    await editors.nth(0).locator('.cm-content').fill('a.b.c');
+    await page.getByRole('button', { name: decodeLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidMessage);
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(editors.nth(0).locator('.cm-content')).toHaveText(inputPlaceholder);
+  }
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],

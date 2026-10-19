@@ -15,6 +15,7 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'unix-timestamp': dynamic(() => import('./workbenches/timestamp-workbench').then((module) => module.TimestampWorkbench)),
   'uuid-generator': dynamic(() => import('./workbenches/uuid-workbench').then((module) => module.UuidWorkbench)),
   'hash-generator': dynamic(() => import('./workbenches/hash-workbench').then((module) => module.HashWorkbench)),
+  'jwt-decoder': dynamic(() => import('./workbenches/jwt-workbench').then((module) => module.JwtWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {
