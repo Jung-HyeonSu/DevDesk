@@ -64,6 +64,14 @@ const labelKeys = [...properties(labelsByLocale.get('ko'), 'ko content labels').
 for (const locale of locales) assertSameKeys(properties(labelsByLocale.get(locale), `${locale} content labels`), labelKeys, `${locale} content label`);
 assertPlaceholderParity(labelsByLocale, 'content labels');
 
+const workbenchSource = await parseTypeScript('src/i18n/workbench.ts');
+const workbenchMessages = properties(variableObject(workbenchSource, 'workbenchMessages'), 'workbenchMessages');
+assertSameKeys(workbenchMessages, locales, 'workbench locale');
+const workbenchByLocale = new Map(locales.map((locale) => [locale, workbenchMessages.get(locale)]));
+const workbenchKeys = [...properties(workbenchByLocale.get('ko'), 'ko workbench messages').keys()];
+for (const locale of locales) assertSameKeys(properties(workbenchByLocale.get(locale), `${locale} workbench messages`), workbenchKeys, `${locale} workbench message`);
+assertPlaceholderParity(workbenchByLocale, 'workbench messages');
+
 const dataSource = await parseTypeScript('src/data/tool-content.ts');
 const toolContent = properties(variableObject(dataSource, 'toolContent'), 'toolContent');
 const toolExamples = properties(variableObject(dataSource, 'toolExamples'), 'toolExamples');
@@ -99,4 +107,4 @@ for (const [slug, initializer] of toolExamples) {
   }
 }
 
-console.log(`i18n verified (${locales.length} locales, ${labelKeys.length} shared content labels, ${expectedTools.length} tools, ${expectedTools.length * locales.length} localized tool entries, 2 examples and 3 FAQs per localized tool).`);
+console.log(`i18n verified (${locales.length} locales, ${labelKeys.length} shared content labels, ${workbenchKeys.length} workbench labels, ${expectedTools.length} tools, ${expectedTools.length * locales.length} localized tool entries, 2 examples and 3 FAQs per localized tool).`);

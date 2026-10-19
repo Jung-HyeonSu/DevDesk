@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ToolFavoriteToggle } from '@/components/tools/tool-card';
+import { ToolWorkbench } from '@/components/tools/tool-workbench';
 import { toolContent, toolExamples } from '@/data/tool-content';
 import { toolBySlug, toolRegistry } from '@/data/tools';
 import { contentLabels } from '@/i18n/content';
@@ -43,6 +44,7 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
       <p className="eyebrow">{tool.category.toUpperCase()} / DEVDESK</p>
       <div className="tool-title-row"><h1>{tool.name[locale]}</h1><ToolFavoriteToggle locale={locale} tool={tool} /></div>
       <p className="tool-intro">{content.description}</p>
+      <ToolWorkbench locale={locale} slug={tool.slug} />
 
       <section className="content-section" aria-labelledby="examples-heading">
         <h2 id="examples-heading">{labels.examples}</h2>

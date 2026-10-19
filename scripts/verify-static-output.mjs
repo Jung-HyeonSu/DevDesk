@@ -79,6 +79,7 @@ for (const locale of locales) {
       if ((html.match(/class="content-card"/g) ?? []).length < 2) throw new Error(`${label} needs two static examples`);
       if ((html.match(/class="faq-item"/g) ?? []).length < 3) throw new Error(`${label} needs three static FAQs`);
       if (!html.includes('content-steps')) throw new Error(`${label} is missing its static usage steps`);
+      if (type === 'tools' && slug === 'json-formatter' && !html.includes('class="json-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
     }
   }
 }
