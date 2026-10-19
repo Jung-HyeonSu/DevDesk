@@ -278,6 +278,59 @@ test('UUID generator creates bounded v4 batches and supports copy, download, and
   }
 });
 
+test('SHA hash generator matches SHA-2 vectors, optionally shows Base64, and accepts empty input in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', 'SHA 해시 생성기', '알고리즘', 'Base64 결과도 표시', '해시 생성', '예제 불러오기', '초기화', '결과 복사', '텍스트 다운로드', '브라우저에서 해시를 생성했습니다.', '입력과 결과를 초기화했습니다.'],
+    ['en', 'SHA hash generator', 'Algorithm', 'Also show Base64 output', 'Generate hash', 'Load sample', 'Clear', 'Copy result', 'Download text', 'Generated the hash in your browser.', 'Input and output cleared.'],
+    ['ja', 'SHA ハッシュ生成ツール', 'アルゴリズム', 'Base64 の結果も表示', 'ハッシュを生成', 'サンプルを読み込む', 'クリア', '結果をコピー', 'テキストをダウンロード', 'ブラウザー内でハッシュを生成しました。', '入力と結果をクリアしました。'],
+    ['zh', 'SHA 哈希生成工具', '算法', '同时显示 Base64 结果', '生成哈希', '载入示例', '清空', '复制结果', '下载文本', '已在浏览器中生成哈希。', '已清空输入和结果。'],
+  ];
+  const sha256 = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
+  const sha384 = 'cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7';
+  const sha512 = 'ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f';
+  const emptySha256 = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, toolLabel, algorithmLabel, base64Label, generateLabel, sampleLabel, clearLabel, copyLabel, downloadLabel, generatedMessage, clearedMessage] of cases) {
+    await page.goto(`/${locale}/tools/hash-generator/`);
+    const workbench = page.locator('.hash-workbench');
+    const algorithm = workbench.locator('#hash-algorithm');
+    const base64Toggle = workbench.locator('#hash-base64');
+    const output = workbench.locator('.editor-panel').nth(1).locator('.cm-content');
+    await expect(workbench).toHaveAttribute('aria-label', toolLabel);
+    await expect(algorithm).toHaveAccessibleName(algorithmLabel);
+    await expect(base64Toggle).toHaveAccessibleName(base64Label);
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await base64Toggle.check();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+
+    await algorithm.selectOption('SHA-256');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(generatedMessage);
+    await expect(output).toContainText(`SHA-256 (hex): ${sha256}`);
+    await expect(output).toContainText('SHA-256 (Base64): ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=');
+    const copiedText = await output.innerText();
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(copiedText);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('hash.txt');
+
+    await algorithm.selectOption('SHA-384');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(output).toContainText(`SHA-384 (hex): ${sha384}`);
+    await algorithm.selectOption('SHA-512');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(output).toContainText(`SHA-512 (hex): ${sha512}`);
+
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(clearedMessage);
+    await expect(output).toHaveText(await output.getAttribute('aria-placeholder') ?? '');
+    await algorithm.selectOption('SHA-256');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(output).toContainText(`SHA-256 (hex): ${emptySha256}`);
+  }
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

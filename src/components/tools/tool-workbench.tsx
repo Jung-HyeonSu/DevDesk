@@ -13,6 +13,7 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'url-encoder': dynamic(() => import('./workbenches/url-workbench').then((module) => module.UrlWorkbench)),
   'unix-timestamp': dynamic(() => import('./workbenches/timestamp-workbench').then((module) => module.TimestampWorkbench)),
   'uuid-generator': dynamic(() => import('./workbenches/uuid-workbench').then((module) => module.UuidWorkbench)),
+  'hash-generator': dynamic(() => import('./workbenches/hash-workbench').then((module) => module.HashWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {

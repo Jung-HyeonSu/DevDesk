@@ -20,6 +20,9 @@ export type WorkbenchMessages = {
   timestampConverted: string; dateConverted: string; timestampNotice: string;
   uuidToolLabel: string; uuidCountLabel: string; uuidGenerate: string; uuidCountSample: string;
   uuidGenerated: string; uuidInvalidCount: string; uuidUnavailable: string; uuidSecurityNote: string;
+  hashToolLabel: string; hashAlgorithmLabel: string; hashGenerate: string; hashIncludeBase64: string;
+  hashGenerated: string; hashUnavailable: string; hashSecurityNote: string; hashInputHint: string;
+  hashHexLabel: string; hashBase64Label: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -53,6 +56,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     uuidToolLabel: 'UUID v4 생성기', uuidCountLabel: '생성 개수 (1–100)', uuidGenerate: 'UUID 생성', uuidCountSample: '개수를 3으로 설정',
     uuidGenerated: '보안 난수 UUID를 생성했습니다.', uuidInvalidCount: '1부터 100까지의 정수를 입력하세요.',
     uuidUnavailable: '이 브라우저는 보안 UUID 생성 기능을 지원하지 않습니다.', uuidSecurityNote: 'crypto.randomUUID는 HTTPS 또는 localhost 같은 보안 컨텍스트가 필요합니다.',
+    hashToolLabel: 'SHA 해시 생성기', hashAlgorithmLabel: '알고리즘', hashGenerate: '해시 생성', hashIncludeBase64: 'Base64 결과도 표시',
+    hashGenerated: '브라우저에서 해시를 생성했습니다.', hashUnavailable: '이 브라우저에서는 Web Crypto 해시를 사용할 수 없습니다.',
+    hashSecurityNote: '해시는 되돌릴 수 없는 변환이며 암호화나 비밀번호 저장용 KDF가 아닙니다. 비밀값을 입력하지 마세요. 처리는 브라우저 안에서만 수행합니다.',
+    hashInputHint: '해시할 텍스트를 입력하세요. 빈 문자열도 입력값으로 처리할 수 있습니다.', hashHexLabel: 'hex', hashBase64Label: 'Base64',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -84,6 +91,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     uuidToolLabel: 'UUID v4 generator', uuidCountLabel: 'Number to generate (1–100)', uuidGenerate: 'Generate UUIDs', uuidCountSample: 'Set count to 3',
     uuidGenerated: 'Generated cryptographically random UUIDs.', uuidInvalidCount: 'Enter a whole number from 1 to 100.',
     uuidUnavailable: 'This browser does not support secure UUID generation.', uuidSecurityNote: 'crypto.randomUUID requires a secure context such as HTTPS or localhost.',
+    hashToolLabel: 'SHA hash generator', hashAlgorithmLabel: 'Algorithm', hashGenerate: 'Generate hash', hashIncludeBase64: 'Also show Base64 output',
+    hashGenerated: 'Generated the hash in your browser.', hashUnavailable: 'Web Crypto hashing is unavailable in this browser.',
+    hashSecurityNote: 'A hash is a one-way transform, not encryption or a password-storage KDF. Do not enter secrets. Processing stays in your browser.',
+    hashInputHint: 'Enter text to hash. An empty string is also a valid input.', hashHexLabel: 'hex', hashBase64Label: 'Base64',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -115,6 +126,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     uuidToolLabel: 'UUID v4 生成ツール', uuidCountLabel: '生成数 (1–100)', uuidGenerate: 'UUID を生成', uuidCountSample: '生成数を 3 に設定',
     uuidGenerated: '暗号学的に安全な UUID を生成しました。', uuidInvalidCount: '1 から 100 までの整数を入力してください。',
     uuidUnavailable: 'このブラウザーは安全な UUID 生成に対応していません。', uuidSecurityNote: 'crypto.randomUUID には HTTPS や localhost などのセキュアコンテキストが必要です。',
+    hashToolLabel: 'SHA ハッシュ生成ツール', hashAlgorithmLabel: 'アルゴリズム', hashGenerate: 'ハッシュを生成', hashIncludeBase64: 'Base64 の結果も表示',
+    hashGenerated: 'ブラウザー内でハッシュを生成しました。', hashUnavailable: 'このブラウザーでは Web Crypto ハッシュを利用できません。',
+    hashSecurityNote: 'ハッシュは一方向変換であり、暗号化やパスワード保存用 KDF ではありません。秘密情報を入力しないでください。処理はブラウザー内で行います。',
+    hashInputHint: 'ハッシュ化するテキストを入力します。空文字列も入力として使えます。', hashHexLabel: 'hex', hashBase64Label: 'Base64',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -146,5 +161,9 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     uuidToolLabel: 'UUID v4 生成工具', uuidCountLabel: '生成数量 (1–100)', uuidGenerate: '生成 UUID', uuidCountSample: '将数量设为 3',
     uuidGenerated: '已生成密码学安全的 UUID。', uuidInvalidCount: '请输入 1 到 100 之间的整数。',
     uuidUnavailable: '此浏览器不支持安全的 UUID 生成。', uuidSecurityNote: 'crypto.randomUUID 需要 HTTPS 或 localhost 等安全上下文。',
+    hashToolLabel: 'SHA 哈希生成工具', hashAlgorithmLabel: '算法', hashGenerate: '生成哈希', hashIncludeBase64: '同时显示 Base64 结果',
+    hashGenerated: '已在浏览器中生成哈希。', hashUnavailable: '此浏览器无法使用 Web Crypto 哈希功能。',
+    hashSecurityNote: '哈希是不可逆的单向转换，不是加密或密码存储 KDF。请勿输入机密。所有处理仅在浏览器中进行。',
+    hashInputHint: '输入要计算哈希的文本。空字符串也可以作为输入。', hashHexLabel: 'hex', hashBase64Label: 'Base64',
   },
 };
