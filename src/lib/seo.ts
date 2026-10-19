@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { localeMetadata, locales, type Locale } from '@/i18n/config';
 
-/** Override this build-time URL before publishing the exported site. */
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devdesk.example').replace(/\/$/, '');
+/** Override this build-time URL when publishing to a different domain. */
+export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devdesk-7e7.pages.dev').replace(/\/$/, '');
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'DevDesk';
 
 function routePath(locale: Locale, path: string) {

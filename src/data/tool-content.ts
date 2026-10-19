@@ -64,7 +64,7 @@ export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
 export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
   ko: {
     'json-formatter': {
-      description: 'JSON 문법을 검사하고 들여쓰기를 정리합니다. 포맷과 압축은 이 브라우저 안에서 처리됩니다.',
+      description: '무료 온라인 JSON 포맷터로 JSON 문법을 검사하고 들여쓰기를 정리하거나 JSON을 압축할 수 있습니다. 모든 작업은 브라우저에서 처리되며 입력은 서버로 전송되지 않습니다.',
       steps: ['JSON 텍스트를 붙여넣거나 예제를 불러옵니다.', '2칸 또는 4칸 들여쓰기를 고릅니다.', '정렬·압축·검증을 실행한 뒤 복사하거나 JSON 파일로 내려받습니다.'],
       caution: 'JSON은 주석과 마지막 쉼표를 허용하지 않습니다. 같은 객체에 중복 키가 있으면 브라우저 파서가 마지막 값을 사용합니다.',
       faqs: [
@@ -186,7 +186,7 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
   },
   en: {
     'json-formatter': {
-      description: 'Validate JSON syntax and make indentation consistent. Formatting and minification run entirely in this browser.',
+      description: 'Use this free online JSON formatter to validate JSON syntax, format indentation, or minify JSON. Processing runs in your browser, so your input is not sent to a server.',
       steps: ['Paste JSON or load a sample.', 'Choose two or four spaces for indentation.', 'Beautify, minify, or validate, then copy or download the result.'],
       caution: 'Standard JSON has no comments or trailing commas. If an object repeats a key, the browser parser keeps the last value.',
       faqs: [
