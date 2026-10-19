@@ -1,14 +1,16 @@
 import type { Locale } from '@/i18n/config';
 
 export type ToolCategory = 'format' | 'encoding' | 'security' | 'time' | 'text' | 'generator' | 'data';
+export type ToolSlug = 'json-formatter' | 'sql-formatter' | 'jwt-decoder' | 'cron-generator' | 'text-diff' | 'base64' | 'url-encoder' | 'unix-timestamp' | 'uuid-generator' | 'hash-generator' | 'regex-tester' | 'yaml-json';
+export const toolSlugs: readonly ToolSlug[] = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json'];
 
 export type ToolDefinition = {
-  id: string;
-  slug: string;
+  id: ToolSlug;
+  slug: ToolSlug;
   category: ToolCategory;
   icon: string;
   order: number;
-  relatedToolIds: string[];
+  relatedToolIds: ToolSlug[];
   name: Record<Locale, string>;
   keywords: Record<Locale, string[]>;
 };
