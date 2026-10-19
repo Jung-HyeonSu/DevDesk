@@ -40,7 +40,6 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '문의', description: 'DevDesk 운영자에게 연락하는 방법입니다.',
       paragraphs: [
         '서비스 관련 문의는 아래 운영자 연락처를 이용해 주세요.',
-        '운영자 연락처가 아직 설정되지 않았습니다. 공개 전에 NEXT_PUBLIC_CONTACT_EMAIL 빌드 환경변수에 운영자가 소유한 주소를 설정해야 합니다.',
       ],
     },
   },
@@ -74,7 +73,6 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'Contact', description: 'How to contact the DevDesk operator.',
       paragraphs: [
         'For service questions, use the operator contact address below.',
-        'No operator contact is configured yet. Before launch, set NEXT_PUBLIC_CONTACT_EMAIL at build time to an address the operator controls.',
       ],
     },
   },
@@ -108,7 +106,6 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'お問い合わせ', description: 'DevDesk 運営者への連絡方法です。',
       paragraphs: [
         'サービスに関するお問い合わせは、以下の運営者連絡先をご利用ください。',
-        '運営者の連絡先はまだ設定されていません。公開前に NEXT_PUBLIC_CONTACT_EMAIL に運営者が管理するアドレスを設定してください。',
       ],
     },
   },
@@ -142,7 +139,6 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '联系', description: '联系 DevDesk 运营者的方法。',
       paragraphs: [
         '如需咨询服务，请使用下方的运营者联系地址。',
-        '尚未配置运营者联系地址。正式发布前，请在构建环境中将 NEXT_PUBLIC_CONTACT_EMAIL 设置为运营者实际管理的邮箱。',
       ],
     },
   },
@@ -166,11 +162,12 @@ export default async function SectionPage({ params }: { params: Promise<{ locale
   const section = rawSection as Section;
   const copy = sectionCopy[rawLocale][section];
   const contactEmail = section === 'contact' ? process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() : undefined;
+  const paragraphs = section === 'contact' && !contactEmail ? [] : copy.paragraphs;
   return (
     <main className="simple-page policy-page">
       <p className="eyebrow">DEVDESK / {section.toUpperCase()}</p>
       <h1>{copy.title}</h1>
-      {copy.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+      {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
       {contactEmail && <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>}
     </main>
   );
