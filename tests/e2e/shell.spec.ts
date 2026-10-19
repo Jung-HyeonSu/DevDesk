@@ -140,6 +140,54 @@ test('JWT decoder shows UTF-8 claims, time status, and the unverified-signature 
   }
 });
 
+test('Cron generator builds and validates Linux five-field schedules in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '필드로 표현식 만들고 계산', '검증 및 다음 5회 계산', '시간대', '결과 복사', '텍스트 다운로드', '5필드 표현식을 확인하고 다음 실행 시각 5개를 계산했습니다.', '5분마다 실행합니다.', '이 MVP에서 지원하지 않는 Cron 확장 문법입니다.', '초기화', '입력과 결과를 초기화했습니다.', '분 (0–59)', '시 (0–23)', '일 (1–31)', '월 (1–12 또는 JAN–DEC)', '요일 (0–7 또는 SUN–SAT)', '예: */5 * * * *'],
+    ['en', 'Load sample', 'Build and calculate from fields', 'Validate and calculate next 5', 'Time zone', 'Copy result', 'Download text', 'Validated the five-field expression and calculated its next five runs.', 'Runs every 5 minutes.', 'This cron extension is not supported in the MVP.', 'Clear', 'Input and output cleared.', 'Minute (0–59)', 'Hour (0–23)', 'Day of month (1–31)', 'Month (1–12 or JAN–DEC)', 'Day of week (0–7 or SUN–SAT)', 'Example: */5 * * * *'],
+    ['ja', 'サンプルを読み込む', 'フィールドから作成して計算', '検証して次の 5 回を計算', 'タイムゾーン', '結果をコピー', 'テキストをダウンロード', '5 フィールド式を検証し、次の実行時刻を 5 件計算しました。', '5 分ごとに実行します。', 'この MVP では対応していない Cron 拡張構文です。', 'クリア', '入力と結果をクリアしました。', '分 (0–59)', '時 (0–23)', '日 (1–31)', '月 (1–12 または JAN–DEC)', '曜日 (0–7 または SUN–SAT)', '例: */5 * * * *'],
+    ['zh', '载入示例', '按字段生成并计算', '校验并计算后续 5 次', '时区', '复制结果', '下载文本', '已校验五字段表达式并计算出后续 5 次运行时间。', '每 5 分钟运行。', 'MVP 不支持此 Cron 扩展语法。', '清空', '已清空输入和结果。', '分钟 (0–59)', '小时 (0–23)', '日期 (1–31)', '月份 (1–12 或 JAN–DEC)', '星期 (0–7 或 SUN–SAT)', '例如: */5 * * * *'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, buildLabel, generateLabel, timeZoneLabel, copyLabel, downloadLabel, computedMessage, explanation, unsupportedMessage, clearLabel, clearedMessage, minuteLabel, hourLabel, dayLabel, monthLabel, weekdayLabel, expressionHint] of cases) {
+    await page.goto('/' + locale + '/tools/cron-generator/');
+    const workbench = page.locator('.cron-workbench');
+    const expression = workbench.locator('.editor-panel .cm-content');
+    await expect(workbench.locator('.workbench-note').first()).toBeVisible();
+    await expect(workbench.locator('#cron-time-zone')).toHaveAccessibleName(timeZoneLabel);
+    await expect(workbench.locator('#cron-minute')).toHaveAccessibleName(minuteLabel);
+    await expect(workbench.locator('#cron-hour')).toHaveAccessibleName(hourLabel);
+    await expect(workbench.locator('#cron-dayOfMonth')).toHaveAccessibleName(dayLabel);
+    await expect(workbench.locator('#cron-month')).toHaveAccessibleName(monthLabel);
+    await expect(workbench.locator('#cron-dayOfWeek')).toHaveAccessibleName(weekdayLabel);
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await expect(expression).toContainText('*/5 * * * *');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(computedMessage);
+    await expect(workbench.locator('.cron-results')).toContainText(explanation);
+    await expect(workbench.locator('.cron-next-times li')).toHaveCount(5);
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('*/5 * * * *');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('cron-schedule.txt');
+    await workbench.locator('#cron-minute').fill('0');
+    await workbench.locator('#cron-hour').fill('9');
+    await workbench.locator('#cron-dayOfMonth').fill('*');
+    await workbench.locator('#cron-month').fill('*');
+    await workbench.locator('#cron-dayOfWeek').fill('1-5');
+    await page.getByRole('button', { name: buildLabel, exact: true }).click();
+    await expect(expression).toContainText('0 9 * * 1-5');
+    await expect(workbench.locator('.cron-next-times li')).toHaveCount(5);
+
+    await expression.fill('0 0 * * ?');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(unsupportedMessage);
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(clearedMessage);
+    await expect(expression).toHaveText(expressionHint);
+  }
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],

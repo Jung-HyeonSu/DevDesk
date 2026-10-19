@@ -31,6 +31,14 @@ export type WorkbenchMessages = {
   jwtTemporalStatus: string; jwtStatusActive: string; jwtStatusExpired: string; jwtStatusNotYetValid: string;
   jwtStatusUnknown: string; jwtIssuedAt: string; jwtNotBefore: string; jwtExpiresAt: string;
   jwtUtc: string; jwtLocal: string; jwtInvalidClaim: string;
+  cronToolLabel: string; cronNotice: string; cronFieldsLabel: string; cronMinuteLabel: string; cronHourLabel: string;
+  cronDayOfMonthLabel: string; cronMonthLabel: string; cronDayOfWeekLabel: string; cronExpressionLabel: string;
+  cronExpressionHint: string; cronTimeZoneLabel: string; cronTimeZoneHint: string; cronBuildFromFields: string;
+  cronGenerate: string; cronOutputLabel: string; cronNextTimesLabel: string; cronComputed: string;
+  cronEmptyExpression: string; cronExpressionTooLong: string; cronFiveFieldsOnly: string; cronUnsupportedSyntax: string;
+  cronInvalidExpression: string; cronInvalidTimeZone: string; cronExplainEveryMinute: string;
+  cronExplainIntervalMinutes: string; cronExplainHourly: string; cronExplainDaily: string; cronExplainWeekdays: string;
+  cronExplainMonthly: string; cronExplainFields: string; cronDayRule: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -78,6 +86,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     jwtDecoded: 'JWT 내용을 디코딩했습니다. 서명은 검증되지 않았습니다.', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '서명 세그먼트 (미검증)',
     jwtTemporalStatus: '브라우저 시간 기준 상태', jwtStatusActive: '만료되지 않았고 아직 유효 시작 전이 아닙니다', jwtStatusExpired: '만료됨', jwtStatusNotYetValid: '아직 유효하지 않음', jwtStatusUnknown: '상태를 판단할 시간 클레임이 없습니다',
     jwtIssuedAt: '발급 시각 (iat)', jwtNotBefore: '유효 시작 시각 (nbf)', jwtExpiresAt: '만료 시각 (exp)', jwtUtc: 'UTC', jwtLocal: '브라우저 현지 시간', jwtInvalidClaim: '유효하지 않은 NumericDate',
+    cronToolLabel: 'Cron 표현식 생성기', cronNotice: '표준 Linux 5필드 Cron(분 시 일 월 요일)만 지원합니다. Quartz 6/7필드와 L/W/# 같은 확장 문법은 지원하지 않습니다. 다음 실행 시각은 브라우저에서 계산하며 서머타임 전환 시각은 시간대 규칙에 따라 조정될 수 있습니다.',
+    cronFieldsLabel: '필드로 표현식 만들기', cronMinuteLabel: '분 (0–59)', cronHourLabel: '시 (0–23)', cronDayOfMonthLabel: '일 (1–31)', cronMonthLabel: '월 (1–12 또는 JAN–DEC)', cronDayOfWeekLabel: '요일 (0–7 또는 SUN–SAT)',
+    cronExpressionLabel: '5필드 표현식', cronExpressionHint: '예: */5 * * * *', cronTimeZoneLabel: '시간대', cronTimeZoneHint: 'IANA 시간대 (예: Asia/Seoul)',
+    cronBuildFromFields: '필드로 표현식 만들고 계산', cronGenerate: '검증 및 다음 5회 계산', cronOutputLabel: '다음 실행 시각', cronNextTimesLabel: '선택한 시간대 기준 다음 5회', cronComputed: '5필드 표현식을 확인하고 다음 실행 시각 5개를 계산했습니다.',
+    cronEmptyExpression: 'Cron 표현식을 입력하거나 예제를 불러오세요.', cronExpressionTooLong: '표현식은 256자 이하여야 합니다.', cronFiveFieldsOnly: '표준 Linux 5필드만 지원합니다: 분 시 일 월 요일. Quartz 6/7필드는 제외됩니다.',
+    cronUnsupportedSyntax: '이 MVP에서 지원하지 않는 Cron 확장 문법입니다. 물음표, L, W, #, @, H 문법은 사용할 수 없습니다.', cronInvalidExpression: 'Cron 필드 값이나 범위를 확인하세요.', cronInvalidTimeZone: '지원되는 IANA 시간대를 입력하세요.',
+    cronExplainEveryMinute: '매분 실행합니다.', cronExplainIntervalMinutes: '{interval}분마다 실행합니다.', cronExplainHourly: '매시간 {minute}분에 실행합니다.', cronExplainDaily: '매일 {time}에 실행합니다.',
+    cronExplainWeekdays: '월요일부터 금요일까지 {time}에 실행합니다.', cronExplainMonthly: '매월 1일 {time}에 실행합니다.', cronExplainFields: '다음 5개 필드가 일치할 때 실행합니다: {fields}.', cronDayRule: '일과 요일을 모두 제한하면 표준 Linux Cron 규칙에 따라 둘 중 하나만 일치해도 실행됩니다.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -123,6 +139,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     jwtDecoded: 'Decoded the JWT content. The signature was not verified.', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: 'Signature segment (unverified)',
     jwtTemporalStatus: 'Status by browser clock', jwtStatusActive: 'Not expired and past its not-before time', jwtStatusExpired: 'Expired', jwtStatusNotYetValid: 'Not yet valid', jwtStatusUnknown: 'No time claims are available to determine status',
     jwtIssuedAt: 'Issued at (iat)', jwtNotBefore: 'Not before (nbf)', jwtExpiresAt: 'Expires at (exp)', jwtUtc: 'UTC', jwtLocal: 'Browser local time', jwtInvalidClaim: 'Invalid NumericDate',
+    cronToolLabel: 'Cron expression generator', cronNotice: 'Supports standard Linux five-field cron (minute hour day-of-month month day-of-week) only. Quartz six/seven-field syntax and extensions such as L/W/# are not supported. The next runs are calculated in this browser; daylight-saving transitions may adjust local times according to the selected zone.',
+    cronFieldsLabel: 'Build an expression from fields', cronMinuteLabel: 'Minute (0–59)', cronHourLabel: 'Hour (0–23)', cronDayOfMonthLabel: 'Day of month (1–31)', cronMonthLabel: 'Month (1–12 or JAN–DEC)', cronDayOfWeekLabel: 'Day of week (0–7 or SUN–SAT)',
+    cronExpressionLabel: 'Five-field expression', cronExpressionHint: 'Example: */5 * * * *', cronTimeZoneLabel: 'Time zone', cronTimeZoneHint: 'IANA time zone (for example, America/New_York)',
+    cronBuildFromFields: 'Build and calculate from fields', cronGenerate: 'Validate and calculate next 5', cronOutputLabel: 'Next run times', cronNextTimesLabel: 'Next five occurrences in the selected time zone', cronComputed: 'Validated the five-field expression and calculated its next five runs.',
+    cronEmptyExpression: 'Enter a cron expression or load a sample.', cronExpressionTooLong: 'The expression must be 256 characters or fewer.', cronFiveFieldsOnly: 'Only standard Linux five-field cron is supported: minute hour day-of-month month day-of-week. Quartz six/seven-field syntax is excluded.',
+    cronUnsupportedSyntax: 'This cron extension is not supported in the MVP. Question marks, L, W, #, @, and H syntax are excluded.', cronInvalidExpression: 'Check the cron field values and ranges.', cronInvalidTimeZone: 'Enter a supported IANA time zone.',
+    cronExplainEveryMinute: 'Runs every minute.', cronExplainIntervalMinutes: 'Runs every {interval} minutes.', cronExplainHourly: 'Runs at minute {minute} of every hour.', cronExplainDaily: 'Runs every day at {time}.',
+    cronExplainWeekdays: 'Runs Monday through Friday at {time}.', cronExplainMonthly: 'Runs on the first day of each month at {time}.', cronExplainFields: 'Runs when these five field values match: {fields}.', cronDayRule: 'When both day-of-month and day-of-week are restricted, standard Linux cron runs when either one matches.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -168,6 +192,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     jwtDecoded: 'JWT の内容をデコードしました。署名は検証されていません。', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '署名セグメント (未検証)',
     jwtTemporalStatus: 'ブラウザー時刻による状態', jwtStatusActive: '期限内で有効開始時刻を過ぎています', jwtStatusExpired: '期限切れ', jwtStatusNotYetValid: 'まだ有効ではありません', jwtStatusUnknown: '状態を判断できる時刻クレームがありません',
     jwtIssuedAt: '発行時刻 (iat)', jwtNotBefore: '有効開始時刻 (nbf)', jwtExpiresAt: '有効期限 (exp)', jwtUtc: 'UTC', jwtLocal: 'ブラウザーのローカル時刻', jwtInvalidClaim: '無効な NumericDate',
+    cronToolLabel: 'Cron 式生成ツール', cronNotice: '標準 Linux の 5 フィールド Cron (分 時 日 月 曜日) のみをサポートします。Quartz の 6/7 フィールドや L/W/# などの拡張構文はサポートしません。次回実行時刻はブラウザー内で計算し、夏時間の切り替え時刻は選択したタイムゾーン規則に従って調整されます。',
+    cronFieldsLabel: 'フィールドから式を作成', cronMinuteLabel: '分 (0–59)', cronHourLabel: '時 (0–23)', cronDayOfMonthLabel: '日 (1–31)', cronMonthLabel: '月 (1–12 または JAN–DEC)', cronDayOfWeekLabel: '曜日 (0–7 または SUN–SAT)',
+    cronExpressionLabel: '5 フィールド式', cronExpressionHint: '例: */5 * * * *', cronTimeZoneLabel: 'タイムゾーン', cronTimeZoneHint: 'IANA タイムゾーン (例: Asia/Tokyo)',
+    cronBuildFromFields: 'フィールドから作成して計算', cronGenerate: '検証して次の 5 回を計算', cronOutputLabel: '次回実行時刻', cronNextTimesLabel: '選択したタイムゾーンでの次の 5 回', cronComputed: '5 フィールド式を検証し、次の実行時刻を 5 件計算しました。',
+    cronEmptyExpression: 'Cron 式を入力するか、サンプルを読み込んでください。', cronExpressionTooLong: '式は 256 文字以内にしてください。', cronFiveFieldsOnly: '標準 Linux の 5 フィールドのみ対応します: 分 時 日 月 曜日。Quartz の 6/7 フィールドは対象外です。',
+    cronUnsupportedSyntax: 'この MVP では対応していない Cron 拡張構文です。?, L, W, #, @, H 構文は使用できません。', cronInvalidExpression: 'Cron フィールドの値と範囲を確認してください。', cronInvalidTimeZone: '対応する IANA タイムゾーンを入力してください。',
+    cronExplainEveryMinute: '毎分実行します。', cronExplainIntervalMinutes: '{interval} 分ごとに実行します。', cronExplainHourly: '毎時 {minute} 分に実行します。', cronExplainDaily: '毎日 {time} に実行します。',
+    cronExplainWeekdays: '月曜日から金曜日まで {time} に実行します。', cronExplainMonthly: '毎月 1 日の {time} に実行します。', cronExplainFields: '次の 5 フィールドが一致すると実行します: {fields}。', cronDayRule: '日と曜日の両方を指定した場合、標準 Linux Cron ではどちらか一方が一致すると実行します。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -213,5 +245,13 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     jwtDecoded: '已解码 JWT 内容。签名未经验证。', jwtHeader: 'Header JSON', jwtPayload: 'Payload JSON', jwtSignature: '签名片段 (未经验证)',
     jwtTemporalStatus: '按浏览器时间判断的状态', jwtStatusActive: '未过期且已达到生效时间', jwtStatusExpired: '已过期', jwtStatusNotYetValid: '尚未生效', jwtStatusUnknown: '没有可用于判断状态的时间声明',
     jwtIssuedAt: '签发时间 (iat)', jwtNotBefore: '生效时间 (nbf)', jwtExpiresAt: '过期时间 (exp)', jwtUtc: 'UTC', jwtLocal: '浏览器本地时间', jwtInvalidClaim: '无效的 NumericDate',
+    cronToolLabel: 'Cron 表达式生成器', cronNotice: '仅支持标准 Linux 五字段 Cron (分 时 日 月 星期)。不支持 Quartz 六/七字段和 L/W/# 等扩展语法。下次运行时间在浏览器中计算；夏令时切换时会按所选时区规则调整本地时间。',
+    cronFieldsLabel: '按字段生成表达式', cronMinuteLabel: '分钟 (0–59)', cronHourLabel: '小时 (0–23)', cronDayOfMonthLabel: '日期 (1–31)', cronMonthLabel: '月份 (1–12 或 JAN–DEC)', cronDayOfWeekLabel: '星期 (0–7 或 SUN–SAT)',
+    cronExpressionLabel: '五字段表达式', cronExpressionHint: '例如: */5 * * * *', cronTimeZoneLabel: '时区', cronTimeZoneHint: 'IANA 时区 (例如 Asia/Shanghai)',
+    cronBuildFromFields: '按字段生成并计算', cronGenerate: '校验并计算后续 5 次', cronOutputLabel: '下次运行时间', cronNextTimesLabel: '所选时区中的后续 5 次', cronComputed: '已校验五字段表达式并计算出后续 5 次运行时间。',
+    cronEmptyExpression: '请输入 Cron 表达式或载入示例。', cronExpressionTooLong: '表达式长度不能超过 256 个字符。', cronFiveFieldsOnly: '仅支持标准 Linux 五字段: 分 时 日 月 星期。不支持 Quartz 六/七字段。',
+    cronUnsupportedSyntax: 'MVP 不支持此 Cron 扩展语法。不能使用问号、L、W、#、@ 或 H 语法。', cronInvalidExpression: '请检查 Cron 字段值和范围。', cronInvalidTimeZone: '请输入受支持的 IANA 时区。',
+    cronExplainEveryMinute: '每分钟运行。', cronExplainIntervalMinutes: '每 {interval} 分钟运行。', cronExplainHourly: '每小时的第 {minute} 分钟运行。', cronExplainDaily: '每天 {time} 运行。',
+    cronExplainWeekdays: '周一至周五 {time} 运行。', cronExplainMonthly: '每月 1 日 {time} 运行。', cronExplainFields: '以下五个字段匹配时运行: {fields}。', cronDayRule: '同时限制日期和星期时，标准 Linux Cron 在任意一项匹配时运行。',
   },
 };

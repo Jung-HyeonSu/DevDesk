@@ -16,6 +16,7 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'uuid-generator': dynamic(() => import('./workbenches/uuid-workbench').then((module) => module.UuidWorkbench)),
   'hash-generator': dynamic(() => import('./workbenches/hash-workbench').then((module) => module.HashWorkbench)),
   'jwt-decoder': dynamic(() => import('./workbenches/jwt-workbench').then((module) => module.JwtWorkbench)),
+  'cron-generator': dynamic(() => import('./workbenches/cron-workbench').then((module) => module.CronWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {
