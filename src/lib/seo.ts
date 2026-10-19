@@ -3,6 +3,7 @@ import { localeMetadata, locales, type Locale } from '@/i18n/config';
 
 /** Override this build-time URL before publishing the exported site. */
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devdesk.example').replace(/\/$/, '');
+export const siteName = process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'DevDesk';
 
 function routePath(locale: Locale, path: string) {
   const normalized = path === '/' ? '' : `/${path.replace(/^\/+|\/+$/g, '')}`;
@@ -34,7 +35,7 @@ export function localizedMetadata(locale: Locale, path: string, title: string, d
       title,
       description,
       url: alternates.canonical,
-      siteName: 'DevDesk',
+      siteName,
       locale: localeMetadata[locale].htmlLang,
       type: 'website',
     },

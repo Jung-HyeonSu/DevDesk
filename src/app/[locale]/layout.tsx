@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { localeMetadata, locales, isLocale } from '@/i18n/config';
 import { AppShell } from '@/components/layout/app-shell';
-import { siteUrl } from '@/lib/seo';
+import { siteName, siteUrl } from '@/lib/seo';
 import '../globals.css';
 
 export const dynamicParams = false;
@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }[locale];
   return {
     metadataBase: new URL(siteUrl),
-    title: { default: 'DevDesk', template: '%s · DevDesk' },
+    title: { default: siteName, template: `%s · ${siteName}` },
     description,
-    openGraph: { siteName: 'DevDesk', locale: language.htmlLang, type: 'website' },
+    openGraph: { siteName, locale: language.htmlLang, type: 'website' },
   };
 }
 
