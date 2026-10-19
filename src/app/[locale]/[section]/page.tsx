@@ -23,8 +23,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '개인정보처리방침 초안', description: 'DevDesk가 도구 입력과 브라우저 설정을 처리하는 방식을 설명합니다.',
       paragraphs: [
         '도구 입력과 결과는 현재 브라우저에서 처리합니다. DevDesk 변환 서버, 외부 변환 API, 분석 이벤트, URL, 콘솔 로그에 입력 원문을 보내거나 기록하지 않습니다.',
-        '테마, 즐겨찾기 도구 ID, 최근 사용 도구 ID 같은 비민감한 환경설정은 브라우저 저장소에 둘 수 있습니다. 입력 텍스트와 토큰은 자동 저장하지 않습니다. 정적 호스팅 사업자는 서비스 제공 과정에서 요청 로그를 처리할 수 있습니다.',
-        '광고와 분석은 현재 비활성 상태입니다. 운영자가 이를 활성화하면 제3자 제공, 쿠키, 동의 절차와 보유 기간을 실제 설정에 맞게 이 방침에 추가해야 합니다.',
+        '테마, 즐겨찾기 도구 ID, 최근 사용 도구 ID 같은 비민감한 환경설정은 브라우저 저장소에 둘 수 있습니다. 도구 간 전달 값은 앱 메모리에 잠시 보관한 뒤 대상 도구가 한 번 읽고 제거하며 URL이나 브라우저 저장소에 기록하지 않습니다. 입력 텍스트와 토큰은 자동 저장하지 않습니다. 정적 호스팅 사업자는 서비스 제공 과정에서 요청 로그를 처리할 수 있습니다.',
+        '광고와 분석 스크립트는 현재 비활성 상태이며 분석 도구는 포함되어 있지 않습니다. AdSense 스크립트는 승인, 게시자·슬롯 ID, 지역별 동의 관리 설정을 운영자가 준비하고 빌드 설정으로 활성화한 경우에만 로드됩니다. 활성화 전에 광고 파트너, 쿠키·저장소, 동의·철회 절차, 제3자 제공과 보유 기간을 실제 설정에 맞게 이 방침에 추가해야 합니다.',
         '이 문서는 서비스 구조를 반영한 공개 전 초안이며 법률 자문이 아닙니다. 운영자는 서비스 지역의 법령에 맞춰 검토·수정해야 합니다.',
       ],
     },
@@ -57,8 +57,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'Privacy policy draft', description: 'How DevDesk handles tool inputs and browser preferences.',
       paragraphs: [
         'Tool inputs and results are processed in your browser. DevDesk does not send or record input text in a conversion server, external conversion API, analytics event, URL, or console log.',
-        'Non-sensitive preferences such as theme, favorite tool IDs, and recently used tool IDs may be stored in browser storage. Input text and tokens are not saved automatically. The static hosting provider may process request logs to deliver the site.',
-        'Advertising and analytics are currently disabled. If the operator enables them, this policy must be updated to describe the actual third parties, cookies, consent flow, and retention periods.',
+        'Non-sensitive preferences such as theme, favorite tool IDs, and recently used tool IDs may be stored in browser storage. Tool-to-tool handoffs are held briefly in application memory and consumed once by the destination; they are not written to a URL or browser storage. Inputs and tokens are not saved automatically. The static hosting provider may process request logs to deliver the site.',
+        'Advertising and analytics scripts are disabled, and this build includes no analytics integration. AdSense loads only after the operator supplies an approved publisher ID and slot, marks consent setup ready, and enables it at build time. Before activation, update this policy with the actual ad partners, cookies or storage, consent and withdrawal flow, third-party disclosures, and retention periods.',
         'This draft reflects the current service design; it is not legal advice. The operator must review and adapt it to the laws of the regions where the service is offered.',
       ],
     },
@@ -91,8 +91,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'プライバシーポリシー（案）', description: 'ツール入力とブラウザー設定の取り扱いについて説明します。',
       paragraphs: [
         'ツールの入力と結果はブラウザー内で処理します。DevDesk の変換サーバー、外部変換 API、分析イベント、URL、コンソールログに入力内容を送信・記録しません。',
-        'テーマ、お気に入りのツール ID、最近使用したツール ID など機密性のない設定をブラウザー保存領域に保存する場合があります。入力テキストやトークンは自動保存しません。静的ホスティング事業者はサイト提供のためにリクエストログを処理する場合があります。',
-        '広告と分析は現在無効です。運営者が有効にする場合、実際の第三者、Cookie、同意手順、保存期間をこのポリシーに追記してください。',
+        'テーマ、お気に入りのツール ID、最近使用したツール ID など機密性のない設定をブラウザー保存領域に保存する場合があります。ツール間の受け渡しデータはアプリのメモリに一時保持し、移動先が一度読み取った後に削除します。URL やブラウザー保存領域には記録しません。入力テキストやトークンは自動保存しません。静的ホスティング事業者はサイト提供のためにリクエストログを処理する場合があります。',
+        '広告と分析のスクリプトは無効で、分析機能は含まれていません。AdSense は、運営者が承認済みのパブリッシャー ID と広告ユニット ID、地域に応じた同意管理を用意し、ビルド設定で有効にした場合にのみ読み込まれます。有効化前に広告パートナー、Cookie・保存領域、同意と撤回の方法、第三者提供、保存期間を実際の設定に合わせて追記してください。',
         '本ページは現在のサービス構成を反映した公開前の案であり、法律上の助言ではありません。運営者は提供地域の法令に合わせて確認・修正してください。',
       ],
     },
@@ -125,8 +125,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '隐私政策草案', description: '说明 DevDesk 如何处理工具输入和浏览器偏好设置。',
       paragraphs: [
         '工具输入和结果均在浏览器中处理。DevDesk 不会将输入内容发送或记录到转换服务器、外部转换 API、分析事件、URL 或控制台日志中。',
-        '主题、收藏工具 ID、最近使用工具 ID 等非敏感偏好可能保存在浏览器存储中。输入文本和令牌不会自动保存。静态托管服务商可能会为提供网站而处理请求日志。',
-        '目前广告和分析均已关闭。如果运营者启用这些服务，必须根据实际情况补充第三方服务、Cookie、同意流程和数据保留期限。',
+        '主题、收藏工具 ID、最近使用工具 ID 等非敏感偏好可能保存在浏览器存储中。工具间传递的数据会暂存在应用内存中，由目标工具读取一次后清除，不会写入 URL 或浏览器存储。输入文本和令牌不会自动保存。静态托管服务商可能会为提供网站而处理请求日志。',
+        '目前广告和分析脚本均已关闭，且此版本不包含分析集成。只有在运营者取得 AdSense 批准、配置发布者 ID 和广告位 ID、完成所在地区的同意管理设置并在构建时启用后，才会加载 AdSense。启用前，必须按实际配置补充广告合作方、Cookie 或存储、同意与撤回流程、第三方披露和数据保留期限。',
         '本页草案反映当前服务结构，不构成法律意见。运营者应根据服务提供地区的法律进行审核和修改。',
       ],
     },
