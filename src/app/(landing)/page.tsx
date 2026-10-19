@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { locales, localeMetadata } from '@/i18n/config';
 import { absoluteUrl, siteName, siteUrl } from '@/lib/seo';
 
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 export default function LanguageLandingPage() {
   return (
     <main className="language-landing">
-      <div className="landing-mark" aria-hidden="true">D</div>
+      <Image alt="" aria-hidden="true" className="landing-mark" height={48} src="/icon.svg" width={48} />
       <p className="eyebrow">DEV DESK / BROWSER TOOLS</p>
       <h1>Developer tools, ready when you are.</h1>
       <p className="landing-copy">Choose a language to explore fast, private utilities that run in your browser.</p>

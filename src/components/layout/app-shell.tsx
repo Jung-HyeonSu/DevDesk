@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { localeMetadata, locales, type Locale } from '@/i18n/config';
@@ -211,7 +212,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
     <div className="app-shell">
       <header className="topbar">
         <div className="topbar-inner">
-          <Link className="brand" href={`/${locale}/`} onClick={closeMobileNav}><span className="brand-mark" aria-hidden="true">D</span><span>DevDesk</span></Link>
+          <Link className="brand" href={`/${locale}/`} onClick={closeMobileNav}><Image alt="" aria-hidden="true" className="brand-mark" height={32} src="/icon.svg" width={32} /><span>DevDesk</span></Link>
           <nav className="top-nav" aria-label={text.tools}>
             <Link aria-current={pathname.includes('/tools') ? 'page' : undefined} href={`/${locale}/tools/`} onClick={closeMobileNav}>{text.tools}</Link>
             <Link href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
