@@ -236,6 +236,48 @@ test('Unix timestamp converter handles explicit units, IANA zones, date input, c
   }
 });
 
+test('UUID generator creates bounded v4 batches and supports copy, download, and clear in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', 'UUID v4 생성기', '생성 개수 (1–100)', '개수를 3으로 설정', 'UUID 생성', '초기화', '결과 복사', '텍스트 다운로드', '보안 난수 UUID를 생성했습니다.', '1부터 100까지의 정수를 입력하세요.', '입력과 결과를 초기화했습니다.'],
+    ['en', 'UUID v4 generator', 'Number to generate (1–100)', 'Set count to 3', 'Generate UUIDs', 'Clear', 'Copy result', 'Download text', 'Generated cryptographically random UUIDs.', 'Enter a whole number from 1 to 100.', 'Input and output cleared.'],
+    ['ja', 'UUID v4 生成ツール', '生成数 (1–100)', '生成数を 3 に設定', 'UUID を生成', 'クリア', '結果をコピー', 'テキストをダウンロード', '暗号学的に安全な UUID を生成しました。', '1 から 100 までの整数を入力してください。', '入力と結果をクリアしました。'],
+    ['zh', 'UUID v4 生成工具', '生成数量 (1–100)', '将数量设为 3', '生成 UUID', '清空', '复制结果', '下载文本', '已生成密码学安全的 UUID。', '请输入 1 到 100 之间的整数。', '已清空输入和结果。'],
+  ];
+  const uuidV4Pattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, toolLabel, countLabel, sampleLabel, generateLabel, clearLabel, copyLabel, downloadLabel, generatedMessage, invalidCountMessage, clearedMessage] of cases) {
+    await page.goto(`/${locale}/tools/uuid-generator/`);
+    const workbench = page.locator('.uuid-workbench');
+    const count = workbench.locator('#uuid-count');
+    const output = workbench.locator('.editor-panel').locator('.cm-content');
+    await expect(workbench).toHaveAttribute('aria-label', toolLabel);
+    await expect(count).toHaveAccessibleName(countLabel);
+    await expect(page.evaluate(() => window.isSecureContext)).resolves.toBeTruthy();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(generatedMessage);
+    const values = (await output.innerText()).trim().split('\n');
+    expect(values).toHaveLength(3);
+    for (const value of values) expect(value).toMatch(uuidV4Pattern);
+    expect(new Set(values).size).toBe(3);
+
+    const copiedText = await output.innerText();
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(copiedText);
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('uuids.txt');
+
+    await count.fill('101');
+    await page.getByRole('button', { name: generateLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidCountMessage);
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(clearedMessage);
+    await expect(count).toHaveValue('1');
+    await expect(output).toHaveText(await output.getAttribute('aria-placeholder') ?? '');
+  }
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

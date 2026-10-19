@@ -18,6 +18,8 @@ export type WorkbenchMessages = {
   isoOutputLabel: string; localOutputLabel: string; timestampEmptyInput: string; invalidTimestamp: string;
   invalidDateTime: string; invalidTimeZone: string; nonexistentLocalTime: string; outOfRange: string;
   timestampConverted: string; dateConverted: string; timestampNotice: string;
+  uuidToolLabel: string; uuidCountLabel: string; uuidGenerate: string; uuidCountSample: string;
+  uuidGenerated: string; uuidInvalidCount: string; uuidUnavailable: string; uuidSecurityNote: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -48,6 +50,9 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidTimeZone: '지원되는 IANA 시간대를 입력하세요.', nonexistentLocalTime: '선택한 시간대에서 존재하지 않는 현지 시간입니다 (서머타임 전환 구간).',
     outOfRange: '날짜가 JavaScript Date 표현 범위를 벗어났습니다.', timestampConverted: '타임스탬프를 날짜와 시간으로 변환했습니다.',
     dateConverted: '날짜와 시간을 타임스탬프로 변환했습니다.', timestampNotice: '초와 밀리초 단위를 직접 선택하세요. 날짜 입력은 선택한 시간대를 따르며, 서머타임으로 존재하지 않는 현지 시간은 거부합니다. 반복되는 시간은 이른 쪽 시각을 사용합니다.',
+    uuidToolLabel: 'UUID v4 생성기', uuidCountLabel: '생성 개수 (1–100)', uuidGenerate: 'UUID 생성', uuidCountSample: '개수를 3으로 설정',
+    uuidGenerated: '보안 난수 UUID를 생성했습니다.', uuidInvalidCount: '1부터 100까지의 정수를 입력하세요.',
+    uuidUnavailable: '이 브라우저는 보안 UUID 생성 기능을 지원하지 않습니다.', uuidSecurityNote: 'crypto.randomUUID는 HTTPS 또는 localhost 같은 보안 컨텍스트가 필요합니다.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -76,6 +81,9 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidTimeZone: 'Enter a supported IANA time zone.', nonexistentLocalTime: 'That local time does not exist in the selected time zone because of a daylight-saving transition.',
     outOfRange: 'The date is outside the range supported by JavaScript Date.', timestampConverted: 'Converted the timestamp to a date and time.',
     dateConverted: 'Converted the date and time to a timestamp.', timestampNotice: 'Choose seconds or milliseconds explicitly. Date input uses the selected time zone; nonexistent local times during daylight-saving changes are rejected. Repeated times use the earlier occurrence.',
+    uuidToolLabel: 'UUID v4 generator', uuidCountLabel: 'Number to generate (1–100)', uuidGenerate: 'Generate UUIDs', uuidCountSample: 'Set count to 3',
+    uuidGenerated: 'Generated cryptographically random UUIDs.', uuidInvalidCount: 'Enter a whole number from 1 to 100.',
+    uuidUnavailable: 'This browser does not support secure UUID generation.', uuidSecurityNote: 'crypto.randomUUID requires a secure context such as HTTPS or localhost.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -104,6 +112,9 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidTimeZone: '対応する IANA タイムゾーンを入力してください。', nonexistentLocalTime: '選択したタイムゾーンに存在しない現地時刻です (夏時間の切り替え)。',
     outOfRange: '日付が JavaScript Date の表現範囲外です。', timestampConverted: 'タイムスタンプを日付と時刻に変換しました。',
     dateConverted: '日付と時刻をタイムスタンプに変換しました。', timestampNotice: '秒とミリ秒を明示的に選びます。日付入力は選択したタイムゾーンに従い、夏時間で存在しない時刻は拒否します。重複する時刻は早い方を使います。',
+    uuidToolLabel: 'UUID v4 生成ツール', uuidCountLabel: '生成数 (1–100)', uuidGenerate: 'UUID を生成', uuidCountSample: '生成数を 3 に設定',
+    uuidGenerated: '暗号学的に安全な UUID を生成しました。', uuidInvalidCount: '1 から 100 までの整数を入力してください。',
+    uuidUnavailable: 'このブラウザーは安全な UUID 生成に対応していません。', uuidSecurityNote: 'crypto.randomUUID には HTTPS や localhost などのセキュアコンテキストが必要です。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -132,5 +143,8 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     invalidTimeZone: '请输入受支持的 IANA 时区。', nonexistentLocalTime: '该时区中不存在这个本地时间 (夏令时切换时段)。',
     outOfRange: '日期超出 JavaScript Date 的表示范围。', timestampConverted: '已将时间戳转换为日期和时间。',
     dateConverted: '已将日期和时间转换为时间戳。', timestampNotice: '请明确选择秒或毫秒。日期输入使用所选时区；夏令时切换中不存在的本地时间会被拒绝。重复时间使用较早的时刻。',
+    uuidToolLabel: 'UUID v4 生成工具', uuidCountLabel: '生成数量 (1–100)', uuidGenerate: '生成 UUID', uuidCountSample: '将数量设为 3',
+    uuidGenerated: '已生成密码学安全的 UUID。', uuidInvalidCount: '请输入 1 到 100 之间的整数。',
+    uuidUnavailable: '此浏览器不支持安全的 UUID 生成。', uuidSecurityNote: 'crypto.randomUUID 需要 HTTPS 或 localhost 等安全上下文。',
   },
 };
