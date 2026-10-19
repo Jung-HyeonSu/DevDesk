@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { generateUuids, UuidToolError } from '@/lib/tools/uuid';
@@ -10,7 +11,7 @@ export function UuidWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
   const [count, setCount] = useState('1');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback(() => {
     if (!window.isSecureContext) {
@@ -25,7 +26,7 @@ export function UuidWorkbench({ locale }: { locale: Locale }) {
       setOutput('');
       setStatus({ kind: 'error', message: error instanceof UuidToolError && error.code === 'invalid-count' ? text.uuidInvalidCount : text.uuidUnavailable });
     }
-  }, [count, text]);
+  }, [count, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { hashText, HashToolError, type HashAlgorithm } from '@/lib/tools/hash';
@@ -15,7 +16,7 @@ export function HashWorkbench({ locale }: { locale: Locale }) {
   const [includeBase64, setIncludeBase64] = useState(false);
   const [output, setOutput] = useState('');
   const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback(async () => {
     if (!window.isSecureContext) {
@@ -38,7 +39,7 @@ export function HashWorkbench({ locale }: { locale: Locale }) {
     } finally {
       setBusy(false);
     }
-  }, [algorithm, includeBase64, input, text]);
+  }, [algorithm, includeBase64, input, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

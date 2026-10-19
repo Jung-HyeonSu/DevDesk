@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { formatSql, SqlToolError, type SqlDialect } from '@/lib/tools/sql';
@@ -13,7 +14,7 @@ export function SqlWorkbench({ locale }: { locale: Locale }) {
   const [input, setInput] = useState('');
   const [dialect, setDialect] = useState<SqlDialect>('generic');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback(() => {
     if (!input.trim()) {
@@ -28,7 +29,7 @@ export function SqlWorkbench({ locale }: { locale: Locale }) {
       setOutput('');
       setStatus({ kind: 'error', message: error instanceof SqlToolError && error.code === 'too-large' ? text.inputTooLarge : text.sqlFormatError });
     }
-  }, [dialect, input, text]);
+  }, [dialect, input, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

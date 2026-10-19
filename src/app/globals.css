@@ -178,6 +178,11 @@ a:focus-visible, button:focus-visible { outline: 3px solid #91a9ff; outline-offs
 .action-quiet { border-color: transparent; background: transparent; color: var(--muted); }
 .status-message { margin: 10px 0; padding: 10px 12px; border-radius: 9px; font-size: 12px; line-height: 1.55; }
 .status-success { background: #dff6ed; color: #14684c; } .status-error { background: #ffe8e7; color: #a33736; } .status-info { background: var(--soft); color: var(--accent-strong); }
+.success-confetti { position: fixed; z-index: 1000; inset: 0; overflow: hidden; pointer-events: none; }
+.success-confetti-piece { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; animation: success-confetti-burst 2.1s cubic-bezier(.15,.65,.3,1) both; }
+.success-confetti-piece.is-round { width: 9px; height: 9px; border-radius: 50%; }
+@keyframes success-confetti-burst { 0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0) scale(.65); } 10% { opacity: 1; } 100% { opacity: 0; transform: translate3d(var(--confetti-x), calc(0px - var(--confetti-rise)), 0) rotate(var(--confetti-spin)) scale(.92); } }
+@media (prefers-reduced-motion: reduce) { .success-confetti { display: none; } }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 html[data-theme="dark"] .status-success { background: #183b34; color: #82d8bd; }
 html[data-theme="dark"] .status-error { background: #472a2c; color: #ffaaa5; }

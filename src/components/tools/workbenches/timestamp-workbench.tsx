@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { formatTimestamp, localDateTimeToMilliseconds, parseUnixTimestamp, TimestampToolError, type TimestampUnit } from '@/lib/tools/timestamp';
@@ -15,7 +16,7 @@ export function TimestampWorkbench({ locale }: { locale: Locale }) {
   const [timeZone, setTimeZone] = useState('UTC');
   const [unit, setUnit] = useState<TimestampUnit>('seconds');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const resultText = useCallback((milliseconds: number) => {
     const formatted = formatTimestamp(milliseconds, timeZone, locale);
@@ -32,7 +33,7 @@ export function TimestampWorkbench({ locale }: { locale: Locale }) {
       : text.outOfRange;
     setOutput('');
     setStatus({ kind: 'error', message });
-  }, [text]);
+  }, [setStatus, text]);
 
   const runTimestamp = useCallback(() => {
     if (!timestamp.trim()) {
@@ -46,7 +47,7 @@ export function TimestampWorkbench({ locale }: { locale: Locale }) {
     } catch (error) {
       showError(error);
     }
-  }, [resultText, showError, text, timestamp, unit]);
+  }, [resultText, setStatus, showError, text, timestamp, unit]);
 
   const runDateTime = useCallback(() => {
     if (!dateTime) {
@@ -63,7 +64,7 @@ export function TimestampWorkbench({ locale }: { locale: Locale }) {
     } catch (error) {
       showError(error);
     }
-  }, [dateTime, resultText, showError, text, timeZone, unit]);
+  }, [dateTime, resultText, setStatus, showError, text, timeZone, unit]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

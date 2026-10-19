@@ -2,6 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import {
@@ -51,7 +52,7 @@ export function RegexWorkbench({ locale }: { locale: Locale }) {
   const [flags, setFlags] = useState(sampleFlags);
   const [input, setInput] = useState(sampleInput);
   const [result, setResult] = useState<RegexAnalysis | null>(null);
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
   const [pending, setPending] = useState(false);
   const workerRef = useRef<Worker | null>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -132,7 +133,7 @@ export function RegexWorkbench({ locale }: { locale: Locale }) {
       setStatus({ kind: 'error', message: text.regexWorkerError });
     });
     worker.postMessage({ id, pattern, flags, input });
-  }, [flags, input, messageForError, pattern, stopWorker, text]);
+  }, [flags, input, messageForError, pattern, setStatus, stopWorker, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

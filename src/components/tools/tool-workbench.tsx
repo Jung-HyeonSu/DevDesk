@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import type { ComponentType } from 'react';
 import type { Locale } from '@/i18n/config';
 import type { ToolSlug } from '@/data/tools';
+import { SuccessConfetti } from '@/components/tools/workbench-feedback';
 
 type WorkbenchProps = { locale: Locale };
 
@@ -25,5 +26,5 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {
   const Workbench = workbenches[slug];
   if (!Workbench) return null;
-  return <div className="tool-workbench"><Workbench locale={locale} /></div>;
+  return <div className="tool-workbench"><Workbench locale={locale} /><SuccessConfetti /></div>;
 }

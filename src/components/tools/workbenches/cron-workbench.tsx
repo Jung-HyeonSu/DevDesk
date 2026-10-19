@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { CronToolError, describeCronExpression, parseCronSchedule } from '@/lib/tools/cron';
@@ -22,7 +23,7 @@ export function CronWorkbench({ locale }: { locale: Locale }) {
   const [occurrences, setOccurrences] = useState<CronOccurrence[] | null>(null);
   const [explanation, setExplanation] = useState('');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const explain = useCallback((value: string) => {
     const description = describeCronExpression(value);
@@ -84,7 +85,7 @@ export function CronWorkbench({ locale }: { locale: Locale }) {
       };
       setStatus({ kind: 'error', message: messages[code] });
     }
-  }, [explain, locale, text, timeZone]);
+  }, [explain, locale, setStatus, text, timeZone]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

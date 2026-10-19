@@ -2,6 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { diffText, formatDiffForCopy, TextDiffError, type TextDiffResult } from '@/lib/tools/text-diff';
@@ -17,7 +18,7 @@ export function TextDiffWorkbench({ locale }: { locale: Locale }) {
   const [result, setResult] = useState<TextDiffResult | null>(null);
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
   const [view, setView] = useState<DiffView>('side-by-side');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback(() => {
     try {
@@ -37,7 +38,7 @@ export function TextDiffWorkbench({ locale }: { locale: Locale }) {
       };
       setStatus({ kind: 'error', message: messages[code] });
     }
-  }, [after, before, ignoreWhitespace, text]);
+  }, [after, before, ignoreWhitespace, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

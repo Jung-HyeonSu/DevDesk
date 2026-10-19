@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
 import { handoffMessages } from '@/i18n/handoff';
@@ -23,7 +24,7 @@ export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
   const [indent, setIndent] = useState<2 | 4>(2);
   const [input, setInput] = useState(initialHandoff?.value ?? '');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(
+  const [status, setStatus] = useWorkbenchStatus(
     initialHandoff ? { kind: 'info', message: handoffText.received } : null,
   );
 
@@ -67,7 +68,7 @@ export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
       if (mode === 'convert') setOutput('');
       setStatus({ kind: 'error', message: statusForError(error) });
     }
-  }, [convertInput, input, statusForError, text]);
+  }, [convertInput, input, setStatus, statusForError, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
 import { handoffMessages } from '@/i18n/handoff';
@@ -30,7 +31,7 @@ export function JwtWorkbench({ locale }: { locale: Locale }) {
   const [input, setInput] = useState('');
   const [decoded, setDecoded] = useState<JwtDecoded | null>(null);
   const [decodedAt, setDecodedAt] = useState<number | null>(null);
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback(() => {
     if (!input.trim()) {
@@ -51,7 +52,7 @@ export function JwtWorkbench({ locale }: { locale: Locale }) {
         message: error instanceof JwtToolError && error.code === 'too-large' ? text.inputTooLarge : text.jwtInvalidToken,
       });
     }
-  }, [input, text]);
+  }, [input, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

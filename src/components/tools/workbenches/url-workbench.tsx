@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
+import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
 import type { Locale } from '@/i18n/config';
 import { workbenchMessages } from '@/i18n/workbench';
 import { encodeUrlComponent, decodeUrlComponent, UrlToolError } from '@/lib/tools/url';
@@ -12,7 +13,7 @@ export function UrlWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useState<{ kind: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [status, setStatus] = useWorkbenchStatus(null);
 
   const run = useCallback((mode: 'encode' | 'decode') => {
     if (!input.length) {
@@ -30,7 +31,7 @@ export function UrlWorkbench({ locale }: { locale: Locale }) {
         : text.urlInvalidEscape;
       setStatus({ kind: 'error', message });
     }
-  }, [input, text]);
+  }, [input, setStatus, text]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
