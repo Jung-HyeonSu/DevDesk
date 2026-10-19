@@ -217,7 +217,7 @@ html[data-theme="dark"] .status-error { background: #472a2c; color: #ffaaa5; }
 .json-workbench { display: grid; gap: 12px; min-width: 0; }
 .workbench-settings { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
 .workbench-settings select { min-height: 36px; max-width: 100%; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
-.base64-workbench, .url-workbench, .timestamp-workbench, .uuid-workbench, .hash-workbench, .sql-workbench, .jwt-workbench, .cron-workbench, .diff-workbench, .regex-workbench { display: grid; gap: 12px; min-width: 0; }
+.base64-workbench, .url-workbench, .timestamp-workbench, .uuid-workbench, .hash-workbench, .sql-workbench, .jwt-workbench, .cron-workbench, .diff-workbench, .regex-workbench, .yaml-json-workbench { display: grid; gap: 12px; min-width: 0; }
 .jwt-results { display: grid; gap: 12px; min-width: 0; }
 .jwt-claims { display: grid; gap: 0; margin: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .jwt-claim { display: grid; grid-template-columns: minmax(150px, 0.7fr) minmax(0, 2fr); gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
@@ -274,6 +274,9 @@ html[data-theme="dark"] .regex-highlight mark { background: #735d15; color: #fff
 .regex-match-table code { white-space: pre-wrap; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .regex-match-table ul { display: grid; gap: 4px; margin: 0; padding-left: 20px; }
 .regex-index-note { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.yaml-json-settings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-width: 0; }
+.yaml-json-settings select { min-height: 42px; width: 100%; box-sizing: border-box; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
+.yaml-json-editors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-width: 0; }
 .timestamp-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .workbench-field { display: grid; min-width: 0; gap: 7px; color: var(--muted); font-size: 12px; }
 .workbench-field > span, .workbench-field > label { font-weight: 700; }
@@ -285,7 +288,8 @@ html[data-theme="dark"] .regex-highlight mark { background: #735d15; color: #fff
 .workbench-note { margin: 0; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--muted); font-size: 12px; line-height: 1.65; }
 @media (max-width: 980px) { .cron-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 720px) { .diff-input-grid { grid-template-columns: 1fr; } }
-@media (max-width: 620px) { .timestamp-fields, .jwt-claim, .regex-settings { grid-template-columns: 1fr; } .jwt-claim { gap: 4px; } .cron-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cron-next-times li { grid-template-columns: 1fr; gap: 4px; } .diff-summary { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .yaml-json-editors { grid-template-columns: 1fr; } }
+@media (max-width: 620px) { .timestamp-fields, .jwt-claim, .regex-settings, .yaml-json-settings { grid-template-columns: 1fr; } .jwt-claim { gap: 4px; } .cron-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cron-next-times li { grid-template-columns: 1fr; gap: 4px; } .diff-summary { grid-template-columns: 1fr; } }
 @media (max-width: 380px) { .cron-fields { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .content-grid { grid-template-columns: 1fr; } }
 @media (max-width: 540px) { .example-columns { grid-template-columns: 1fr; } .content-card, .faq-item, .notice-card { padding: 14px; } }

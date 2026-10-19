@@ -48,6 +48,10 @@ export type WorkbenchMessages = {
   regexTooLarge: string; regexInvalidFlags: string; regexInvalidPattern: string; regexNoMatches: string; regexResults: string;
   regexMatchCount: string; regexHighlightedText: string; regexMatches: string; regexMatch: string; regexIndex: string;
   regexCaptures: string; regexIndexHint: string; regexTruncated: string;
+  yamlToolLabel: string; yamlNotice: string; yamlDirection: string; yamlToJson: string; jsonToYaml: string;
+  yamlInputHint: string; yamlOutputHint: string; yamlConvert: string; yamlConverted: string; yamlValid: string;
+  yamlInvalidYaml: string; yamlInvalidJson: string; yamlTooDeep: string; yamlTooManyAliases: string;
+  yamlNotJsonCompatible: string; yamlErrorPosition: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -115,6 +119,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     regexInvalidFlags: '정규식 플래그가 올바르지 않습니다. JavaScript에서 지원하는 플래그를 확인하세요.', regexInvalidPattern: '정규식 패턴이 올바르지 않습니다.', regexNoMatches: '일치 항목이 없습니다.',
     regexResults: '정규식 결과', regexMatchCount: '일치 횟수', regexHighlightedText: '일치 영역 강조', regexMatches: '일치 목록', regexMatch: '일치 항목', regexIndex: '인덱스(시작–끝)', regexCaptures: '캡처 그룹',
     regexIndexHint: '인덱스는 JavaScript 문자열의 0부터 시작하는 UTF-16 위치이며 끝 인덱스는 포함하지 않습니다.', regexTruncated: '성능 보호를 위해 처음 {count}개 결과만 표시합니다.',
+    yamlToolLabel: 'YAML ↔ JSON 변환기', yamlNotice: 'YAML 1.2 Core 스키마를 사용합니다. 날짜·숫자 등 YAML 값은 JSON 타입으로 변환될 수 있습니다. 입력은 1 MB, 중첩 깊이는 100, 별칭 확장은 20회로 제한됩니다. 입력은 브라우저 안에서만 처리합니다.',
+    yamlDirection: '변환 방향', yamlToJson: 'YAML → JSON', jsonToYaml: 'JSON → YAML', yamlInputHint: '변환하거나 검증할 YAML을 입력하세요.', yamlOutputHint: '변환 결과가 여기에 표시됩니다.',
+    yamlConvert: '변환', yamlConverted: '변환을 완료했습니다.', yamlValid: '입력이 올바릅니다.', yamlInvalidYaml: 'YAML 형식이 올바르지 않습니다.', yamlInvalidJson: 'JSON 형식이 올바르지 않습니다.',
+    yamlTooDeep: '중첩 깊이는 100단계 이하여야 합니다.', yamlTooManyAliases: '별칭 확장 한도를 초과했습니다. 별칭을 줄여 다시 시도하세요.', yamlNotJsonCompatible: '이 YAML 값을 JSON으로 나타낼 수 없습니다.', yamlErrorPosition: '(줄 {line}, 열 {column})',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -180,6 +188,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     regexInvalidFlags: 'The regex flags are invalid. Check the flags supported by JavaScript.', regexInvalidPattern: 'The regular expression is invalid.', regexNoMatches: 'No matches found.',
     regexResults: 'Regex results', regexMatchCount: 'Match count', regexHighlightedText: 'Highlighted matches', regexMatches: 'Matches', regexMatch: 'Match', regexIndex: 'Index (start–end)', regexCaptures: 'Capture groups',
     regexIndexHint: 'Indexes are zero-based UTF-16 positions in the JavaScript string; the end index is exclusive.', regexTruncated: 'Showing only the first {count} matches to protect performance.',
+    yamlToolLabel: 'YAML ↔ JSON converter', yamlNotice: 'Uses the YAML 1.2 Core schema. YAML values such as dates and numbers may be converted to JSON types. Input is limited to 1 MB, nesting to 100 levels, and alias expansion to 20. Input stays in this browser.',
+    yamlDirection: 'Conversion direction', yamlToJson: 'YAML → JSON', jsonToYaml: 'JSON → YAML', yamlInputHint: 'Enter YAML to convert or validate.', yamlOutputHint: 'The converted result appears here.',
+    yamlConvert: 'Convert', yamlConverted: 'Conversion complete.', yamlValid: 'The input is valid.', yamlInvalidYaml: 'The YAML is invalid.', yamlInvalidJson: 'The JSON is invalid.',
+    yamlTooDeep: 'Nesting must be 100 levels or fewer.', yamlTooManyAliases: 'The alias expansion limit was exceeded. Reduce the aliases and try again.', yamlNotJsonCompatible: 'This YAML value cannot be represented as JSON.', yamlErrorPosition: '(line {line}, column {column})',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -245,6 +257,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     regexInvalidFlags: '正規表現のフラグが無効です。JavaScript が対応するフラグを確認してください。', regexInvalidPattern: '正規表現パターンが無効です。', regexNoMatches: '一致する項目はありません。',
     regexResults: '正規表現の結果', regexMatchCount: '一致数', regexHighlightedText: '一致箇所の強調表示', regexMatches: '一致一覧', regexMatch: '一致項目', regexIndex: 'インデックス（開始–終了）', regexCaptures: 'キャプチャグループ',
     regexIndexHint: 'インデックスは JavaScript 文字列の 0 始まり UTF-16 位置で、終了位置は含みません。', regexTruncated: '性能保護のため、最初の {count} 件のみ表示します。',
+    yamlToolLabel: 'YAML ↔ JSON 変換', yamlNotice: 'YAML 1.2 Core スキーマを使用します。日付や数値などの YAML 値は JSON 型に変換される場合があります。入力は 1 MB、ネストは 100 段階、エイリアス展開は 20 回までです。入力はブラウザー内でのみ処理します。',
+    yamlDirection: '変換方向', yamlToJson: 'YAML → JSON', jsonToYaml: 'JSON → YAML', yamlInputHint: '変換または検証する YAML を入力してください。', yamlOutputHint: '変換結果がここに表示されます。',
+    yamlConvert: '変換', yamlConverted: '変換が完了しました。', yamlValid: '入力は有効です。', yamlInvalidYaml: 'YAML の形式が無効です。', yamlInvalidJson: 'JSON の形式が無効です。',
+    yamlTooDeep: 'ネストは 100 段階以下にしてください。', yamlTooManyAliases: 'エイリアス展開の上限を超えました。エイリアスを減らして再試行してください。', yamlNotJsonCompatible: 'この YAML 値は JSON で表現できません。', yamlErrorPosition: '（{line} 行 {column} 列）',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -310,5 +326,9 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     regexInvalidFlags: '正则表达式标志无效。请检查 JavaScript 支持的标志。', regexInvalidPattern: '正则表达式模式无效。', regexNoMatches: '没有匹配项。',
     regexResults: '正则表达式结果', regexMatchCount: '匹配次数', regexHighlightedText: '高亮匹配内容', regexMatches: '匹配列表', regexMatch: '匹配项', regexIndex: '索引（开始–结束）', regexCaptures: '捕获组',
     regexIndexHint: '索引是 JavaScript 字符串中从 0 开始的 UTF-16 位置；结束索引不包含在匹配范围内。', regexTruncated: '为保护性能，仅显示前 {count} 项结果。',
+    yamlToolLabel: 'YAML ↔ JSON 转换器', yamlNotice: '使用 YAML 1.2 Core schema。日期、数字等 YAML 值可能转换为 JSON 类型。输入限制为 1 MB、嵌套最多 100 层、别名展开最多 20 次。输入仅在此浏览器中处理。',
+    yamlDirection: '转换方向', yamlToJson: 'YAML → JSON', jsonToYaml: 'JSON → YAML', yamlInputHint: '输入要转换或验证的 YAML。', yamlOutputHint: '转换结果会显示在这里。',
+    yamlConvert: '转换', yamlConverted: '转换完成。', yamlValid: '输入有效。', yamlInvalidYaml: 'YAML 格式无效。', yamlInvalidJson: 'JSON 格式无效。',
+    yamlTooDeep: '嵌套深度不能超过 100 层。', yamlTooManyAliases: '超过别名展开限制。请减少别名后重试。', yamlNotJsonCompatible: '此 YAML 值无法用 JSON 表示。', yamlErrorPosition: '（第 {line} 行，第 {column} 列）',
   },
 };

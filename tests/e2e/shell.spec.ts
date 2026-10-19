@@ -322,6 +322,64 @@ test('Regex tester highlights matches and recovers from a terminated Worker in e
   await expect(workbench.locator('.regex-match-table tbody tr')).toHaveCount(1);
 });
 
+test('YAML and JSON converter formats, validates, copies, and downloads in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '변환 방향', '들여쓰기', '검증', '변환', '결과 복사', '텍스트 다운로드', '초기화', 'YAML 1.2 Core', '변환을 완료했습니다.', '입력이 올바릅니다.', 'YAML 형식이 올바르지 않습니다.', 'JSON 형식이 올바르지 않습니다.'],
+    ['en', 'Load sample', 'Conversion direction', 'Indentation', 'Validate', 'Convert', 'Copy result', 'Download text', 'Clear', 'YAML 1.2 Core', 'Conversion complete.', 'The input is valid.', 'The YAML is invalid.', 'The JSON is invalid.'],
+    ['ja', 'サンプルを読み込む', '変換方向', 'インデント', '検証', '変換', '結果をコピー', 'テキストをダウンロード', 'クリア', 'YAML 1.2 Core', '変換が完了しました。', '入力は有効です。', 'YAML の形式が無効です。', 'JSON の形式が無効です。'],
+    ['zh', '载入示例', '转换方向', '缩进', '校验', '转换', '复制结果', '下载文本', '清空', 'YAML 1.2 Core', '转换完成。', '输入有效。', 'YAML 格式无效。', 'JSON 格式无效。'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, directionLabel, indentLabel, validateLabel, convertLabel, copyLabel, downloadLabel, clearLabel, noticeText, convertedMessage, validMessage, invalidYamlMessage, invalidJsonMessage] of cases) {
+    await page.goto('/' + locale + '/tools/yaml-json/');
+    const workbench = page.locator('.yaml-json-workbench');
+    const editors = workbench.locator('.editor-panel');
+    const direction = workbench.getByLabel(directionLabel);
+    const replaceInput = async (value: string) => {
+      const content = editors.nth(0).locator('.cm-content');
+      await content.click();
+      await content.press('ControlOrMeta+A');
+      await content.pressSequentially(value);
+    };
+    await expect(workbench.locator('.workbench-note')).toContainText(noticeText);
+    await expect(workbench.getByLabel(indentLabel)).toBeVisible();
+    await expect(editors.nth(0).locator('.cm-content')).toBeVisible();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: convertLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(convertedMessage);
+    await expect(editors.nth(1)).toContainText('"name": "DevDesk"');
+    await page.getByRole('button', { name: validateLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(validMessage);
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('"name": "DevDesk"');
+    const jsonDownload = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await jsonDownload).suggestedFilename()).toBe('converted.json');
+
+    await direction.selectOption('json-to-yaml');
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: convertLabel, exact: true }).click();
+    await expect(editors.nth(1)).toContainText('name: DevDesk');
+    const yamlDownload = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await yamlDownload).suggestedFilename()).toBe('converted.yaml');
+
+    await direction.selectOption('yaml-to-json');
+    await replaceInput('name: first\nname: second');
+    await expect(editors.nth(0).locator('.cm-content')).toContainText('name: first');
+    await expect(editors.nth(0).locator('.cm-content')).toContainText('name: second');
+    await expect(workbench.locator('.status-message')).toHaveCount(0);
+    await page.getByRole('button', { name: validateLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidYamlMessage);
+    await direction.selectOption('json-to-yaml');
+    await replaceInput('{broken');
+    await page.getByRole('button', { name: validateLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidJsonMessage);
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toBeVisible();
+  }
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],
