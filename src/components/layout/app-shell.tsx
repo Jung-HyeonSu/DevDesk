@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { localeMetadata, locales, type Locale } from '@/i18n/config';
 import { shellMessages } from '@/i18n/shell';
-import { toolById, toolRegistry, type ToolCategory } from '@/data/tools';
+import { toolById, toolMatchesSearch, toolRegistry, type ToolCategory } from '@/data/tools';
 import { ToolHandoffProvider, useToolHandoff } from '@/components/tools/tool-handoff';
 
 type Preferences = {
@@ -97,10 +97,7 @@ function SearchDialog({ locale, onClose }: { locale: Locale; onClose: () => void
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const matches = toolRegistry.filter((tool) => {
-    const haystack = [tool.name[locale], ...tool.keywords[locale], tool.slug, tool.id].join(' ').toLocaleLowerCase(locale);
-    return haystack.includes(query.trim().toLocaleLowerCase(locale));
-  });
+  const matches = toolRegistry.filter((tool) => toolMatchesSearch(tool, query, locale));
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toolById, toolBySlug, toolRegistry } from '@/data/tools';
+import { toolById, toolBySlug, toolMatchesSearch, toolRegistry } from '@/data/tools';
 import { locales } from '@/i18n/config';
 
 describe('tool registry', () => {
@@ -25,5 +25,26 @@ describe('tool registry', () => {
       for (const relatedId of tool.relatedToolIds) expect(ids.has(relatedId)).toBe(true);
     }
     expect(toolById('yaml-json')?.category).toBe('data');
+  });
+
+  it('searches tool names and feature terms across languages', () => {
+    const jsonFormatter = toolById('json-formatter')!;
+    expect(toolMatchesSearch(jsonFormatter, 'JSON 포맷터', 'ko')).toBe(true);
+    expect(toolMatchesSearch(jsonFormatter, 'JSON formatter', 'ko')).toBe(true);
+    expect(toolMatchesSearch(jsonFormatter, 'validate', 'ko')).toBe(true);
+
+    const cronGenerator = toolById('cron-generator')!;
+    expect(toolMatchesSearch(cronGenerator, '예약 작업', 'en')).toBe(true);
+    expect(toolMatchesSearch(cronGenerator, 'crontab', 'ko')).toBe(true);
+  });
+
+  it('finds Base64 and URL tools independently by encoder and decoder terms', () => {
+    for (const id of ['base64', 'url-encoder'] as const) {
+      const tool = toolById(id)!;
+      expect(toolMatchesSearch(tool, '인코더', 'ko')).toBe(true);
+      expect(toolMatchesSearch(tool, '디코더', 'ko')).toBe(true);
+      expect(toolMatchesSearch(tool, 'encoder', 'en')).toBe(true);
+      expect(toolMatchesSearch(tool, 'decoder', 'en')).toBe(true);
+    }
   });
 });

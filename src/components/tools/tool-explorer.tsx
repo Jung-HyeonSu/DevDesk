@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { toolRegistry, type ToolCategory } from '@/data/tools';
+import { toolMatchesSearch, toolRegistry, type ToolCategory } from '@/data/tools';
 import { shellMessages } from '@/i18n/shell';
 import type { Locale } from '@/i18n/config';
 import { ToolCard } from './tool-card';
@@ -13,9 +13,7 @@ export function ToolExplorer({ locale }: { locale: Locale }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<ToolCategory | 'all'>('all');
   const filtered = useMemo(() => toolRegistry.filter((tool) => {
-    const search = query.trim().toLocaleLowerCase(locale);
-    const content = [tool.name[locale], ...tool.keywords[locale], tool.id, tool.slug].join(' ').toLocaleLowerCase(locale);
-    return (category === 'all' || tool.category === category) && (!search || content.includes(search));
+    return (category === 'all' || tool.category === category) && toolMatchesSearch(tool, query, locale);
   }), [category, locale, query]);
 
   return (
