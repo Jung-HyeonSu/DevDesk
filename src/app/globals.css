@@ -5,7 +5,7 @@
   --canvas: #f5f7fb;
   --surface: #ffffff;
   --ink: #152338;
-  --muted: #64738a;
+  --muted: #5f6d82;
   --line: #dfe6ef;
   --accent: #3459d4;
   --accent-strong: #2547b9;
@@ -102,6 +102,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid #91a9ff; outline-offs
 .tool-glyph.large { width: 56px; height: 56px; border-radius: 16px; font-size: 15px; }
 .sidebar-tool-link { min-width: 0; }
 .sidebar-tool-link span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.devdesk-codemirror .cm-content .cm-placeholder { color: var(--muted); opacity: 1; }
 .main-column { display: flex; min-width: 0; flex-direction: column; }
 .page-content { width: min(100%, 1260px); min-height: calc(100vh - 145px); flex: 1; margin: 0 auto; padding: 43px clamp(24px, 4vw, 60px) 36px; }
 .app-footer { display: flex; min-height: 72px; align-items: center; justify-content: space-between; gap: 18px; padding: 16px clamp(24px, 4vw, 60px); border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }

@@ -74,11 +74,14 @@ export function CodeEditor({
 
   const extensions = useMemo<Extension[]>(() => {
     const contentAttributes = EditorView.contentAttributes.of({
+      role: 'textbox',
+      'aria-multiline': 'true',
+      ...(readOnly ? { 'aria-readonly': 'true' } : {}),
       'aria-label': label,
       ...(labelledBy ? { 'aria-labelledby': labelledBy } : {}),
     });
     return [EditorView.lineWrapping, contentAttributes, ...(languageExtension ? [languageExtension] : [])];
-  }, [label, labelledBy, languageExtension]);
+  }, [label, labelledBy, languageExtension, readOnly]);
 
   const props: ReactCodeMirrorProps = {
     'aria-label': label,

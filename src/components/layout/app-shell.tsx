@@ -211,13 +211,13 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
     <div className="app-shell">
       <header className="topbar">
         <div className="topbar-inner">
-          <Link className="brand" href={`/${locale}/`} aria-label="DevDesk home" onClick={closeMobileNav}><span className="brand-mark">D</span><span>DevDesk</span></Link>
+          <Link className="brand" href={`/${locale}/`} onClick={closeMobileNav}><span className="brand-mark" aria-hidden="true">D</span><span>DevDesk</span></Link>
           <nav className="top-nav" aria-label={text.tools}>
             <Link aria-current={pathname.includes('/tools') ? 'page' : undefined} href={`/${locale}/tools/`} onClick={closeMobileNav}>{text.tools}</Link>
             <Link href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
           </nav>
           <div className="top-actions">
-            <button aria-label={text.search} className="search-trigger" onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{text.search}</span><kbd>⌘ K</kbd></button>
+            <button aria-label={`${text.search} ⌘ K`} className="search-trigger" onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
             <label className="visually-hidden" htmlFor="locale-select">{text.language}</label>
             <select className="locale-select" id="locale-select" onChange={(event) => changeLocale(event.target.value as Locale)} value={locale}>
               {locales.map((item) => <option key={item} value={item}>{localeMetadata[item].label}</option>)}
