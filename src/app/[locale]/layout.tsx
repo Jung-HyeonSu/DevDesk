@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import { localeMetadata, locales, isLocale } from '@/i18n/config';
 import { AppShell } from '@/components/layout/app-shell';
 import { siteName, siteUrl } from '@/lib/seo';
@@ -38,7 +39,16 @@ export default async function LocaleRootLayout({
 
   return (
     <html lang={localeMetadata[locale].htmlLang}>
-      <body><AppShell locale={locale}>{children}</AppShell></body>
+      <body>
+        <Script
+          id="google-adsense"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9509272737484634"
+          async
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        <AppShell locale={locale}>{children}</AppShell>
+      </body>
     </html>
   );
 }
