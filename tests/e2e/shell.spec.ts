@@ -59,6 +59,25 @@ test('localized tool and guide pages render their own static SEO metadata and us
   await expect(page.locator('.faq-item')).toHaveCount(3);
 });
 
+test('ads remain absent and tool inputs stay on the local origin by default', async ({ page }) => {
+  const externalRequests: string[] = [];
+  const localOrigin = 'http://127.0.0.1:4173';
+  page.on('request', (request) => {
+    if (new URL(request.url()).origin !== localOrigin) {
+      externalRequests.push(request.url());
+    }
+  });
+
+  await page.goto('/en/tools/json-formatter/');
+  await expect(page.locator('.ad-slot, script[src*="googlesyndication.com"]')).toHaveCount(0);
+  await page.getByRole('textbox', { name: 'Input' }).fill('{"private":"browser-only"}');
+  await page.getByRole('button', { name: 'Beautify', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Output' })).toContainText('browser-only');
+  expect(externalRequests).toEqual([]);
+  expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('browser-only');
+  expect(page.url()).not.toContain('browser-only');
+});
+
 test('SQL formatter supports the displayed dialects, formatting, copy, download, and safe parser errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', 'SQL 방언', '일반 SQL', 'MariaDB', 'Oracle PL/SQL', '예제 불러오기', 'SQL 정렬', '결과 복사', '텍스트 다운로드', 'SQL 형식을 정리했습니다.', '이 방언으로 SQL을 정리하지 못했습니다.'],

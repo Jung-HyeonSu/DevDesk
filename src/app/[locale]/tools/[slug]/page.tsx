@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { AdSlot } from '@/components/ads/ad-slot';
 import { ToolFavoriteToggle } from '@/components/tools/tool-card';
 import { ToolWorkbench } from '@/components/tools/tool-workbench';
 import { toolContent, toolExamples } from '@/data/tool-content';
@@ -45,6 +46,7 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
       <div className="tool-title-row"><h1>{tool.name[locale]}</h1><ToolFavoriteToggle locale={locale} tool={tool} /></div>
       <p className="tool-intro">{content.description}</p>
       <ToolWorkbench locale={locale} slug={tool.slug} />
+      <AdSlot locale={locale} placement="tool-below" />
 
       <section className="content-section" aria-labelledby="examples-heading">
         <h2 id="examples-heading">{labels.examples}</h2>
