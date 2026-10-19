@@ -65,13 +65,13 @@ Lighthouse 13.5.0의 로컬 정적 미리보기 결과:
 | 4 — 고급 도구 | `861949f feat(sql): add dialect-aware formatting`; `58e04ff feat(jwt): add JWT decoder`; `7338867 feat(cron): add Linux cron generator`; `d81905c feat(diff): add line-based text comparison`; `86c16d9 feat(regex): add worker-backed regex tester`; `f7b1f9d feat(yaml): add safe YAML and JSON conversion` |
 | 5 — 수익화·QA·출시 | `8d792c2 feat(ads): add disabled-first AdSense slots`; `a05a28e feat(handoff): add in-memory tool transfers`; `dd99ca6 fix(a11y): improve editor semantics and contrast`; `43fd8d5 feat(seo): support build-time site naming`; `8de5a50 docs(deploy): document static hosting and ads`; `079dc59 docs(privacy): document actual data handling`; `7f4df7d test(e2e): cover policy and mobile QA` |
 
-각 Phase 완료 때 현재 체크아웃된 `main` 브랜치에서 기존 `origin`으로 Push를 시도했다. Phase 1–4는 모두, 그리고 Phase 5는 `7f4df7d`까지 포함해 시도했으나 GitHub HTTPS 인증을 읽지 못해 실패했다. 오류는 다음과 같다.
+각 Phase 완료 때 현재 체크아웃된 `main` 브랜치에서 기존 `origin`으로 Push를 시도했다. Phase 1–4는 모두 실패했다. Phase 5는 기능 커밋을 포함한 `7f4df7d`에서 시도했고, 보고서 커밋 `f137625` 이후 다시 시도했으나 두 번 모두 GitHub HTTPS 인증을 읽지 못했다. 오류는 다음과 같다.
 
 ```text
 fatal: could not read Username for 'https://github.com': Device not configured
 ```
 
-성공한 원격 Push는 없다. 마지막 시도 당시 `origin/main`은 갱신되지 않았으며, 사용자 인증이 가능한 환경에서 `git push`를 다시 실행해야 한다. 강제 Push나 원격 기록 변경은 사용하지 않았다.
+성공한 원격 Push는 없다. 마지막 시도 당시 `origin/main`은 갱신되지 않았다. 인증 정보가 연결된 환경에서 `git push`를 다시 실행해야 현재 로컬 커밋 전체가 원격에 반영된다. 강제 Push나 원격 기록 변경은 사용하지 않았다.
 
 시작 시점부터 staged 상태였던 `GOAL.md`와 untracked `.idea/`는 이 작업 커밋에 포함하지 않았다. 빌드 산출물과 테스트 결과물도 커밋하지 않았다.
 
