@@ -39,6 +39,10 @@ export type WorkbenchMessages = {
   cronInvalidExpression: string; cronInvalidTimeZone: string; cronExplainEveryMinute: string;
   cronExplainIntervalMinutes: string; cronExplainHourly: string; cronExplainDaily: string; cronExplainWeekdays: string;
   cronExplainMonthly: string; cronExplainFields: string; cronDayRule: string;
+  diffToolLabel: string; diffNotice: string; diffBeforeLabel: string; diffAfterLabel: string; diffBeforeHint: string;
+  diffAfterHint: string; diffIgnoreWhitespace: string; diffViewLabel: string; diffSideBySide: string; diffUnified: string;
+  diffCompare: string; diffCompared: string; diffSummary: string; diffAdded: string; diffRemoved: string; diffChanged: string;
+  diffNoChanges: string; diffTooLarge: string; diffTooManyLines: string; diffTooComplex: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -94,6 +98,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     cronUnsupportedSyntax: '이 MVP에서 지원하지 않는 Cron 확장 문법입니다. 물음표, L, W, #, @, H 문법은 사용할 수 없습니다.', cronInvalidExpression: 'Cron 필드 값이나 범위를 확인하세요.', cronInvalidTimeZone: '지원되는 IANA 시간대를 입력하세요.',
     cronExplainEveryMinute: '매분 실행합니다.', cronExplainIntervalMinutes: '{interval}분마다 실행합니다.', cronExplainHourly: '매시간 {minute}분에 실행합니다.', cronExplainDaily: '매일 {time}에 실행합니다.',
     cronExplainWeekdays: '월요일부터 금요일까지 {time}에 실행합니다.', cronExplainMonthly: '매월 1일 {time}에 실행합니다.', cronExplainFields: '다음 5개 필드가 일치할 때 실행합니다: {fields}.', cronDayRule: '일과 요일을 모두 제한하면 표준 Linux Cron 규칙에 따라 둘 중 하나만 일치해도 실행됩니다.',
+    diffToolLabel: '텍스트 비교', diffNotice: '줄 단위로 비교하며 입력 합계는 1 MB, 각 입력은 5,000줄로 제한됩니다. 계산량이 많으면 안전하게 중단합니다. 입력은 브라우저 안에서만 처리합니다.',
+    diffBeforeLabel: '원본', diffAfterLabel: '변경 후', diffBeforeHint: '비교할 원본 텍스트를 입력하세요.', diffAfterHint: '비교할 변경 텍스트를 입력하세요.',
+    diffIgnoreWhitespace: '줄 앞뒤 공백 차이 무시', diffViewLabel: '차이 표시 방식', diffSideBySide: '나란히 보기', diffUnified: '통합 보기', diffCompare: '비교', diffCompared: '텍스트 비교를 완료했습니다.',
+    diffSummary: '변경 요약', diffAdded: '추가된 줄', diffRemoved: '삭제된 줄', diffChanged: '변경된 줄', diffNoChanges: '두 텍스트에 차이가 없습니다.',
+    diffTooLarge: '두 입력의 합계는 1 MB 이하여야 합니다.', diffTooManyLines: '각 입력은 5,000줄 이하여야 합니다.', diffTooComplex: '계산량이 너무 많아 비교를 중단했습니다. 입력을 줄이거나 나누어 비교하세요.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -147,6 +156,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     cronUnsupportedSyntax: 'This cron extension is not supported in the MVP. Question marks, L, W, #, @, and H syntax are excluded.', cronInvalidExpression: 'Check the cron field values and ranges.', cronInvalidTimeZone: 'Enter a supported IANA time zone.',
     cronExplainEveryMinute: 'Runs every minute.', cronExplainIntervalMinutes: 'Runs every {interval} minutes.', cronExplainHourly: 'Runs at minute {minute} of every hour.', cronExplainDaily: 'Runs every day at {time}.',
     cronExplainWeekdays: 'Runs Monday through Friday at {time}.', cronExplainMonthly: 'Runs on the first day of each month at {time}.', cronExplainFields: 'Runs when these five field values match: {fields}.', cronDayRule: 'When both day-of-month and day-of-week are restricted, standard Linux cron runs when either one matches.',
+    diffToolLabel: 'Text diff', diffNotice: 'Compares line by line. Combined input is limited to 1 MB and each side to 5,000 lines. Expensive comparisons stop safely. Input stays in this browser.',
+    diffBeforeLabel: 'Original', diffAfterLabel: 'Modified', diffBeforeHint: 'Enter the original text to compare.', diffAfterHint: 'Enter the modified text to compare.',
+    diffIgnoreWhitespace: 'Ignore leading and trailing whitespace changes', diffViewLabel: 'Diff view', diffSideBySide: 'Side by side', diffUnified: 'Unified', diffCompare: 'Compare text', diffCompared: 'Finished comparing the text.',
+    diffSummary: 'Change summary', diffAdded: 'Added lines', diffRemoved: 'Removed lines', diffChanged: 'Changed lines', diffNoChanges: 'The texts are identical.',
+    diffTooLarge: 'The combined input must be 1 MB or less.', diffTooManyLines: 'Each input must have 5,000 lines or fewer.', diffTooComplex: 'The comparison was stopped because it would take too much work. Reduce or split the inputs.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -200,6 +214,11 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     cronUnsupportedSyntax: 'この MVP では対応していない Cron 拡張構文です。?, L, W, #, @, H 構文は使用できません。', cronInvalidExpression: 'Cron フィールドの値と範囲を確認してください。', cronInvalidTimeZone: '対応する IANA タイムゾーンを入力してください。',
     cronExplainEveryMinute: '毎分実行します。', cronExplainIntervalMinutes: '{interval} 分ごとに実行します。', cronExplainHourly: '毎時 {minute} 分に実行します。', cronExplainDaily: '毎日 {time} に実行します。',
     cronExplainWeekdays: '月曜日から金曜日まで {time} に実行します。', cronExplainMonthly: '毎月 1 日の {time} に実行します。', cronExplainFields: '次の 5 フィールドが一致すると実行します: {fields}。', cronDayRule: '日と曜日の両方を指定した場合、標準 Linux Cron ではどちらか一方が一致すると実行します。',
+    diffToolLabel: 'テキスト差分', diffNotice: '行単位で比較します。入力合計は 1 MB、各入力は 5,000 行までです。計算量が多い場合は安全に中断します。入力はブラウザー内でのみ処理します。',
+    diffBeforeLabel: '変更前', diffAfterLabel: '変更後', diffBeforeHint: '比較する元のテキストを入力します。', diffAfterHint: '比較する変更後のテキストを入力します。',
+    diffIgnoreWhitespace: '行頭と行末の空白の違いを無視', diffViewLabel: '差分表示', diffSideBySide: '左右に並べる', diffUnified: '統合表示', diffCompare: 'テキストを比較', diffCompared: 'テキストを比較しました。',
+    diffSummary: '変更の概要', diffAdded: '追加行', diffRemoved: '削除行', diffChanged: '変更行', diffNoChanges: '2 つのテキストに差分はありません。',
+    diffTooLarge: '2 つの入力の合計を 1 MB 以下にしてください。', diffTooManyLines: '各入力は 5,000 行以下にしてください。', diffTooComplex: '計算量が多いため比較を中断しました。入力を小さくするか分割してください。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -253,5 +272,10 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     cronUnsupportedSyntax: 'MVP 不支持此 Cron 扩展语法。不能使用问号、L、W、#、@ 或 H 语法。', cronInvalidExpression: '请检查 Cron 字段值和范围。', cronInvalidTimeZone: '请输入受支持的 IANA 时区。',
     cronExplainEveryMinute: '每分钟运行。', cronExplainIntervalMinutes: '每 {interval} 分钟运行。', cronExplainHourly: '每小时的第 {minute} 分钟运行。', cronExplainDaily: '每天 {time} 运行。',
     cronExplainWeekdays: '周一至周五 {time} 运行。', cronExplainMonthly: '每月 1 日 {time} 运行。', cronExplainFields: '以下五个字段匹配时运行: {fields}。', cronDayRule: '同时限制日期和星期时，标准 Linux Cron 在任意一项匹配时运行。',
+    diffToolLabel: '文本差异对比', diffNotice: '按行比较。两侧输入总计不超过 1 MB，每侧不超过 5,000 行。计算量过大时会安全停止。输入仅在此浏览器中处理。',
+    diffBeforeLabel: '原文', diffAfterLabel: '修改后', diffBeforeHint: '输入原始文本。', diffAfterHint: '输入修改后的文本。',
+    diffIgnoreWhitespace: '忽略行首和行尾空格差异', diffViewLabel: '差异视图', diffSideBySide: '并排显示', diffUnified: '统一显示', diffCompare: '比较文本', diffCompared: '文本比较完成。',
+    diffSummary: '变更摘要', diffAdded: '新增行', diffRemoved: '删除行', diffChanged: '修改行', diffNoChanges: '两个文本没有差异。',
+    diffTooLarge: '两侧输入总计不能超过 1 MB。', diffTooManyLines: '每侧输入不能超过 5,000 行。', diffTooComplex: '比较计算量过大，已停止。请缩小或拆分输入。',
   },
 };

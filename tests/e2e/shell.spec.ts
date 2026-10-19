@@ -188,6 +188,77 @@ test('Cron generator builds and validates Linux five-field schedules in every lo
   }
 });
 
+test('Text diff shows line changes safely in side-by-side and unified views in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '원본', '변경 후', '비교', '변경 요약', '추가된 줄', '삭제된 줄', '변경된 줄', '통합 보기', '나란히 보기', '결과 복사', '텍스트 다운로드', '초기화', '텍스트 비교를 완료했습니다.', '줄 앞뒤 공백 차이 무시', '두 텍스트에 차이가 없습니다.', '입력과 결과를 초기화했습니다.', '비교할 원본 텍스트를 입력하세요.'],
+    ['en', 'Load sample', 'Original', 'Modified', 'Compare text', 'Change summary', 'Added lines', 'Removed lines', 'Changed lines', 'Unified', 'Side by side', 'Copy result', 'Download text', 'Clear', 'Finished comparing the text.', 'Ignore leading and trailing whitespace changes', 'The texts are identical.', 'Input and output cleared.', 'Enter the original text to compare.'],
+    ['ja', 'サンプルを読み込む', '変更前', '変更後', 'テキストを比較', '変更の概要', '追加行', '削除行', '変更行', '統合表示', '左右に並べる', '結果をコピー', 'テキストをダウンロード', 'クリア', 'テキストを比較しました。', '行頭と行末の空白の違いを無視', '2 つのテキストに差分はありません。', '入力と結果をクリアしました。', '比較する元のテキストを入力します。'],
+    ['zh', '载入示例', '原文', '修改后', '比较文本', '变更摘要', '新增行', '删除行', '修改行', '统一显示', '并排显示', '复制结果', '下载文本', '清空', '文本比较完成。', '忽略行首和行尾空格差异', '两个文本没有差异。', '已清空输入和结果。', '输入原始文本。'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, beforeLabel, afterLabel, compareLabel, summaryLabel, addedLabel, removedLabel, changedLabel, unifiedLabel, sideBySideLabel, copyLabel, downloadLabel, clearLabel, comparedMessage, ignoreLabel, noChangesMessage, clearedMessage, beforeHint] of cases) {
+    await page.goto('/' + locale + '/tools/text-diff/');
+    const workbench = page.locator('.diff-workbench');
+    const editors = workbench.locator('.editor-panel');
+    const replaceEditorText = async (index: number, value: string) => {
+      const content = editors.nth(index).locator('.cm-content');
+      await content.click();
+      await content.press('ControlOrMeta+A');
+      await content.pressSequentially(value);
+    };
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await expect(editors.nth(0)).toContainText(beforeLabel);
+    await expect(editors.nth(1)).toContainText(afterLabel);
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: compareLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(comparedMessage);
+    const summary = workbench.locator('.diff-summary');
+    await expect(workbench.locator('.diff-results').getByRole('heading', { name: summaryLabel })).toBeVisible();
+    await expect(summary).toContainText(addedLabel);
+    await expect(summary).toContainText(removedLabel);
+    await expect(summary).toContainText(changedLabel);
+    await expect(summary.locator('dd').nth(0)).toHaveText('1');
+    await expect(summary.locator('dd').nth(1)).toHaveText('0');
+    await expect(summary.locator('dd').nth(2)).toHaveText('1');
+    await expect(workbench.locator('.diff-row-added')).toContainText('🌏');
+    await expect(workbench.locator('.diff-row-changed')).toContainText('draft');
+    await expect(workbench.locator('.diff-table tr')).toHaveCount(5);
+
+    await page.getByRole('tab', { name: unifiedLabel, exact: true }).click();
+    await expect(page.getByRole('tab', { name: unifiedLabel, exact: true })).toHaveAttribute('aria-selected', 'true');
+    await expect(workbench.locator('.diff-unified-row')).toHaveCount(5);
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('+ 🌏');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('text-diff.txt');
+
+    await replaceEditorText(0, '  spaced  ');
+    await replaceEditorText(1, 'spaced');
+    await expect(editors.nth(0).locator('.cm-content')).toContainText('  spaced  ');
+    await expect(editors.nth(1).locator('.cm-content')).toContainText('spaced');
+    await expect(editors.nth(0).locator('.editor-footer span').first()).toContainText('10');
+    await expect(editors.nth(1).locator('.editor-footer span').first()).toContainText('6');
+    const ignoreWhitespace = page.getByLabel(ignoreLabel);
+    await ignoreWhitespace.check();
+    await expect(ignoreWhitespace).toBeChecked();
+    await page.getByRole('button', { name: compareLabel, exact: true }).click();
+    await expect(summary.locator('dd').nth(2)).toHaveText('0');
+    await expect(workbench.getByRole('status')).toContainText(noChangesMessage);
+
+    await page.getByRole('tab', { name: sideBySideLabel, exact: true }).click();
+    await replaceEditorText(0, '<script>alert(1)</script>');
+    await replaceEditorText(1, '<img src=x onerror=alert(1)>');
+    await page.getByRole('button', { name: compareLabel, exact: true }).click();
+    await expect(workbench.locator('.diff-table')).toContainText('<script>');
+    await expect(workbench.locator('.diff-table img')).toHaveCount(0);
+
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(clearedMessage);
+    await expect(editors.nth(0).locator('.cm-content')).toHaveText(beforeHint);
+  }
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],
