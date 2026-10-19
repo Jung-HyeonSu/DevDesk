@@ -38,6 +38,27 @@ test('tool search, favorites, theme, and locale switching preserve the selected 
   await expect(page.getByRole('heading', { name: 'JSONフォーマッター' })).toBeVisible();
 });
 
+test('localized tool and guide pages render their own static SEO metadata and useful content', async ({ page }) => {
+  for (const [locale, htmlLang, alternate] of [['ko', 'ko', 'ko'], ['en', 'en', 'en'], ['ja', 'ja', 'ja'], ['zh', 'zh-CN', 'zh-CN']]) {
+    await page.goto(`/${locale}/tools/json-formatter/`);
+    await expect(page.locator('html')).toHaveAttribute('lang', htmlLang);
+    await expect(page).toHaveTitle(/JSON|JSONフォーマッター|格式化工具/);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.+/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`/${locale}/tools/json-formatter/$`));
+    await expect(page.locator(`link[rel="alternate"][hreflang="${alternate}"]`)).toHaveAttribute('href', new RegExp(`/${locale}/tools/json-formatter/$`));
+    await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', /\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('.content-card')).toHaveCount(2);
+    await expect(page.locator('.faq-item')).toHaveCount(3);
+    await expect(page.locator('main a[href$="/guides/json-formatter/"]')).toBeVisible();
+  }
+
+  await page.goto('/zh/guides/jwt-decoder/');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('JWT');
+  await expect(page.locator('.faq-item')).toHaveCount(3);
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

@@ -1,40 +1,150 @@
-import Link from 'next/link';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale, locales, type Locale } from '@/i18n/config';
+import { localizedMetadata } from '@/lib/seo';
 
 export const dynamicParams = false;
 
-const sections = ['guides', 'about', 'privacy', 'terms', 'contact'] as const;
+const sections = ['about', 'privacy', 'terms', 'contact'] as const;
 type Section = (typeof sections)[number];
+type SectionCopy = { title: string; description: string; paragraphs: string[] };
 
-const sectionCopy: Record<Locale, Record<Section, { title: string; body: string }>> = {
+const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
   ko: {
-    guides: { title: '개발 도구 가이드', body: '각 도구의 입력 형식, 안전한 사용법, 자주 생기는 오류를 설명하는 가이드를 제공합니다.' },
-    about: { title: 'DevDesk 소개', body: 'DevDesk는 개발자가 자주 쓰는 작은 변환·검증 작업을 브라우저에서 간단히 처리하도록 만든 무료 도구 모음입니다.' },
-    privacy: { title: '개인정보처리방침', body: '도구 입력은 브라우저 안에서 처리되며 DevDesk의 변환 서버로 전송되지 않습니다. 정적 호스팅 과정에서 기본 접속 로그가 생길 수 있고, 광고·분석은 현재 비활성 상태입니다.' },
-    terms: { title: '이용약관 및 면책', body: '도구 결과는 참고용이며 데이터베이스 쿼리의 실행이나 보안 검증을 대신하지 않습니다. 중요한 데이터는 결과를 별도로 검토한 뒤 사용하세요.' },
-    contact: { title: '문의', body: '운영자 연락처가 아직 설정되지 않았습니다. 공개 전에 실제 문의 주소와 개인정보 안내를 추가해야 합니다.' },
+    about: {
+      title: 'DevDesk 소개', description: '브라우저에서 안전하게 사용할 수 있는 무료 개발 도구 모음입니다.',
+      paragraphs: [
+        'DevDesk는 개발자가 자주 하는 포맷팅, 인코딩, 시간 변환, 텍스트 비교 작업을 빠르게 처리하는 정적 웹 도구 모음입니다. 계정이나 백엔드 변환 API 없이 브라우저에서 계산합니다.',
+        '도구별 가이드에는 입력 형식, 사용 절차, 경계 조건과 제한을 적습니다. 결과는 편의를 위한 것이므로 데이터베이스 실행이나 보안 검증처럼 별도 확인이 필요한 작업을 대신하지 않습니다.',
+        '현재 광고와 분석은 기본 비활성화 상태입니다. 사이트 운영자는 배포 전에 도메인, 연락처, 개인정보 고지와 법적 검토를 완료해야 합니다.',
+      ],
+    },
+    privacy: {
+      title: '개인정보처리방침 초안', description: 'DevDesk가 도구 입력과 브라우저 설정을 처리하는 방식을 설명합니다.',
+      paragraphs: [
+        '도구 입력과 결과는 현재 브라우저에서 처리합니다. DevDesk 변환 서버, 외부 변환 API, 분석 이벤트, URL, 콘솔 로그에 입력 원문을 보내거나 기록하지 않습니다.',
+        '테마, 즐겨찾기 도구 ID, 최근 사용 도구 ID 같은 비민감한 환경설정은 브라우저 저장소에 둘 수 있습니다. 입력 텍스트와 토큰은 자동 저장하지 않습니다. 정적 호스팅 사업자는 서비스 제공 과정에서 요청 로그를 처리할 수 있습니다.',
+        '광고와 분석은 현재 비활성 상태입니다. 운영자가 이를 활성화하면 제3자 제공, 쿠키, 동의 절차와 보유 기간을 실제 설정에 맞게 이 방침에 추가해야 합니다.',
+        '이 문서는 서비스 구조를 반영한 공개 전 초안이며 법률 자문이 아닙니다. 운영자는 서비스 지역의 법령에 맞춰 검토·수정해야 합니다.',
+      ],
+    },
+    terms: {
+      title: '이용약관 및 면책 초안', description: 'DevDesk 도구의 목적과 결과 사용에 관한 기본 안내입니다.',
+      paragraphs: [
+        'DevDesk 도구는 일반 개발 작업을 돕기 위한 편의 기능입니다. 입력에 대한 계산은 브라우저에서 수행되며, 서비스는 입력과 결과를 보관하지 않습니다.',
+        '결과의 정확성, 완전성 또는 특정 목적에 대한 적합성을 보장하지 않습니다. SQL은 실행되지 않고, JWT 서명은 검증되지 않으며, 해시는 암호화나 비밀번호 저장 기능이 아닙니다. 운영 환경에 적용하기 전에 사용자가 결과를 검토하고 독립적으로 확인해야 합니다.',
+        '법률이 허용하는 범위에서 사용자는 도구 결과를 검증하고 적절한 백업·보안 절차를 유지할 책임이 있습니다. 이 초안은 법적 검토를 거친 최종 약관이 아니므로 공개 전에 운영자가 관할 법령에 따라 검토해야 합니다.',
+      ],
+    },
+    contact: {
+      title: '문의', description: 'DevDesk 운영자에게 연락하는 방법입니다.',
+      paragraphs: [
+        '서비스 관련 문의는 아래 운영자 연락처를 이용해 주세요.',
+        '운영자 연락처가 아직 설정되지 않았습니다. 공개 전에 NEXT_PUBLIC_CONTACT_EMAIL 빌드 환경변수에 운영자가 소유한 주소를 설정해야 합니다.',
+      ],
+    },
   },
   en: {
-    guides: { title: 'Developer tool guides', body: 'Guides explain input formats, safe usage, and common errors for each utility.' },
-    about: { title: 'About DevDesk', body: 'DevDesk is a free collection of small conversion and validation tools for everyday development work, processed in your browser.' },
-    privacy: { title: 'Privacy policy', body: 'Tool inputs are processed in your browser and are not sent to a DevDesk conversion server. Static hosting may create basic access logs. Advertising and analytics are currently disabled.' },
-    terms: { title: 'Terms and disclaimer', body: 'Tool output is provided as a convenience and does not execute database queries or verify security. Review important results before using them.' },
-    contact: { title: 'Contact', body: 'An operator contact address has not been configured. Add a real contact address and review privacy disclosures before launch.' },
+    about: {
+      title: 'About DevDesk', description: 'A free set of developer utilities designed to run safely in your browser.',
+      paragraphs: [
+        'DevDesk is a static collection of tools for common formatting, encoding, date conversion, and text comparison tasks. Calculations run in your browser without an account or a backend conversion API.',
+        'Each guide explains accepted input, steps, edge cases, and limitations. Results are provided for convenience and do not replace checks such as database execution or security verification.',
+        'Advertising and analytics are disabled by default. The operator must configure a real domain and contact address, review privacy disclosures, and obtain legal review before launch.',
+      ],
+    },
+    privacy: {
+      title: 'Privacy policy draft', description: 'How DevDesk handles tool inputs and browser preferences.',
+      paragraphs: [
+        'Tool inputs and results are processed in your browser. DevDesk does not send or record input text in a conversion server, external conversion API, analytics event, URL, or console log.',
+        'Non-sensitive preferences such as theme, favorite tool IDs, and recently used tool IDs may be stored in browser storage. Input text and tokens are not saved automatically. The static hosting provider may process request logs to deliver the site.',
+        'Advertising and analytics are currently disabled. If the operator enables them, this policy must be updated to describe the actual third parties, cookies, consent flow, and retention periods.',
+        'This draft reflects the current service design; it is not legal advice. The operator must review and adapt it to the laws of the regions where the service is offered.',
+      ],
+    },
+    terms: {
+      title: 'Terms and disclaimer draft', description: 'Basic terms for using DevDesk utilities and their output.',
+      paragraphs: [
+        'DevDesk utilities assist with general development tasks. Calculations run in your browser, and the service does not retain your inputs or results.',
+        'The service does not guarantee that output is accurate, complete, or suitable for a particular purpose. SQL is not executed, JWT signatures are not verified, and hashes are not encryption or password-storage functions. Review and independently verify output before using it in production.',
+        'To the extent allowed by law, users are responsible for validating results and maintaining suitable backups and security controls. This draft is not a reviewed final agreement; the operator must obtain legal review for the applicable jurisdictions before launch.',
+      ],
+    },
+    contact: {
+      title: 'Contact', description: 'How to contact the DevDesk operator.',
+      paragraphs: [
+        'For service questions, use the operator contact address below.',
+        'No operator contact is configured yet. Before launch, set NEXT_PUBLIC_CONTACT_EMAIL at build time to an address the operator controls.',
+      ],
+    },
   },
   ja: {
-    guides: { title: '開発ツールガイド', body: '各ツールの入力形式、安全な使い方、よくあるエラーを解説します。' },
-    about: { title: 'DevDesk について', body: 'DevDesk は日々の開発で使う小さな変換・検証作業をブラウザー内で行える無料ツール集です。' },
-    privacy: { title: 'プライバシーポリシー', body: '入力データはブラウザー内で処理され、DevDesk の変換サーバーには送信されません。静的ホスティングの基本アクセスログが記録される場合があります。広告と分析は現在無効です。' },
-    terms: { title: '利用規約と免責事項', body: 'ツールの出力は参考情報です。データベースクエリの実行やセキュリティ検証は行いません。重要な結果は確認してから使用してください。' },
-    contact: { title: 'お問い合わせ', body: '運営者の連絡先はまだ設定されていません。公開前に実際の連絡先とプライバシーに関する説明を追加してください。' },
+    about: {
+      title: 'DevDesk について', description: 'ブラウザー内で安全に利用できる無料の開発ツール集です。',
+      paragraphs: [
+        'DevDesk は、書式設定、エンコード、日時変換、テキスト比較など、日常の開発作業を支援する静的ウェブツール集です。アカウントやサーバー側の変換 API は不要で、計算はブラウザー内で行います。',
+        '各ガイドでは入力形式、手順、境界条件、制限を説明します。結果は利便性のために提供され、データベースでの実行やセキュリティ検証など別途必要な確認を代替しません。',
+        '広告と分析は初期状態で無効です。公開前に運営者がドメインと連絡先を設定し、プライバシー表示と法的確認を完了してください。',
+      ],
+    },
+    privacy: {
+      title: 'プライバシーポリシー（案）', description: 'ツール入力とブラウザー設定の取り扱いについて説明します。',
+      paragraphs: [
+        'ツールの入力と結果はブラウザー内で処理します。DevDesk の変換サーバー、外部変換 API、分析イベント、URL、コンソールログに入力内容を送信・記録しません。',
+        'テーマ、お気に入りのツール ID、最近使用したツール ID など機密性のない設定をブラウザー保存領域に保存する場合があります。入力テキストやトークンは自動保存しません。静的ホスティング事業者はサイト提供のためにリクエストログを処理する場合があります。',
+        '広告と分析は現在無効です。運営者が有効にする場合、実際の第三者、Cookie、同意手順、保存期間をこのポリシーに追記してください。',
+        '本ページは現在のサービス構成を反映した公開前の案であり、法律上の助言ではありません。運営者は提供地域の法令に合わせて確認・修正してください。',
+      ],
+    },
+    terms: {
+      title: '利用規約・免責事項（案）', description: 'DevDesk ツールと出力の利用に関する基本事項です。',
+      paragraphs: [
+        'DevDesk のツールは一般的な開発作業を支援します。計算はブラウザー内で行い、入力内容や結果をサービス側に保存しません。',
+        '出力の正確性、完全性、特定目的への適合性を保証しません。SQL は実行せず、JWT 署名は検証せず、ハッシュは暗号化やパスワード保存機能ではありません。本番環境に適用する前に、利用者が結果を確認し独立して検証してください。',
+        '法律で認められる範囲で、利用者は結果の検証と適切なバックアップ・セキュリティ対策に責任を負います。本案は法的確認済みの最終規約ではないため、公開前に運営者が対象地域の法令に沿って確認してください。',
+      ],
+    },
+    contact: {
+      title: 'お問い合わせ', description: 'DevDesk 運営者への連絡方法です。',
+      paragraphs: [
+        'サービスに関するお問い合わせは、以下の運営者連絡先をご利用ください。',
+        '運営者の連絡先はまだ設定されていません。公開前に NEXT_PUBLIC_CONTACT_EMAIL に運営者が管理するアドレスを設定してください。',
+      ],
+    },
   },
   zh: {
-    guides: { title: '开发工具指南', body: '指南将介绍各工具的输入格式、安全用法和常见错误。' },
-    about: { title: '关于 DevDesk', body: 'DevDesk 是一组免费的日常开发小工具，可在浏览器中完成常见转换和校验。' },
-    privacy: { title: '隐私政策', body: '工具输入在浏览器中处理，不会发送到 DevDesk 转换服务器。静态托管可能会生成基本访问日志。目前广告和分析功能均已关闭。' },
-    terms: { title: '使用条款与免责声明', body: '工具结果仅供参考，不会执行数据库查询或验证安全性。重要结果请核对后再使用。' },
-    contact: { title: '联系', body: '尚未配置运营者联系地址。正式发布前请填写真实联系地址并完善隐私说明。' },
+    about: {
+      title: '关于 DevDesk', description: '一组可在浏览器中安全使用的免费开发工具。',
+      paragraphs: [
+        'DevDesk 是一组静态网页工具，用于处理常见的格式化、编码、日期转换和文本比较任务。计算在浏览器中完成，无需账号或后端转换 API。',
+        '每篇指南都会说明输入格式、操作步骤、边界情况和限制。工具结果仅为提高效率，不会替代数据库执行或安全验证等必要检查。',
+        '广告和分析默认关闭。正式发布前，运营者需要配置真实域名和联系地址，完善隐私说明并进行法律审核。',
+      ],
+    },
+    privacy: {
+      title: '隐私政策草案', description: '说明 DevDesk 如何处理工具输入和浏览器偏好设置。',
+      paragraphs: [
+        '工具输入和结果均在浏览器中处理。DevDesk 不会将输入内容发送或记录到转换服务器、外部转换 API、分析事件、URL 或控制台日志中。',
+        '主题、收藏工具 ID、最近使用工具 ID 等非敏感偏好可能保存在浏览器存储中。输入文本和令牌不会自动保存。静态托管服务商可能会为提供网站而处理请求日志。',
+        '目前广告和分析均已关闭。如果运营者启用这些服务，必须根据实际情况补充第三方服务、Cookie、同意流程和数据保留期限。',
+        '本页草案反映当前服务结构，不构成法律意见。运营者应根据服务提供地区的法律进行审核和修改。',
+      ],
+    },
+    terms: {
+      title: '使用条款与免责声明草案', description: '使用 DevDesk 工具及其结果的基本说明。',
+      paragraphs: [
+        'DevDesk 工具用于辅助一般开发任务。计算在浏览器中执行，服务不会保存输入或结果。',
+        '本服务不保证结果准确、完整或适合特定用途。SQL 不会被执行，JWT 签名不会被验证，哈希也不是加密或密码存储功能。将结果用于生产环境前，请先检查并独立验证。',
+        '在法律允许的范围内，用户有责任核验结果并采取适当的备份与安全措施。本草案尚未经过最终法律审查；运营者应在发布前根据适用地区的法律进行审核。',
+      ],
+    },
+    contact: {
+      title: '联系', description: '联系 DevDesk 运营者的方法。',
+      paragraphs: [
+        '如需咨询服务，请使用下方的运营者联系地址。',
+        '尚未配置运营者联系地址。正式发布前，请在构建环境中将 NEXT_PUBLIC_CONTACT_EMAIL 设置为运营者实际管理的邮箱。',
+      ],
+    },
   },
 };
 
@@ -42,10 +152,26 @@ export function generateStaticParams() {
   return locales.flatMap((locale) => sections.map((section) => ({ locale, section })));
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; section: string }> }): Promise<Metadata> {
+  const { locale: rawLocale, section: rawSection } = await params;
+  if (!isLocale(rawLocale) || !sections.includes(rawSection as Section)) return {};
+  const section = rawSection as Section;
+  const copy = sectionCopy[rawLocale][section];
+  return localizedMetadata(rawLocale, `/${section}`, copy.title, copy.description);
+}
+
 export default async function SectionPage({ params }: { params: Promise<{ locale: string; section: string }> }) {
   const { locale: rawLocale, section: rawSection } = await params;
   if (!isLocale(rawLocale) || !sections.includes(rawSection as Section)) notFound();
   const section = rawSection as Section;
   const copy = sectionCopy[rawLocale][section];
-  return <main className="simple-page"><p className="eyebrow">DEVDESK / {section.toUpperCase()}</p><h1>{copy.title}</h1><p>{copy.body}</p>{section === 'guides' && <Link className="primary-link" href={`/${rawLocale}/tools/`}>{rawLocale === 'ko' ? '도구 목록 보기' : rawLocale === 'ja' ? 'ツール一覧を見る' : rawLocale === 'zh' ? '浏览工具列表' : 'Browse tools'}<span aria-hidden="true">→</span></Link>}</main>;
+  const contactEmail = section === 'contact' ? process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() : undefined;
+  return (
+    <main className="simple-page policy-page">
+      <p className="eyebrow">DEVDESK / {section.toUpperCase()}</p>
+      <h1>{copy.title}</h1>
+      {copy.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+      {contactEmail && <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>}
+    </main>
+  );
 }

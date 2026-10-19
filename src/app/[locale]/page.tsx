@@ -1,6 +1,8 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
+import { localizedMetadata } from '@/lib/seo';
 
 const homeText: Record<Locale, { title: string; copy: string; tools: string; languages: string }> = {
   ko: { title: '개발 도구를, 필요한 순간에.', copy: '브라우저에서 바로 처리하는 빠르고 안전한 개발자 유틸리티.', tools: '도구 둘러보기', languages: '언어' },
@@ -8,6 +10,13 @@ const homeText: Record<Locale, { title: string; copy: string; tools: string; lan
   ja: { title: '必要なときに、すぐ使える開発ツール。', copy: 'ブラウザー内で処理する、速くて安心な開発者向けツールです。', tools: 'ツールを見る', languages: '言語' },
   zh: { title: '随时可用的开发者工具。', copy: '在浏览器中本地处理，快速又安心。', tools: '浏览工具', languages: '语言' },
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  if (!isLocale(rawLocale)) return {};
+  const text = homeText[rawLocale];
+  return localizedMetadata(rawLocale, '/', text.title, text.copy);
+}
 
 export default async function LocaleHomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;

@@ -1,5 +1,27 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { locales, localeMetadata } from '@/i18n/config';
+import { absoluteUrl, siteUrl } from '@/lib/seo';
+
+const languageAlternates: Record<string, string> = Object.fromEntries(
+  locales.map((locale) => [localeMetadata[locale].hreflang, absoluteUrl(`/${locale}/`)]),
+);
+languageAlternates['x-default'] = absoluteUrl('/');
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: 'DevDesk — Developer tools',
+  description: 'Choose a language to explore free developer utilities that run in your browser.',
+  alternates: { canonical: absoluteUrl('/'), languages: languageAlternates },
+  openGraph: {
+    title: 'DevDesk — Developer tools',
+    description: 'Free developer utilities that run in your browser.',
+    siteName: 'DevDesk',
+    url: absoluteUrl('/'),
+    locale: 'en',
+    type: 'website',
+  },
+};
 
 export default function LanguageLandingPage() {
   return (
