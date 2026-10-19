@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
@@ -27,6 +28,7 @@ export default async function LocaleHomePage({ params }: { params: Promise<{ loc
   return (
     <main className="home-content">
       <section className="home-hero">
+        <Image alt="" aria-hidden="true" className="landing-mark" height={48} src="/icon.svg" width={48} />
         <p className="eyebrow">DEVELOPER TOOLKIT</p>
         <h1>{text.title}</h1>
         <p>{text.copy}</p>
