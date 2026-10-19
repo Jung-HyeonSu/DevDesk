@@ -217,5 +217,16 @@ html[data-theme="dark"] .status-error { background: #472a2c; color: #ffaaa5; }
 .json-workbench { display: grid; gap: 12px; min-width: 0; }
 .workbench-settings { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
 .workbench-settings select { min-height: 36px; max-width: 100%; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
+.base64-workbench, .url-workbench, .timestamp-workbench { display: grid; gap: 12px; min-width: 0; }
+.timestamp-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.workbench-field { display: grid; min-width: 0; gap: 7px; color: var(--muted); font-size: 12px; }
+.workbench-field > span, .workbench-field > label { font-weight: 700; }
+.workbench-input { width: 100%; min-width: 0; min-height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
+.workbench-input:focus-visible { outline: 3px solid #91a9ff; outline-offset: 2px; }
+.workbench-field small { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.workbench-option { display: inline-flex; min-height: 38px; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; cursor: pointer; }
+.workbench-option input { accent-color: var(--accent); }
+.workbench-note { margin: 0; padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--muted); font-size: 12px; line-height: 1.65; }
+@media (max-width: 620px) { .timestamp-fields { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .content-grid { grid-template-columns: 1fr; } }
 @media (max-width: 540px) { .example-columns { grid-template-columns: 1fr; } .content-card, .faq-item, .notice-card { padding: 14px; } }

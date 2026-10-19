@@ -175,6 +175,67 @@ test('URL encoder treats input as one component, round trips Unicode, and report
   }
 });
 
+test('Unix timestamp converter handles explicit units, IANA zones, date input, current time, and DST errors in every locale', async ({ page }) => {
+  const leapTimestamp = String(Date.UTC(2024, 1, 29, 12, 30, 45));
+  const cases = [
+    ['ko', 'Unix 타임스탬프', '날짜와 시간', '시간대', '타임스탬프 단위', '초', '밀리초', '날짜로 변환', '타임스탬프로 변환', '현재 시간 사용', 'Epoch 예제', '초기화', '결과 복사', '입력과 결과를 초기화했습니다.', '타임스탬프를 날짜와 시간으로 변환했습니다.', '날짜와 시간을 타임스탬프로 변환했습니다.', '선택한 시간대에서 존재하지 않는 현지 시간입니다', 'ISO 8601'],
+    ['en', 'Unix timestamp', 'Date and time', 'Time zone', 'Timestamp unit', 'Seconds', 'Milliseconds', 'Convert to date', 'Convert to timestamp', 'Use current time', 'Epoch sample', 'Clear', 'Copy result', 'Input and output cleared.', 'Converted the timestamp to a date and time.', 'Converted the date and time to a timestamp.', 'That local time does not exist', 'ISO 8601'],
+    ['ja', 'Unix タイムスタンプ', '日付と時刻', 'タイムゾーン', 'タイムスタンプの単位', '秒', 'ミリ秒', '日付に変換', 'タイムスタンプに変換', '現在時刻を使う', 'Epoch の例', 'クリア', '結果をコピー', '入力と結果をクリアしました。', 'タイムスタンプを日付と時刻に変換しました。', '日付と時刻をタイムスタンプに変換しました。', '選択したタイムゾーンに存在しない現地時刻です', 'ISO 8601'],
+    ['zh', 'Unix 时间戳', '日期和时间', '时区', '时间戳单位', '秒', '毫秒', '转换为日期', '转换为时间戳', '使用当前时间', 'Epoch 示例', '清空', '复制结果', '已清空输入和结果。', '已将时间戳转换为日期和时间。', '已将日期和时间转换为时间戳。', '该时区中不存在这个本地时间', 'ISO 8601'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, timestampLabel, dateTimeLabel, timeZoneLabel, unitLabel, secondsLabel, millisecondsLabel, timestampToDateLabel, dateToTimestampLabel, nowLabel, sampleLabel, clearLabel, copyLabel, clearedMessage, timestampMessage, dateMessage, dstMessage, isoLabel] of cases) {
+    await page.goto(`/${locale}/tools/unix-timestamp/`);
+    const workbench = page.locator('.timestamp-workbench');
+    const output = workbench.locator('.editor-panel').nth(0).locator('.cm-content');
+    const timestampInput = workbench.locator('#timestamp-value');
+    const dateTimeInput = workbench.locator('#timestamp-date-time');
+    const timeZoneInput = workbench.locator('#timestamp-time-zone');
+    const unitSelect = workbench.locator('#timestamp-unit');
+    await expect(timestampInput).toHaveAccessibleName(timestampLabel);
+    await expect(dateTimeInput).toHaveAccessibleName(dateTimeLabel);
+    await expect(timeZoneInput).toHaveAccessibleName(timeZoneLabel);
+    await expect(unitSelect).toHaveAccessibleName(unitLabel);
+
+    await unitSelect.selectOption({ label: secondsLabel });
+    await timestampInput.fill('0');
+    await page.getByRole('button', { name: timestampToDateLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(timestampMessage);
+    await expect(output).toContainText('1970-01-01T00:00:00.000Z');
+
+    await timeZoneInput.fill('America/Los_Angeles');
+    await page.getByRole('button', { name: timestampToDateLabel, exact: true }).click();
+    await expect(output).toContainText('America/Los_Angeles:');
+    await unitSelect.selectOption({ label: millisecondsLabel });
+    await timestampInput.fill('2147483648000');
+    await page.getByRole('button', { name: timestampToDateLabel, exact: true }).click();
+    await expect(output).toContainText('2038-01-19T03:14:08.000Z');
+
+    await timeZoneInput.fill('UTC');
+    await dateTimeInput.fill('2024-02-29T12:30:45');
+    await page.getByRole('button', { name: dateToTimestampLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(dateMessage);
+    await expect(output).toContainText(leapTimestamp);
+    const copiedText = await output.innerText();
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(copiedText);
+
+    await page.getByRole('button', { name: nowLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(timestampMessage);
+    await expect(output).toContainText(`${isoLabel}:`);
+    await expect(timestampInput).not.toHaveValue('');
+
+    await timeZoneInput.fill('America/New_York');
+    await dateTimeInput.fill('2024-03-10T02:30');
+    await page.getByRole('button', { name: dateToTimestampLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(dstMessage);
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await expect(timestampInput).toHaveValue('0');
+    await page.getByRole('button', { name: clearLabel, exact: true }).click();
+    await expect(page.getByRole('status')).toContainText(clearedMessage);
+  }
+});
+
 test('mobile navigation opens and closes after selecting a tool', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'This scenario uses the mobile browser project.');
   await page.setViewportSize({ width: 375, height: 812 });

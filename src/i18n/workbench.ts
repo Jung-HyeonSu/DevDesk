@@ -12,6 +12,12 @@ export type WorkbenchMessages = {
   urlToolLabel: string; urlEncode: string; urlDecode: string; urlInputHint: string; urlOutputHint: string;
   urlEmptyInput: string; urlInvalidEscape: string; urlInvalidUnicode: string; urlEncodeSuccess: string;
   urlDecodeSuccess: string; urlComponentNotice: string;
+  timestampToolLabel: string; timestampInputLabel: string; dateTimeInputLabel: string; timeZoneLabel: string;
+  timeZoneHint: string; timestampUnitLabel: string; secondsUnit: string; millisecondsUnit: string;
+  timestampToDate: string; dateToTimestamp: string; useCurrentTime: string; epochSample: string;
+  isoOutputLabel: string; localOutputLabel: string; timestampEmptyInput: string; invalidTimestamp: string;
+  invalidDateTime: string; invalidTimeZone: string; nonexistentLocalTime: string; outOfRange: string;
+  timestampConverted: string; dateConverted: string; timestampNotice: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -34,6 +40,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     urlEmptyInput: '먼저 텍스트를 입력하거나 예제를 불러오세요.', urlInvalidEscape: '퍼센트 인코딩 문자열이 올바르지 않습니다.',
     urlInvalidUnicode: '입력에 올바르지 않은 Unicode 문자가 있습니다.', urlEncodeSuccess: '텍스트를 URL component로 인코딩했습니다.',
     urlDecodeSuccess: 'URL component를 텍스트로 디코딩했습니다.', urlComponentNotice: '전체 URL이 아닌 단일 component를 처리합니다. 공백은 %20으로 인코딩하고 + 기호는 그대로 유지합니다.',
+    timestampToolLabel: 'Unix 타임스탬프 변환기', timestampInputLabel: 'Unix 타임스탬프', dateTimeInputLabel: '날짜와 시간', timeZoneLabel: '시간대',
+    timeZoneHint: 'IANA 시간대 사용 (예: Asia/Seoul)', timestampUnitLabel: '타임스탬프 단위', secondsUnit: '초', millisecondsUnit: '밀리초',
+    timestampToDate: '날짜로 변환', dateToTimestamp: '타임스탬프로 변환', useCurrentTime: '현재 시간 사용', epochSample: 'Epoch 예제',
+    isoOutputLabel: 'ISO 8601', localOutputLabel: '선택한 시간대', timestampEmptyInput: '타임스탬프를 입력하거나 Epoch 예제를 불러오세요.',
+    invalidTimestamp: '정수 초 또는 밀리초 타임스탬프를 입력하세요.', invalidDateTime: '올바른 날짜와 시간을 입력하세요.',
+    invalidTimeZone: '지원되는 IANA 시간대를 입력하세요.', nonexistentLocalTime: '선택한 시간대에서 존재하지 않는 현지 시간입니다 (서머타임 전환 구간).',
+    outOfRange: '날짜가 JavaScript Date 표현 범위를 벗어났습니다.', timestampConverted: '타임스탬프를 날짜와 시간으로 변환했습니다.',
+    dateConverted: '날짜와 시간을 타임스탬프로 변환했습니다.', timestampNotice: '초와 밀리초 단위를 직접 선택하세요. 날짜 입력은 선택한 시간대를 따르며, 서머타임으로 존재하지 않는 현지 시간은 거부합니다. 반복되는 시간은 이른 쪽 시각을 사용합니다.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -54,6 +68,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     urlEmptyInput: 'Enter text or load a sample first.', urlInvalidEscape: 'The percent-encoded string is invalid.',
     urlInvalidUnicode: 'The input contains an invalid Unicode character.', urlEncodeSuccess: 'Encoded text as a URL component.',
     urlDecodeSuccess: 'Decoded the URL component as text.', urlComponentNotice: 'This handles one URL component, not a full URL. Spaces become %20, and + remains a literal plus sign.',
+    timestampToolLabel: 'Unix timestamp converter', timestampInputLabel: 'Unix timestamp', dateTimeInputLabel: 'Date and time', timeZoneLabel: 'Time zone',
+    timeZoneHint: 'Use an IANA time zone (for example, America/New_York).', timestampUnitLabel: 'Timestamp unit', secondsUnit: 'Seconds', millisecondsUnit: 'Milliseconds',
+    timestampToDate: 'Convert to date', dateToTimestamp: 'Convert to timestamp', useCurrentTime: 'Use current time', epochSample: 'Epoch sample',
+    isoOutputLabel: 'ISO 8601', localOutputLabel: 'Selected time zone', timestampEmptyInput: 'Enter a timestamp or load the epoch sample.',
+    invalidTimestamp: 'Enter an integer timestamp in seconds or milliseconds.', invalidDateTime: 'Enter a valid date and time.',
+    invalidTimeZone: 'Enter a supported IANA time zone.', nonexistentLocalTime: 'That local time does not exist in the selected time zone because of a daylight-saving transition.',
+    outOfRange: 'The date is outside the range supported by JavaScript Date.', timestampConverted: 'Converted the timestamp to a date and time.',
+    dateConverted: 'Converted the date and time to a timestamp.', timestampNotice: 'Choose seconds or milliseconds explicitly. Date input uses the selected time zone; nonexistent local times during daylight-saving changes are rejected. Repeated times use the earlier occurrence.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -74,6 +96,14 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     urlEmptyInput: 'テキストを入力するか、サンプルを読み込んでください。', urlInvalidEscape: 'パーセントエンコード文字列が正しくありません。',
     urlInvalidUnicode: '入力に正しくない Unicode 文字があります。', urlEncodeSuccess: 'テキストを URL component にエンコードしました。',
     urlDecodeSuccess: 'URL component をテキストにデコードしました。', urlComponentNotice: '完全な URL ではなく、1 つの component を処理します。空白は %20 になり、+ はそのまま保持します。',
+    timestampToolLabel: 'Unix タイムスタンプ変換ツール', timestampInputLabel: 'Unix タイムスタンプ', dateTimeInputLabel: '日付と時刻', timeZoneLabel: 'タイムゾーン',
+    timeZoneHint: 'IANA タイムゾーンを入力します (例: Asia/Tokyo)。', timestampUnitLabel: 'タイムスタンプの単位', secondsUnit: '秒', millisecondsUnit: 'ミリ秒',
+    timestampToDate: '日付に変換', dateToTimestamp: 'タイムスタンプに変換', useCurrentTime: '現在時刻を使う', epochSample: 'Epoch の例',
+    isoOutputLabel: 'ISO 8601', localOutputLabel: '選択したタイムゾーン', timestampEmptyInput: 'タイムスタンプを入力するか、Epoch の例を読み込みます。',
+    invalidTimestamp: '秒またはミリ秒の整数タイムスタンプを入力してください。', invalidDateTime: '正しい日付と時刻を入力してください。',
+    invalidTimeZone: '対応する IANA タイムゾーンを入力してください。', nonexistentLocalTime: '選択したタイムゾーンに存在しない現地時刻です (夏時間の切り替え)。',
+    outOfRange: '日付が JavaScript Date の表現範囲外です。', timestampConverted: 'タイムスタンプを日付と時刻に変換しました。',
+    dateConverted: '日付と時刻をタイムスタンプに変換しました。', timestampNotice: '秒とミリ秒を明示的に選びます。日付入力は選択したタイムゾーンに従い、夏時間で存在しない時刻は拒否します。重複する時刻は早い方を使います。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -94,5 +124,13 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     urlEmptyInput: '请输入文本或载入示例。', urlInvalidEscape: '百分号编码字符串无效。',
     urlInvalidUnicode: '输入中包含无效的 Unicode 字符。', urlEncodeSuccess: '已将文本编码为 URL component。',
     urlDecodeSuccess: '已将 URL component 解码为文本。', urlComponentNotice: '此工具处理单个 URL component，不解析完整 URL。空格会编码为 %20，+ 符号会保留为普通字符。',
+    timestampToolLabel: 'Unix 时间戳转换工具', timestampInputLabel: 'Unix 时间戳', dateTimeInputLabel: '日期和时间', timeZoneLabel: '时区',
+    timeZoneHint: '输入 IANA 时区 (例如 Asia/Shanghai)。', timestampUnitLabel: '时间戳单位', secondsUnit: '秒', millisecondsUnit: '毫秒',
+    timestampToDate: '转换为日期', dateToTimestamp: '转换为时间戳', useCurrentTime: '使用当前时间', epochSample: 'Epoch 示例',
+    isoOutputLabel: 'ISO 8601', localOutputLabel: '所选时区', timestampEmptyInput: '请输入时间戳或载入 Epoch 示例。',
+    invalidTimestamp: '请输入整数秒或毫秒时间戳。', invalidDateTime: '请输入有效的日期和时间。',
+    invalidTimeZone: '请输入受支持的 IANA 时区。', nonexistentLocalTime: '该时区中不存在这个本地时间 (夏令时切换时段)。',
+    outOfRange: '日期超出 JavaScript Date 的表示范围。', timestampConverted: '已将时间戳转换为日期和时间。',
+    dateConverted: '已将日期和时间转换为时间戳。', timestampNotice: '请明确选择秒或毫秒。日期输入使用所选时区；夏令时切换中不存在的本地时间会被拒绝。重复时间使用较早的时刻。',
   },
 };
