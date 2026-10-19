@@ -16,7 +16,8 @@ test('each localized homepage has matching HTML language and a tool entry point'
   }
 });
 
-test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page }) => {
+test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The persisted favorites workflow runs in desktop Chromium; mobile navigation is verified separately.');
   await page.goto('/ko/tools/');
   await expect(page.getByRole('article')).toHaveCount(12);
 
@@ -86,7 +87,31 @@ test('ads remain absent and tool inputs stay on the local origin by default', as
   expect(page.url()).not.toContain('browser-only');
 });
 
-test('JSON, YAML, and JWT data hand off between tools without entering URLs or browser storage', async ({ page }) => {
+test('localized privacy, terms, and contact pages describe the shipped service', async ({ page }) => {
+  const cases = [
+    ['ko', '개인정보처리방침 초안', '이용약관 및 면책 초안', '문의', '메모리'],
+    ['en', 'Privacy policy draft', 'Terms and disclaimer draft', 'Contact', 'memory'],
+    ['ja', 'プライバシーポリシー（案）', '利用規約・免責事項（案）', 'お問い合わせ', 'メモリ'],
+    ['zh', '隐私政策草案', '使用条款与免责声明草案', '联系', '内存'],
+  ];
+  for (const [locale, privacyHeading, termsHeading, contactHeading, handoffWord] of cases) {
+    await page.goto(`/${locale}/privacy/`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(privacyHeading);
+    const privacy = await page.locator('main.policy-page').innerText();
+    expect(privacy).toContain('AdSense');
+    expect(privacy).toContain(handoffWord);
+
+    await page.goto(`/${locale}/terms/`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(termsHeading);
+
+    await page.goto(`/${locale}/contact/`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(contactHeading);
+    await expect(page.locator('main.policy-page a[href^="mailto:"]')).toHaveCount(0);
+  }
+});
+
+test('JSON, YAML, and JWT data hand off between tools without entering URLs or browser storage', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale handoff workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', 'YAML 변환기로 열기', 'JSON 포맷터에서 열기', 'Payload를 JSON 포맷터에서 열기', '변환', '예제 불러오기', 'JWT 디코딩'],
     ['en', 'Open in YAML converter', 'Open in JSON formatter', 'Open payload in JSON formatter', 'Convert', 'Load sample', 'Decode JWT'],
@@ -129,7 +154,8 @@ test('JSON, YAML, and JWT data hand off between tools without entering URLs or b
   }
 });
 
-test('SQL formatter supports the displayed dialects, formatting, copy, download, and safe parser errors in every locale', async ({ page }) => {
+test('SQL formatter supports the displayed dialects, formatting, copy, download, and safe parser errors in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', 'SQL 방언', '일반 SQL', 'MariaDB', 'Oracle PL/SQL', '예제 불러오기', 'SQL 정렬', '결과 복사', '텍스트 다운로드', 'SQL 형식을 정리했습니다.', '이 방언으로 SQL을 정리하지 못했습니다.'],
     ['en', 'SQL dialect', 'Generic SQL', 'MariaDB', 'Oracle PL/SQL', 'Load sample', 'Format SQL', 'Copy result', 'Download text', 'Formatted the SQL.', 'Could not format this SQL for the selected dialect.'],
@@ -169,7 +195,8 @@ test('SQL formatter supports the displayed dialects, formatting, copy, download,
   }
 });
 
-test('JWT decoder shows UTF-8 claims, time status, and the unverified-signature warning in every locale', async ({ page }) => {
+test('JWT decoder shows UTF-8 claims, time status, and the unverified-signature warning in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', 'JWT 디코딩', '초기화', '결과 복사', '텍스트 다운로드', 'JWT 내용을 디코딩했습니다. 서명은 검증되지 않았습니다.', '브라우저 시간 기준 상태: 만료되지 않았고 아직 유효 시작 전이 아닙니다', 'JWT 형식이 올바르지 않습니다.', 'Header JSON', 'Payload JSON', 'UTC', '브라우저 현지 시간', 'header.payload.signature 형식의 JWT를 붙여넣으세요.'],
     ['en', 'Load sample', 'Decode JWT', 'Clear', 'Copy result', 'Download text', 'Decoded the JWT content. The signature was not verified.', 'Status by browser clock: Not expired and past its not-before time', 'The JWT format is invalid.', 'Header JSON', 'Payload JSON', 'UTC', 'Browser local time', 'Paste a JWT in header.payload.signature format.'],
@@ -210,7 +237,8 @@ test('JWT decoder shows UTF-8 claims, time status, and the unverified-signature 
   }
 });
 
-test('Cron generator builds and validates Linux five-field schedules in every locale', async ({ page }) => {
+test('Cron generator builds and validates Linux five-field schedules in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '필드로 표현식 만들고 계산', '검증 및 다음 5회 계산', '시간대', '결과 복사', '텍스트 다운로드', '5필드 표현식을 확인하고 다음 실행 시각 5개를 계산했습니다.', '5분마다 실행합니다.', '이 MVP에서 지원하지 않는 Cron 확장 문법입니다.', '초기화', '입력과 결과를 초기화했습니다.', '분 (0–59)', '시 (0–23)', '일 (1–31)', '월 (1–12 또는 JAN–DEC)', '요일 (0–7 또는 SUN–SAT)', '예: */5 * * * *'],
     ['en', 'Load sample', 'Build and calculate from fields', 'Validate and calculate next 5', 'Time zone', 'Copy result', 'Download text', 'Validated the five-field expression and calculated its next five runs.', 'Runs every 5 minutes.', 'This cron extension is not supported in the MVP.', 'Clear', 'Input and output cleared.', 'Minute (0–59)', 'Hour (0–23)', 'Day of month (1–31)', 'Month (1–12 or JAN–DEC)', 'Day of week (0–7 or SUN–SAT)', 'Example: */5 * * * *'],
@@ -258,7 +286,9 @@ test('Cron generator builds and validates Linux five-field schedules in every lo
   }
 });
 
-test('Text diff shows line changes safely in side-by-side and unified views in every locale', async ({ page }) => {
+test('Text diff shows line changes safely in side-by-side and unified views in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
+  test.setTimeout(60_000);
   const cases = [
     ['ko', '예제 불러오기', '원본', '변경 후', '비교', '변경 요약', '추가된 줄', '삭제된 줄', '변경된 줄', '통합 보기', '나란히 보기', '결과 복사', '텍스트 다운로드', '초기화', '텍스트 비교를 완료했습니다.', '줄 앞뒤 공백 차이 무시', '두 텍스트에 차이가 없습니다.', '입력과 결과를 초기화했습니다.', '비교할 원본 텍스트를 입력하세요.'],
     ['en', 'Load sample', 'Original', 'Modified', 'Compare text', 'Change summary', 'Added lines', 'Removed lines', 'Changed lines', 'Unified', 'Side by side', 'Copy result', 'Download text', 'Clear', 'Finished comparing the text.', 'Ignore leading and trailing whitespace changes', 'The texts are identical.', 'Input and output cleared.', 'Enter the original text to compare.'],
@@ -329,7 +359,8 @@ test('Text diff shows line changes safely in side-by-side and unified views in e
   }
 });
 
-test('Regex tester highlights matches and recovers from a terminated Worker in every locale', async ({ page }) => {
+test('Regex tester highlights matches and recovers from a terminated Worker in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '정규식 패턴', '플래그', '테스트 문자열', '정규식 실행', '정규식 결과', '일치 횟수', '캡처 그룹', '결과 복사', '텍스트 다운로드', '정규식 검사를 완료했습니다.', '정규식 패턴이 올바르지 않습니다.', '정규식 플래그가 올바르지 않습니다.'],
     ['en', 'Load sample', 'Regular expression', 'Flags', 'Test string', 'Run regex', 'Regex results', 'Match count', 'Capture groups', 'Copy result', 'Download text', 'Regex check complete.', 'The regular expression is invalid.', 'The regex flags are invalid.'],
@@ -392,7 +423,8 @@ test('Regex tester highlights matches and recovers from a terminated Worker in e
   await expect(workbench.locator('.regex-match-table tbody tr')).toHaveCount(1);
 });
 
-test('YAML and JSON converter formats, validates, copies, and downloads in every locale', async ({ page }) => {
+test('YAML and JSON converter formats, validates, copies, and downloads in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '변환 방향', '들여쓰기', '검증', '변환', '결과 복사', '텍스트 다운로드', '초기화', 'YAML 1.2 Core', '변환을 완료했습니다.', '입력이 올바릅니다.', 'YAML 형식이 올바르지 않습니다.', 'JSON 형식이 올바르지 않습니다.'],
     ['en', 'Load sample', 'Conversion direction', 'Indentation', 'Validate', 'Convert', 'Copy result', 'Download text', 'Clear', 'YAML 1.2 Core', 'Conversion complete.', 'The input is valid.', 'The YAML is invalid.', 'The JSON is invalid.'],
@@ -450,7 +482,8 @@ test('YAML and JSON converter formats, validates, copies, and downloads in every
   }
 });
 
-test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
+test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],
     ['en', 'Load sample', 'Beautify', 'Minify', 'Validate', 'Copy result', 'Download JSON', 'Clear', 'Result copied to the clipboard.', 'JSON file downloaded.', 'Input and output cleared.', 'Paste a JSON object, array, or primitive value.', 'Valid JSON.', 'The JSON is invalid.'],
@@ -486,7 +519,8 @@ test('JSON formatter beautifies, minifies, validates, and safely reports errors 
   }
 });
 
-test('Base64 encodes and decodes UTF-8, supports URL-safe mode, and reports invalid input in every locale', async ({ page }) => {
+test('Base64 encodes and decodes UTF-8, supports URL-safe mode, and reports invalid input in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '인코딩', '디코딩', '입력과 결과 교환', 'URL-safe Base64', '결과 복사', '텍스트 다운로드', '초기화', '입력과 결과를 초기화했습니다.', 'UTF-8 텍스트를 Base64로 인코딩했습니다.', 'Base64를 UTF-8 텍스트로 디코딩했습니다.', '올바르지 않은 Base64 문자열입니다.', '안녕하세요, DevDesk 👋'],
     ['en', 'Load sample', 'Encode', 'Decode', 'Swap input and output', 'URL-safe Base64', 'Copy result', 'Download text', 'Clear', 'Input and output cleared.', 'Encoded UTF-8 text as Base64.', 'Decoded Base64 as UTF-8 text.', 'The Base64 string is invalid.', '안녕하세요, DevDesk 👋'],
@@ -531,7 +565,8 @@ test('Base64 encodes and decodes UTF-8, supports URL-safe mode, and reports inva
   }
 });
 
-test('URL encoder treats input as one component, round trips Unicode, and reports malformed escapes in every locale', async ({ page }) => {
+test('URL encoder treats input as one component, round trips Unicode, and reports malformed escapes in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', '예제 불러오기', '인코딩', '디코딩', '입력과 결과 교환', '결과 복사', '텍스트 다운로드', 'URL component를 텍스트로 디코딩했습니다.', '퍼센트 인코딩 문자열이 올바르지 않습니다.', 'name=DevDesk &tag=tools 🌏'],
     ['en', 'Load sample', 'Encode', 'Decode', 'Swap input and output', 'Copy result', 'Download text', 'Decoded the URL component as text.', 'The percent-encoded string is invalid.', 'name=DevDesk &tag=tools 🌏'],
@@ -566,7 +601,8 @@ test('URL encoder treats input as one component, round trips Unicode, and report
   }
 });
 
-test('Unix timestamp converter handles explicit units, IANA zones, date input, current time, and DST errors in every locale', async ({ page }) => {
+test('Unix timestamp converter handles explicit units, IANA zones, date input, current time, and DST errors in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const leapTimestamp = String(Date.UTC(2024, 1, 29, 12, 30, 45));
   const cases = [
     ['ko', 'Unix 타임스탬프', '날짜와 시간', '시간대', '타임스탬프 단위', '초', '밀리초', '날짜로 변환', '타임스탬프로 변환', '현재 시간 사용', 'Epoch 예제', '초기화', '결과 복사', '입력과 결과를 초기화했습니다.', '타임스탬프를 날짜와 시간으로 변환했습니다.', '날짜와 시간을 타임스탬프로 변환했습니다.', '선택한 시간대에서 존재하지 않는 현지 시간입니다', 'ISO 8601'],
@@ -627,7 +663,8 @@ test('Unix timestamp converter handles explicit units, IANA zones, date input, c
   }
 });
 
-test('UUID generator creates bounded v4 batches and supports copy, download, and clear in every locale', async ({ page }) => {
+test('UUID generator creates bounded v4 batches and supports copy, download, and clear in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', 'UUID v4 생성기', '생성 개수 (1–100)', '개수를 3으로 설정', 'UUID 생성', '초기화', '결과 복사', '텍스트 다운로드', '보안 난수 UUID를 생성했습니다.', '1부터 100까지의 정수를 입력하세요.', '입력과 결과를 초기화했습니다.'],
     ['en', 'UUID v4 generator', 'Number to generate (1–100)', 'Set count to 3', 'Generate UUIDs', 'Clear', 'Copy result', 'Download text', 'Generated cryptographically random UUIDs.', 'Enter a whole number from 1 to 100.', 'Input and output cleared.'],
@@ -669,7 +706,8 @@ test('UUID generator creates bounded v4 batches and supports copy, download, and
   }
 });
 
-test('SHA hash generator matches SHA-2 vectors, optionally shows Base64, and accepts empty input in every locale', async ({ page }) => {
+test('SHA hash generator matches SHA-2 vectors, optionally shows Base64, and accepts empty input in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
   const cases = [
     ['ko', 'SHA 해시 생성기', '알고리즘', 'Base64 결과도 표시', '해시 생성', '예제 불러오기', '초기화', '결과 복사', '텍스트 다운로드', '브라우저에서 해시를 생성했습니다.', '입력과 결과를 초기화했습니다.'],
     ['en', 'SHA hash generator', 'Algorithm', 'Also show Base64 output', 'Generate hash', 'Load sample', 'Clear', 'Copy result', 'Download text', 'Generated the hash in your browser.', 'Input and output cleared.'],
@@ -734,4 +772,36 @@ test('mobile navigation opens and closes after selecting a tool', async ({ page,
   await page.getByRole('link', { name: /すべてのツール/ }).click();
   await expect(page).toHaveURL(/\/ja\/tools\/$/);
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('360px mobile tool pages have no page overflow and expose named controls in all locales', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'This scenario uses the mobile browser project.');
+  await page.setViewportSize({ width: 360, height: 800 });
+  for (const path of [
+    '/ko/tools/json-formatter/',
+    '/en/tools/sql-formatter/',
+    '/ja/tools/text-diff/',
+    '/zh/tools/regex-tester/',
+  ]) {
+    await page.goto(path);
+    const dimensions = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      document: document.documentElement.scrollWidth,
+      body: document.body.scrollWidth,
+    }));
+    expect(dimensions.document, `${path} document overflow`).toBeLessThanOrEqual(dimensions.viewport);
+    expect(dimensions.body, `${path} body overflow`).toBeLessThanOrEqual(dimensions.viewport);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('.tool-workbench .cm-content').first()).toBeVisible();
+
+    const unnamedButtons = await page.locator('button').evaluateAll((buttons) => buttons.filter((button) => (
+      !button.textContent?.trim() && !button.getAttribute('aria-label') && !button.getAttribute('aria-labelledby') && !button.getAttribute('title')
+    )).length);
+    expect(unnamedButtons, `${path} has buttons without accessible names`).toBe(0);
+    const textboxes = page.getByRole('textbox');
+    expect(await textboxes.count(), `${path} should expose an editor`).toBeGreaterThan(0);
+    for (let index = 0; index < await textboxes.count(); index++) {
+      await expect(textboxes.nth(index)).toHaveAccessibleName(/\S/);
+    }
+  }
 });
