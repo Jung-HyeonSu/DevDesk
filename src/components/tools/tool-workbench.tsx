@@ -18,6 +18,7 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'jwt-decoder': dynamic(() => import('./workbenches/jwt-workbench').then((module) => module.JwtWorkbench)),
   'cron-generator': dynamic(() => import('./workbenches/cron-workbench').then((module) => module.CronWorkbench)),
   'text-diff': dynamic(() => import('./workbenches/text-diff-workbench').then((module) => module.TextDiffWorkbench)),
+  'regex-tester': dynamic(() => import('./workbenches/regex-workbench').then((module) => module.RegexWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {

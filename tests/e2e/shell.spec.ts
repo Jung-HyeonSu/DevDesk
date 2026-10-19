@@ -259,6 +259,69 @@ test('Text diff shows line changes safely in side-by-side and unified views in e
   }
 });
 
+test('Regex tester highlights matches and recovers from a terminated Worker in every locale', async ({ page }) => {
+  const cases = [
+    ['ko', '예제 불러오기', '정규식 패턴', '플래그', '테스트 문자열', '정규식 실행', '정규식 결과', '일치 횟수', '캡처 그룹', '결과 복사', '텍스트 다운로드', '정규식 검사를 완료했습니다.', '정규식 패턴이 올바르지 않습니다.', '정규식 플래그가 올바르지 않습니다.'],
+    ['en', 'Load sample', 'Regular expression', 'Flags', 'Test string', 'Run regex', 'Regex results', 'Match count', 'Capture groups', 'Copy result', 'Download text', 'Regex check complete.', 'The regular expression is invalid.', 'The regex flags are invalid.'],
+    ['ja', 'サンプルを読み込む', '正規表現パターン', 'フラグ', 'テスト文字列', '正規表現を実行', '正規表現の結果', '一致数', 'キャプチャグループ', '結果をコピー', 'テキストをダウンロード', '正規表現の確認が完了しました。', '正規表現パターンが無効です。', '正規表現のフラグが無効です。'],
+    ['zh', '载入示例', '正则表达式模式', '标志', '测试文本', '运行正则表达式', '正则表达式结果', '匹配次数', '捕获组', '复制结果', '下载文本', '正则表达式检查完成。', '正则表达式模式无效。', '正则表达式标志无效。'],
+  ];
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  for (const [locale, sampleLabel, patternLabel, flagsLabel, inputLabel, runLabel, resultsLabel, countLabel, capturesLabel, copyLabel, downloadLabel, completedMessage, invalidPatternMessage, invalidFlagsMessage] of cases) {
+    await page.goto('/' + locale + '/tools/regex-tester/');
+    const workbench = page.locator('.regex-workbench');
+    await expect(workbench.locator('.workbench-note')).toBeVisible();
+    await expect(workbench.getByRole('textbox', { name: inputLabel })).toBeVisible();
+    await page.getByRole('button', { name: sampleLabel, exact: true }).click();
+    await page.getByRole('button', { name: runLabel, exact: true }).click();
+    await expect(workbench.getByRole('status')).toContainText(completedMessage);
+    const results = workbench.locator('.regex-results');
+    await expect(results.getByRole('heading', { name: resultsLabel })).toBeVisible();
+    await expect(results).toContainText(countLabel);
+    await expect(results.locator('.regex-match-count strong')).toHaveText('2');
+    await expect(results.locator('.regex-highlight mark')).toHaveCount(2);
+    const rows = results.locator('.regex-match-table tbody tr');
+    await expect(rows).toHaveCount(2);
+    await expect(rows.nth(0)).toContainText('alpha-12');
+    await expect(rows.nth(0)).toContainText('0–8');
+    await expect(results.locator('thead')).toContainText(capturesLabel);
+    await expect(rows.nth(0)).toContainText('alpha');
+    await expect(rows.nth(0)).toContainText('12');
+    await page.getByRole('button', { name: copyLabel, exact: true }).click();
+    await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('alpha-12');
+    const downloadPromise = page.waitForEvent('download');
+    await page.getByRole('button', { name: downloadLabel, exact: true }).click();
+    expect((await downloadPromise).suggestedFilename()).toBe('regex-matches.txt');
+
+    await page.getByLabel(patternLabel).fill('(');
+    await page.getByRole('button', { name: runLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidPatternMessage);
+    await page.getByLabel(patternLabel).fill('a');
+    await page.getByLabel(flagsLabel).fill('gg');
+    await page.getByRole('button', { name: runLabel, exact: true }).click();
+    await expect(workbench.getByRole('alert')).toContainText(invalidFlagsMessage);
+  }
+
+  await page.goto('/ko/tools/regex-tester/');
+  const workbench = page.locator('.regex-workbench');
+  await page.getByLabel('정규식 패턴').fill('(a+)+$');
+  await page.getByLabel('플래그').fill('');
+  const editor = workbench.locator('.editor-panel .cm-content');
+  await editor.click();
+  await editor.press('ControlOrMeta+A');
+  await page.keyboard.insertText('a'.repeat(20_000) + '!');
+  await page.getByRole('button', { name: '정규식 실행', exact: true }).click();
+  await expect(workbench.getByRole('alert')).toContainText('정규식 계산이 1초를 넘어서 중단했습니다.', { timeout: 10_000 });
+  await page.getByLabel('정규식 패턴').fill('a');
+  await page.getByLabel('플래그').fill('g');
+  await editor.click();
+  await editor.press('ControlOrMeta+A');
+  await page.keyboard.insertText('a');
+  await page.getByRole('button', { name: '정규식 실행', exact: true }).click();
+  await expect(workbench.getByRole('status')).toContainText('정규식 검사를 완료했습니다.');
+  await expect(workbench.locator('.regex-match-table tbody tr')).toHaveCount(1);
+});
+
 test('JSON formatter beautifies, minifies, validates, and safely reports errors in every locale', async ({ page }) => {
   const cases = [
     ['ko', '예제 불러오기', '정렬', '압축', '검증', '결과 복사', 'JSON 다운로드', '초기화', '결과를 클립보드에 복사했습니다.', 'JSON 파일을 다운로드했습니다.', '입력과 결과를 초기화했습니다.', 'JSON 객체, 배열 또는 primitive 값을 붙여넣으세요.', '유효한 JSON입니다.', '올바르지 않은 JSON입니다.'],

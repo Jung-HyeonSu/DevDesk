@@ -43,6 +43,11 @@ export type WorkbenchMessages = {
   diffAfterHint: string; diffIgnoreWhitespace: string; diffViewLabel: string; diffSideBySide: string; diffUnified: string;
   diffCompare: string; diffCompared: string; diffSummary: string; diffAdded: string; diffRemoved: string; diffChanged: string;
   diffNoChanges: string; diffTooLarge: string; diffTooManyLines: string; diffTooComplex: string;
+  regexToolLabel: string; regexNotice: string; regexPattern: string; regexFlags: string; regexFlagsHint: string; regexInput: string;
+  regexInputHint: string; regexRun: string; regexRunning: string; regexCompleted: string; regexWorkerError: string; regexTimeout: string;
+  regexTooLarge: string; regexInvalidFlags: string; regexInvalidPattern: string; regexNoMatches: string; regexResults: string;
+  regexMatchCount: string; regexHighlightedText: string; regexMatches: string; regexMatch: string; regexIndex: string;
+  regexCaptures: string; regexIndexHint: string; regexTruncated: string;
 };
 
 export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
@@ -103,6 +108,13 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     diffIgnoreWhitespace: '줄 앞뒤 공백 차이 무시', diffViewLabel: '차이 표시 방식', diffSideBySide: '나란히 보기', diffUnified: '통합 보기', diffCompare: '비교', diffCompared: '텍스트 비교를 완료했습니다.',
     diffSummary: '변경 요약', diffAdded: '추가된 줄', diffRemoved: '삭제된 줄', diffChanged: '변경된 줄', diffNoChanges: '두 텍스트에 차이가 없습니다.',
     diffTooLarge: '두 입력의 합계는 1 MB 이하여야 합니다.', diffTooManyLines: '각 입력은 5,000줄 이하여야 합니다.', diffTooComplex: '계산량이 너무 많아 비교를 중단했습니다. 입력을 줄이거나 나누어 비교하세요.',
+    regexToolLabel: '정규식 테스터', regexNotice: '정규식은 별도 Worker에서 실행하며 1초 후 중단합니다. 패턴은 2,000자, 패턴과 테스트 문자열 합계는 1 MB로 제한됩니다. 입력은 브라우저 안에서만 처리합니다.',
+    regexPattern: '정규식 패턴', regexFlags: '플래그', regexFlagsHint: '유효한 JavaScript 플래그를 입력하세요. 예: g, i, m, s, u', regexInput: '테스트 문자열', regexInputHint: '패턴을 확인할 텍스트를 입력하세요.',
+    regexRun: '정규식 실행', regexRunning: '별도 Worker에서 정규식을 확인하고 있습니다.', regexCompleted: '정규식 검사를 완료했습니다.', regexWorkerError: '정규식 Worker를 시작하거나 실행하지 못했습니다.',
+    regexTimeout: '정규식 계산이 1초를 넘어서 중단했습니다. 패턴이나 입력을 줄여 다시 시도하세요.', regexTooLarge: '패턴은 2,000자 이하여야 하며 패턴과 테스트 문자열의 합계는 1 MB 이하여야 합니다.',
+    regexInvalidFlags: '정규식 플래그가 올바르지 않습니다. JavaScript에서 지원하는 플래그를 확인하세요.', regexInvalidPattern: '정규식 패턴이 올바르지 않습니다.', regexNoMatches: '일치 항목이 없습니다.',
+    regexResults: '정규식 결과', regexMatchCount: '일치 횟수', regexHighlightedText: '일치 영역 강조', regexMatches: '일치 목록', regexMatch: '일치 항목', regexIndex: '인덱스(시작–끝)', regexCaptures: '캡처 그룹',
+    regexIndexHint: '인덱스는 JavaScript 문자열의 0부터 시작하는 UTF-16 위치이며 끝 인덱스는 포함하지 않습니다.', regexTruncated: '성능 보호를 위해 처음 {count}개 결과만 표시합니다.',
   },
   en: {
     input: 'Input', output: 'Output', sample: 'Load sample', clear: 'Clear', copy: 'Copy result', download: 'Download JSON',
@@ -161,6 +173,13 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     diffIgnoreWhitespace: 'Ignore leading and trailing whitespace changes', diffViewLabel: 'Diff view', diffSideBySide: 'Side by side', diffUnified: 'Unified', diffCompare: 'Compare text', diffCompared: 'Finished comparing the text.',
     diffSummary: 'Change summary', diffAdded: 'Added lines', diffRemoved: 'Removed lines', diffChanged: 'Changed lines', diffNoChanges: 'The texts are identical.',
     diffTooLarge: 'The combined input must be 1 MB or less.', diffTooManyLines: 'Each input must have 5,000 lines or fewer.', diffTooComplex: 'The comparison was stopped because it would take too much work. Reduce or split the inputs.',
+    regexToolLabel: 'Regex tester', regexNotice: 'Runs regular expressions in a separate Worker and stops after one second. Patterns are limited to 2,000 characters and pattern plus test text to 1 MB. Input stays in this browser.',
+    regexPattern: 'Regular expression', regexFlags: 'Flags', regexFlagsHint: 'Enter valid JavaScript flags, such as g, i, m, s, or u.', regexInput: 'Test string', regexInputHint: 'Enter text to check against the pattern.',
+    regexRun: 'Run regex', regexRunning: 'Checking the regular expression in a separate Worker.', regexCompleted: 'Regex check complete.', regexWorkerError: 'The regex Worker could not start or run.',
+    regexTimeout: 'Regex evaluation exceeded one second and was stopped. Reduce the pattern or input and try again.', regexTooLarge: 'Use a pattern of 2,000 characters or fewer and a combined pattern plus test text of 1 MB or less.',
+    regexInvalidFlags: 'The regex flags are invalid. Check the flags supported by JavaScript.', regexInvalidPattern: 'The regular expression is invalid.', regexNoMatches: 'No matches found.',
+    regexResults: 'Regex results', regexMatchCount: 'Match count', regexHighlightedText: 'Highlighted matches', regexMatches: 'Matches', regexMatch: 'Match', regexIndex: 'Index (start–end)', regexCaptures: 'Capture groups',
+    regexIndexHint: 'Indexes are zero-based UTF-16 positions in the JavaScript string; the end index is exclusive.', regexTruncated: 'Showing only the first {count} matches to protect performance.',
   },
   ja: {
     input: '入力', output: '結果', sample: 'サンプルを読み込む', clear: 'クリア', copy: '結果をコピー', download: 'JSON をダウンロード',
@@ -219,6 +238,13 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     diffIgnoreWhitespace: '行頭と行末の空白の違いを無視', diffViewLabel: '差分表示', diffSideBySide: '左右に並べる', diffUnified: '統合表示', diffCompare: 'テキストを比較', diffCompared: 'テキストを比較しました。',
     diffSummary: '変更の概要', diffAdded: '追加行', diffRemoved: '削除行', diffChanged: '変更行', diffNoChanges: '2 つのテキストに差分はありません。',
     diffTooLarge: '2 つの入力の合計を 1 MB 以下にしてください。', diffTooManyLines: '各入力は 5,000 行以下にしてください。', diffTooComplex: '計算量が多いため比較を中断しました。入力を小さくするか分割してください。',
+    regexToolLabel: '正規表現テスター', regexNotice: '正規表現は専用 Worker で実行し、1 秒で停止します。パターンは 2,000 文字、パターンとテスト文字列の合計は 1 MB までです。入力はブラウザー内でのみ処理します。',
+    regexPattern: '正規表現パターン', regexFlags: 'フラグ', regexFlagsHint: 'JavaScript で有効なフラグを入力してください。例: g, i, m, s, u', regexInput: 'テスト文字列', regexInputHint: 'パターンを確認するテキストを入力してください。',
+    regexRun: '正規表現を実行', regexRunning: '専用 Worker で正規表現を確認しています。', regexCompleted: '正規表現の確認が完了しました。', regexWorkerError: '正規表現 Worker を起動または実行できませんでした。',
+    regexTimeout: '正規表現の計算が 1 秒を超えたため停止しました。パターンまたは入力を短くして再試行してください。', regexTooLarge: 'パターンは 2,000 文字以下、パターンとテスト文字列の合計は 1 MB 以下にしてください。',
+    regexInvalidFlags: '正規表現のフラグが無効です。JavaScript が対応するフラグを確認してください。', regexInvalidPattern: '正規表現パターンが無効です。', regexNoMatches: '一致する項目はありません。',
+    regexResults: '正規表現の結果', regexMatchCount: '一致数', regexHighlightedText: '一致箇所の強調表示', regexMatches: '一致一覧', regexMatch: '一致項目', regexIndex: 'インデックス（開始–終了）', regexCaptures: 'キャプチャグループ',
+    regexIndexHint: 'インデックスは JavaScript 文字列の 0 始まり UTF-16 位置で、終了位置は含みません。', regexTruncated: '性能保護のため、最初の {count} 件のみ表示します。',
   },
   zh: {
     input: '输入', output: '结果', sample: '载入示例', clear: '清空', copy: '复制结果', download: '下载 JSON',
@@ -277,5 +303,12 @@ export const workbenchMessages: Record<Locale, WorkbenchMessages> = {
     diffIgnoreWhitespace: '忽略行首和行尾空格差异', diffViewLabel: '差异视图', diffSideBySide: '并排显示', diffUnified: '统一显示', diffCompare: '比较文本', diffCompared: '文本比较完成。',
     diffSummary: '变更摘要', diffAdded: '新增行', diffRemoved: '删除行', diffChanged: '修改行', diffNoChanges: '两个文本没有差异。',
     diffTooLarge: '两侧输入总计不能超过 1 MB。', diffTooManyLines: '每侧输入不能超过 5,000 行。', diffTooComplex: '比较计算量过大，已停止。请缩小或拆分输入。',
+    regexToolLabel: '正则表达式测试器', regexNotice: '正则表达式在独立 Worker 中运行，1 秒后停止。模式最多 2,000 个字符，模式与测试文本合计最多 1 MB。输入仅在此浏览器中处理。',
+    regexPattern: '正则表达式模式', regexFlags: '标志', regexFlagsHint: '输入有效的 JavaScript 标志，例如 g、i、m、s、u。', regexInput: '测试文本', regexInputHint: '输入要与模式匹配的文本。',
+    regexRun: '运行正则表达式', regexRunning: '正在独立 Worker 中检查正则表达式。', regexCompleted: '正则表达式检查完成。', regexWorkerError: '无法启动或运行正则表达式 Worker。',
+    regexTimeout: '正则表达式计算超过 1 秒，已停止。请缩短模式或输入后重试。', regexTooLarge: '模式不能超过 2,000 个字符，模式与测试文本合计不能超过 1 MB。',
+    regexInvalidFlags: '正则表达式标志无效。请检查 JavaScript 支持的标志。', regexInvalidPattern: '正则表达式模式无效。', regexNoMatches: '没有匹配项。',
+    regexResults: '正则表达式结果', regexMatchCount: '匹配次数', regexHighlightedText: '高亮匹配内容', regexMatches: '匹配列表', regexMatch: '匹配项', regexIndex: '索引（开始–结束）', regexCaptures: '捕获组',
+    regexIndexHint: '索引是 JavaScript 字符串中从 0 开始的 UTF-16 位置；结束索引不包含在匹配范围内。', regexTruncated: '为保护性能，仅显示前 {count} 项结果。',
   },
 };

@@ -89,6 +89,7 @@ for (const locale of locales) {
       if (type === 'tools' && slug === 'jwt-decoder' && !html.includes('class="jwt-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
       if (type === 'tools' && slug === 'cron-generator' && !html.includes('class="cron-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
       if (type === 'tools' && slug === 'text-diff' && !html.includes('class="diff-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
+      if (type === 'tools' && slug === 'regex-tester' && !html.includes('class="regex-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
     }
   }
 }
