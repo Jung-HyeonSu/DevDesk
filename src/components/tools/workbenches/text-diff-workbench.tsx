@@ -149,6 +149,12 @@ export function TextDiffWorkbench({ locale }: { locale: Locale }) {
             {view === 'side-by-side' ? (
               <div className="diff-table-scroll">
                 <table className="diff-table">
+                  <colgroup>
+                    <col className="diff-line-number-column" />
+                    <col />
+                    <col className="diff-line-number-column" />
+                    <col />
+                  </colgroup>
                   <thead><tr><th colSpan={2}>{text.diffBeforeLabel}</th><th colSpan={2}>{text.diffAfterLabel}</th></tr></thead>
                   <tbody>
                     {result.rows.map((row, index) => (
