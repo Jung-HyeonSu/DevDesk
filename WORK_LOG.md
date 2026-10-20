@@ -65,7 +65,7 @@
 ## Git 스냅샷
 
 - 기준 브랜치: `main`.
-- 커밋 전 기준 HEAD: `ccd25bd`; 브랜치는 `main`, 로컬 `origin/main` 기준 1 commit ahead다. 별도 `fetch`로 원격 최신 상태를 확인하지 않았다.
+- 현재 기록 기준 HEAD: `fdd2447`; 브랜치는 `main`, 로컬 `origin/main` 기준 2 commits ahead다. 별도 `fetch`로 원격 최신 상태를 확인하지 않았다.
 - 홈 화면·즐겨찾기·경로 변경은 기능 단위로 로컬 커밋한다. Push는 요청 범위에 포함되지 않았다.
 - 초기 PHASE별 Push 실패 내역은 [`IMPLEMENTATION_REPORT.md`](./IMPLEMENTATION_REPORT.md)의 Git 섹션을 참고한다. 이후의 원격 상태는 매 작업 시작 때 다시 확인한다.
 - 원격 반영 여부는 별도로 확인해 기록한다.
@@ -77,3 +77,10 @@
 - 커밋·push는 현재 사용자의 명시적 지시와 [`docs/spec/15-git-workflow.md`](./docs/spec/15-git-workflow.md)의 정책을 함께 확인한다. Push는 Cloudflare 자동 배포를 유발할 수 있다.
 - 계정 화면이나 배포 URL을 직접 확인하지 않았다면 환경변수 설정, 배포, Search Console 인증을 완료했다고 보고하지 않는다.
 - 실서비스 운영 정보나 사용자 제공 토큰을 필요 이상으로 복제하지 않는다.
+
+## 정책 페이지 콘텐츠 (2026-10-20)
+
+- 소개, 개인정보처리방침, 이용약관을 한국어·영어·일본어·중국어 간체로 확장했다. 각 페이지에 서비스가 제공하는 도구, 브라우저 내 처리 방식, 도구별 한계, 운영자 문의 경로를 구체적으로 설명한다.
+- 개인정보처리방침에는 브라우저 로컬 저장 설정, Cloudflare Pages의 일반 요청 정보, 이메일 문의 처리, 기본 광고 비활성 상태, AdSense 광고 쿠키·맞춤 광고 선택, EEA·영국·스위스 동의 관리 안내와 공식 안내 링크를 담았다.
+- 이용약관은 금지 이용, 출력 검증 책임, SQL·JWT·해시의 제한, 제3자 서비스, 가용성과 책임 범위를 다룬다. 실제 운영자 신원·지역, 광고 파트너 목록, 보유 설정, 동의 절차의 법률 검토는 광고 활성화 전 작업으로 [`DEPLOYMENT.md`](./DEPLOYMENT.md)에 남겼다.
+- 검증: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run verify:static`, `npm run verify:i18n`, `git diff --check` 통과. 단위/E2E 테스트, 공개 배포 URL 확인, Google AdSense 검토 결과는 이번 작업에서 확인하지 않았다.
