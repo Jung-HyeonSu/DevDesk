@@ -1,4 +1,5 @@
 import { expect, test, type Locator } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 test('root landing provides explicit links for all four languages', async ({ page }) => {
   await page.goto('/');
@@ -19,7 +20,7 @@ test('each localized homepage has matching HTML language and a tool entry point'
 test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The persisted favorites workflow runs in desktop Chromium; mobile navigation is verified separately.');
   await page.goto('/ko/tools/');
-  await expect(page.getByRole('article')).toHaveCount(12);
+  await expect(page.getByRole('article')).toHaveCount(13);
 
   await page.keyboard.press('ControlOrMeta+k');
   const dialog = page.getByRole('dialog');
@@ -85,6 +86,74 @@ test('ads remain absent and tool inputs stay on the local origin by default', as
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('browser-only');
   expect(page.url()).not.toContain('browser-only');
+});
+
+test('code formatter formats code in place, supports themes, copies code, and exports a PNG', async ({ page }) => {
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.addInitScript(() => {
+    const trackedWindow = window as Window & { __devdeskToolSuccessCount?: number };
+    trackedWindow.__devdeskToolSuccessCount = 0;
+    window.addEventListener('devdesk:tool-success', () => {
+      trackedWindow.__devdeskToolSuccessCount = (trackedWindow.__devdeskToolSuccessCount ?? 0) + 1;
+    });
+  });
+  await page.goto('/ko/tools/code-formatter/');
+  const workbench = page.locator('.code-formatter-workbench');
+  const expectSuccessBurst = async (count: number) => {
+    await expect.poll(() => page.evaluate(() => (window as Window & { __devdeskToolSuccessCount?: number }).__devdeskToolSuccessCount ?? 0)).toBe(count);
+    await expect(page.locator('.success-confetti-piece')).toHaveCount(48);
+  };
+  const language = workbench.getByLabel('언어');
+  const theme = workbench.getByLabel('색상 테마');
+  await expect(language).toHaveValue('java');
+  await expect(theme).toHaveValue('github-light');
+
+  const source = 'class A{public static void main(String[] args){System.out.println("Hello");}}';
+  await workbench.locator('.editor-panel').first().locator('.cm-content').fill(source);
+  await theme.selectOption('dracula');
+  await page.getByRole('button', { name: '코드 정렬', exact: true }).click();
+  await expect(workbench.locator('.status-message')).toContainText('코드를 정렬했습니다.');
+  await expectSuccessBurst(1);
+  await expect(workbench.locator('.editor-panel')).toHaveCount(1);
+  const formattedInput = workbench.locator('.code-image-card .cm-content');
+  await expect(formattedInput.locator('.cm-line')).toHaveCount(5);
+  await expect(formattedInput).toContainText('class A {');
+  await expect(formattedInput).toContainText('System.out.println("Hello");');
+  expect(await workbench.locator('.code-image-card .code-editor').evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(40, 42, 54)');
+  const syntaxColors = await formattedInput.locator('.cm-line span').evaluateAll((spans) => spans.map((span) => getComputedStyle(span).color));
+  expect(new Set(syntaxColors).size).toBeGreaterThan(1);
+
+  const formattedCode = await formattedInput.innerText();
+  await page.getByRole('button', { name: '코드 복사', exact: true }).click();
+  await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toBe(formattedCode);
+  await expectSuccessBurst(2);
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: '이미지 저장', exact: true }).click();
+  const imageDownload = await downloadPromise;
+  expect(imageDownload.suggestedFilename()).toBe('devdesk-code-java.png');
+  const imageBytes = await readFile((await imageDownload.path())!);
+  expect([...imageBytes.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+  await expectSuccessBurst(3);
+  const editorBounds = await workbench.locator('.code-image-card .code-editor').boundingBox();
+  expect(editorBounds).not.toBeNull();
+  if (!editorBounds) throw new Error('Code editor should have visible bounds.');
+  expect(Math.abs(imageBytes.readUInt32BE(16) - Math.round(editorBounds.width * 2))).toBeLessThanOrEqual(1);
+  expect(Math.abs(imageBytes.readUInt32BE(20) - Math.round(editorBounds.height * 2))).toBeLessThanOrEqual(1);
+
+  for (const nextLanguage of ['c', 'csharp', 'cpp', 'css', 'go', 'html', 'javascript', 'perl', 'php', 'python', 'ruby', 'sql', 'typescript']) {
+    await language.selectOption(nextLanguage);
+    await expect(page.getByRole('button', { name: '코드 정렬', exact: true })).toBeEnabled();
+    await page.getByRole('button', { name: '예제 불러오기', exact: true }).click();
+    await page.getByRole('button', { name: '코드 정렬', exact: true }).click();
+    await expect(workbench.locator('.status-message'), `${nextLanguage} example formatting failed`).toContainText('코드를 정렬했습니다.', { timeout: 20_000 });
+    await expect(workbench.locator('.code-image-card .cm-content')).not.toBeEmpty();
+    if (nextLanguage === 'perl') {
+      await expect(workbench.locator('.code-image-card .cm-line')).toHaveCount(2);
+      await expect(workbench.locator('.code-image-card .cm-content')).toContainText('my $name = "DevDesk";');
+    }
+  }
+
 });
 
 test('localized privacy, terms, and contact pages describe the shipped service', async ({ page }) => {
@@ -323,9 +392,19 @@ test('Text diff shows line changes safely in side-by-side and unified views in e
     await expect(workbench.locator('.diff-row-added')).toContainText('🌏');
     await expect(workbench.locator('.diff-row-changed')).toContainText('draft');
     await expect(workbench.locator('.diff-table tr')).toHaveCount(5);
+    await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+    const selectedTab = workbench.locator('.diff-view-tabs button[aria-selected="true"]');
+    await expect(selectedTab).toHaveCSS('background-color', 'rgb(36, 50, 81)');
+    await expect(workbench.locator('.diff-row-added')).toHaveCSS('background-color', 'rgb(23, 58, 49)');
+    await expect(workbench.locator('.diff-row-added')).toHaveCSS('color', 'rgb(216, 245, 233)');
+    const lineNumberColumnWidth = await workbench.locator('col.diff-line-number-column').first().evaluate((column) => column.getBoundingClientRect().width);
+    expect(lineNumberColumnWidth).toBeLessThanOrEqual(48);
 
     await page.getByRole('tab', { name: unifiedLabel, exact: true }).click();
     await expect(page.getByRole('tab', { name: unifiedLabel, exact: true })).toHaveAttribute('aria-selected', 'true');
+    await expect(selectedTab).toHaveCSS('background-color', 'rgb(36, 50, 81)');
+    await expect(workbench.locator('.diff-unified-row.diff-row-removed')).toHaveCSS('color', 'rgb(255, 225, 226)');
+    await expect(workbench.locator('.diff-unified-row.diff-row-added')).toHaveCSS('color', 'rgb(216, 245, 233)');
     await expect(workbench.locator('.diff-unified-row')).toHaveCount(5);
     await page.getByRole('button', { name: copyLabel, exact: true }).click();
     await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('+ 🌏');

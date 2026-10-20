@@ -1,8 +1,8 @@
 import type { Locale } from '@/i18n/config';
 
 export type ToolCategory = 'format' | 'encoding' | 'security' | 'time' | 'text' | 'generator' | 'data';
-export type ToolSlug = 'json-formatter' | 'sql-formatter' | 'jwt-decoder' | 'cron-generator' | 'text-diff' | 'base64' | 'url-encoder' | 'unix-timestamp' | 'uuid-generator' | 'hash-generator' | 'regex-tester' | 'yaml-json';
-export const toolSlugs: readonly ToolSlug[] = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json'];
+export type ToolSlug = 'json-formatter' | 'sql-formatter' | 'jwt-decoder' | 'cron-generator' | 'text-diff' | 'base64' | 'url-encoder' | 'unix-timestamp' | 'uuid-generator' | 'hash-generator' | 'regex-tester' | 'yaml-json' | 'code-formatter';
+export const toolSlugs: readonly ToolSlug[] = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
 
 export type ToolDefinition = {
   id: ToolSlug;
@@ -146,6 +146,17 @@ export const toolRegistry: ToolDefinition[] = [
       en: ['configuration', 'serialize', 'convert', 'YAML to JSON', 'JSON to YAML', '설정'],
       ja: ['設定', 'シリアライズ', '変換', '相互変換', 'YAML to JSON', 'JSON to YAML'],
       zh: ['配置', '序列化', '转换', 'YAML 转 JSON', 'JSON 转 YAML'],
+    },
+  },
+  {
+    id: 'code-formatter', slug: 'code-formatter', category: 'format', icon: '</>', order: 13,
+    relatedToolIds: ['json-formatter', 'sql-formatter', 'yaml-json'],
+    name: { ko: '코드 포맷터', en: 'Code Formatter', ja: 'コードフォーマッター', zh: '代码格式化工具' },
+    keywords: {
+      ko: ['코드 정렬', '코드 포맷', '코드 포맷터', '구문 강조', '색상 테마', '코드 이미지', 'code beautifier', 'code formatter'],
+      en: ['format code', 'code formatter', 'code beautifier', 'syntax highlighting', 'color theme', 'save code as image'],
+      ja: ['コード整形', 'コードフォーマット', '構文強調表示', 'カラーテーマ', 'コード画像', 'beautifier'],
+      zh: ['代码格式化', '代码美化', '语法高亮', '颜色主题', '代码图片', 'beautifier'],
     },
   },
 ];

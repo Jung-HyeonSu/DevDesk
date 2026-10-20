@@ -21,6 +21,7 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'text-diff': dynamic(() => import('./workbenches/text-diff-workbench').then((module) => module.TextDiffWorkbench)),
   'regex-tester': dynamic(() => import('./workbenches/regex-workbench').then((module) => module.RegexWorkbench)),
   'yaml-json': dynamic(() => import('./workbenches/yaml-json-workbench').then((module) => module.YamlJsonWorkbench)),
+  'code-formatter': dynamic(() => import('./workbenches/code-formatter-workbench').then((module) => module.CodeFormatterWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {

@@ -5,7 +5,7 @@ const root = resolve(process.cwd(), 'out');
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devdesk-7e7.pages.dev').replace(/\/$/, '');
 const locales = ['ko', 'en', 'ja', 'zh'];
 const hreflangs = { ko: 'ko', en: 'en', ja: 'ja', zh: 'zh-CN' };
-const toolSlugs = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json'];
+const toolSlugs = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
 const sections = ['about', 'privacy', 'terms', 'contact'];
 const sharedPaths = ['/', '/guides', ...sections.map((section) => `/${section}`)];
 const toolPaths = toolSlugs.flatMap((slug) => [`/tools/${slug}`, `/guides/${slug}`]);
@@ -100,6 +100,7 @@ for (const locale of locales) {
       if (type === 'tools' && slug === 'text-diff' && !html.includes('class="diff-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
       if (type === 'tools' && slug === 'regex-tester' && !html.includes('class="regex-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
       if (type === 'tools' && slug === 'yaml-json' && !html.includes('class="yaml-json-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
+      if (type === 'tools' && slug === 'code-formatter' && !html.includes('class="code-formatter-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
     }
   }
 }

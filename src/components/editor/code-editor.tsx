@@ -5,9 +5,12 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { EditorView } from '@codemirror/view';
 import { oneDark } from '@codemirror/theme-one-dark';
 import type { Extension } from '@codemirror/state';
+import { StreamLanguage } from '@codemirror/language';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import type { CodeLanguage, CodeTheme } from '@/lib/tools/code-languages';
+import { codeEditorThemes } from '@/components/editor/code-themes';
 
-type EditorLanguage = 'json' | 'sql' | 'yaml' | 'text';
+export type EditorLanguage = 'json' | 'sql' | 'yaml' | 'text' | CodeLanguage;
 
 const CodeMirror = dynamic(() => import('@uiw/react-codemirror'), {
   ssr: false,
@@ -18,6 +21,19 @@ const languageLoaders: Record<Exclude<EditorLanguage, 'text'>, () => Promise<Ext
   json: async () => (await import('@codemirror/lang-json')).json(),
   sql: async () => (await import('@codemirror/lang-sql')).sql(),
   yaml: async () => (await import('@codemirror/lang-yaml')).yaml(),
+  c: async () => (await import('@codemirror/lang-cpp')).cpp(),
+  csharp: async () => StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).csharp),
+  cpp: async () => (await import('@codemirror/lang-cpp')).cpp(),
+  css: async () => (await import('@codemirror/lang-css')).css(),
+  go: async () => (await import('@codemirror/lang-go')).go(),
+  html: async () => (await import('@codemirror/lang-html')).html(),
+  java: async () => (await import('@codemirror/lang-java')).java(),
+  javascript: async () => (await import('@codemirror/lang-javascript')).javascript(),
+  perl: async () => StreamLanguage.define((await import('@codemirror/legacy-modes/mode/perl')).perl),
+  php: async () => (await import('@codemirror/lang-php')).php(),
+  python: async () => (await import('@codemirror/lang-python')).python(),
+  ruby: async () => StreamLanguage.define((await import('@codemirror/legacy-modes/mode/ruby')).ruby),
+  typescript: async () => (await import('@codemirror/lang-javascript')).javascript({ typescript: true }),
 };
 
 function getThemeSnapshot(): 'light' | 'dark' {
@@ -45,6 +61,7 @@ export function CodeEditor({
   placeholder,
   readOnly = false,
   language = 'text',
+  editorTheme,
   minHeight = '220px',
 }: {
   labelledBy?: string;
@@ -54,6 +71,7 @@ export function CodeEditor({
   placeholder?: string;
   readOnly?: boolean;
   language?: EditorLanguage;
+  editorTheme?: CodeTheme;
   minHeight?: string;
 }) {
   const colorScheme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, () => 'light');
@@ -94,7 +112,7 @@ export function CodeEditor({
     onChange: (nextValue) => onChange?.(nextValue),
     placeholder,
     readOnly,
-    theme: colorScheme === 'dark' ? oneDark : 'light',
+    theme: editorTheme ? codeEditorThemes[editorTheme] : colorScheme === 'dark' ? oneDark : 'light',
     value,
   };
 

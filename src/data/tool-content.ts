@@ -11,6 +11,10 @@ export type ToolContent = {
 };
 
 export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
+  'code-formatter': [
+    { input: 'class Hello{public static void main(String[] args){System.out.println("Hello, DevDesk!");}}', output: 'class Hello {\n  public static void main(String[] args) {\n    System.out.println("Hello, DevDesk!");\n  }\n}' },
+    { input: 'function greet(name){return "Hello, "+name+"!"}', output: 'function greet(name) {\n  return "Hello, " + name + "!";\n}' },
+  ],
   'json-formatter': [
     { input: '{"name":"DevDesk","active":true,"count":3}', output: '{\n  "name": "DevDesk",\n  "active": true,\n  "count": 3\n}' },
     { input: '[1,true,null]', output: '[\n  1,\n  true,\n  null\n]' },
@@ -63,6 +67,16 @@ export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
 
 export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
   ko: {
+    'code-formatter': {
+      description: 'C, C#, C++, CSS, Go, HTML, Java, JavaScript, Perl, PHP, Python, Ruby, SQL, TypeScript 코드를 구문 강조와 테마 색상으로 보여주고 포맷합니다. 입력·포맷·이미지 저장은 브라우저에서 처리합니다.',
+      steps: ['언어와 색상 테마, 2칸 또는 4칸 들여쓰기를 선택합니다.', '코드를 붙여넣거나 예제를 불러온 뒤 정렬을 실행합니다.', '결과를 복사하거나 구문 강조가 적용된 PNG 이미지로 저장합니다.'],
+      caution: 'Perl은 문법 구조에 따라 문장 줄바꿈과 블록 들여쓰기를 정리합니다. 문법 분석에 실패하면 원문을 보존합니다. PHP와 HTML 혼합 파일은 포맷 결과를 확인하세요. Go는 gofmt 표준 들여쓰기를 사용합니다.',
+      faqs: [
+        { question: '코드가 서버로 전송되나요?', answer: '아니요. 편집과 포맷은 브라우저에서 실행하며 입력 코드를 서버로 전송하지 않습니다.' },
+        { question: '모든 언어를 자동 포맷할 수 있나요?', answer: '네, 목록의 14개 언어에서 포맷을 지원합니다. Perl은 문법 구조에 따라 줄바꿈과 들여쓰기를 정리하고, Go는 gofmt 표준 들여쓰기를 따릅니다.' },
+        { question: '결과를 이미지로 저장할 수 있나요?', answer: '네. 선택한 색상 테마와 구문 강조가 적용된 결과를 PNG로 저장할 수 있습니다.' },
+      ],
+    },
     'json-formatter': {
       description: '무료 온라인 JSON 포맷터로 JSON 문법을 검사하고 들여쓰기를 정리하거나 JSON을 압축할 수 있습니다. 모든 작업은 브라우저에서 처리되며 입력은 서버로 전송되지 않습니다.',
       steps: ['JSON 텍스트를 붙여넣거나 예제를 불러옵니다.', '2칸 또는 4칸 들여쓰기를 고릅니다.', '정렬·압축·검증을 실행한 뒤 복사하거나 JSON 파일로 내려받습니다.'],
@@ -185,6 +199,16 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
     },
   },
   en: {
+    'code-formatter': {
+      description: 'View and format C, C#, C++, CSS, Go, HTML, Java, JavaScript, Perl, PHP, Python, Ruby, SQL, and TypeScript with syntax highlighting and selectable themes. Editing, formatting, and image export run in your browser.',
+      steps: ['Choose a language, color theme, and 2- or 4-space indentation.', 'Paste code or load an example, then format it.', 'Copy the result or save a syntax-highlighted PNG image.'],
+      caution: 'Perl formatting uses syntax structure to organize statement line breaks and block indentation. If parsing fails, the original code is preserved. Review mixed PHP and HTML files. Go uses gofmt’s standard indentation.',
+      faqs: [
+        { question: 'Is my code sent to a server?', answer: 'No. Editing and formatting run in your browser, and input code is not sent to a server.' },
+        { question: 'Can every language be formatted automatically?', answer: 'Formatting is available for all 14 listed languages. Perl uses syntax structure for line breaks and indentation, while Go follows gofmt indentation.' },
+        { question: 'Can I save the result as an image?', answer: 'Yes. Save the formatted result as a PNG with the selected color theme and syntax highlighting.' },
+      ],
+    },
     'json-formatter': {
       description: 'Use this free online JSON formatter to validate JSON syntax, format indentation, or minify JSON. Processing runs in your browser, so your input is not sent to a server.',
       steps: ['Paste JSON or load a sample.', 'Choose two or four spaces for indentation.', 'Beautify, minify, or validate, then copy or download the result.'],
@@ -307,6 +331,16 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
     },
   },
   ja: {
+    'code-formatter': {
+      description: 'C、C#、C++、CSS、Go、HTML、Java、JavaScript、Perl、PHP、Python、Ruby、SQL、TypeScript のコードを、構文強調表示と選択可能なテーマで整形します。編集・整形・画像保存はブラウザー内で処理します。',
+      steps: ['言語、カラーテーマ、2 または 4 スペースのインデントを選びます。', 'コードを貼り付けるかサンプルを読み込み、整形します。', '結果をコピーするか、構文強調付き PNG として保存します。'],
+      caution: 'Perl は構文構造に基づいて文の改行とブロックのインデントを整えます。解析に失敗した場合は元のコードを保持します。PHP と HTML の混在ファイルは結果を確認してください。Go は gofmt 標準のインデントを使用します。',
+      faqs: [
+        { question: 'コードはサーバーに送信されますか？', answer: 'いいえ。編集と整形はブラウザー内で行い、入力コードをサーバーに送信しません。' },
+        { question: 'すべての言語を自動整形できますか？', answer: '一覧の 14 言語すべてに対応しています。Perl は構文構造に基づいて改行とインデントを整え、Go は gofmt のインデント規則に従います。' },
+        { question: '結果を画像として保存できますか？', answer: 'はい。選択したテーマと構文強調を適用した結果を PNG として保存できます。' },
+      ],
+    },
     'json-formatter': {
       description: 'JSON の構文を検証し、インデントを整えます。整形と圧縮はブラウザー内で処理します。',
       steps: ['JSON を貼り付けるか、サンプルを読み込みます。', 'インデントを 2 または 4 スペースから選びます。', '整形・圧縮・検証を行い、コピーまたは JSON ファイルとして保存します。'],
@@ -429,6 +463,16 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
     },
   },
   zh: {
+    'code-formatter': {
+      description: '通过语法高亮和可选主题显示并格式化 C、C#、C++、CSS、Go、HTML、Java、JavaScript、Perl、PHP、Python、Ruby、SQL 和 TypeScript。编辑、格式化和图片导出都在浏览器中完成。',
+      steps: ['选择语言、颜色主题以及 2 或 4 个空格的缩进。', '粘贴代码或载入示例，然后格式化。', '复制结果，或将带语法高亮的 PNG 图片保存到本地。'],
+      caution: 'Perl 根据语法结构整理语句换行和代码块缩进。如果解析失败，会保留原始代码。请检查混合 HTML 的 PHP 文件。Go 使用 gofmt 标准缩进。',
+      faqs: [
+        { question: '代码会发送到服务器吗？', answer: '不会。编辑和格式化都在浏览器中运行，输入代码不会发送到服务器。' },
+        { question: '所有语言都能自动格式化吗？', answer: '列表中的 14 种语言都支持格式化。Perl 根据语法结构整理换行和缩进，Go 遵循 gofmt 缩进。' },
+        { question: '可以将结果保存为图片吗？', answer: '可以。结果会以所选主题和语法高亮生成 PNG 图片。' },
+      ],
+    },
     'json-formatter': {
       description: '校验 JSON 语法并统一缩进。格式化和压缩都在当前浏览器中完成。',
       steps: ['粘贴 JSON，或载入示例。', '选择两个或四个空格缩进。', '执行美化、压缩或校验，然后复制或下载结果。'],

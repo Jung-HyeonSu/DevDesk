@@ -8,7 +8,7 @@ DevDesk is a multilingual collection of practical developer tools that run in yo
 
 ## Features
 
-- **12 developer tools:**
+- **13 developer tools:**
   - Format, minify, and validate JSON
   - Format SQL
   - Decode JWT headers and payloads (signature verification is not performed)

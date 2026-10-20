@@ -4,15 +4,17 @@ import { useEffect, useId } from 'react';
 import type { ReactNode } from 'react';
 import type { Locale } from '@/i18n/config';
 import { CodeEditor } from '@/components/editor/code-editor';
+import type { EditorLanguage } from '@/components/editor/code-editor';
+import type { CodeTheme } from '@/lib/tools/code-languages';
 
 const characterLabels: Record<Locale, string> = { ko: '글자', en: 'characters', ja: '文字', zh: '个字符' };
 
-export function EditorPanel({ locale, label, value, onChange, placeholder, readOnly = false, language = 'text' }: { locale: Locale; label: string; value: string; onChange?: (value: string) => void; placeholder?: string; readOnly?: boolean; language?: 'json' | 'sql' | 'yaml' | 'text' }) {
+export function EditorPanel({ locale, label, value, onChange, placeholder, readOnly = false, language = 'text', editorTheme }: { locale: Locale; label: string; value: string; onChange?: (value: string) => void; placeholder?: string; readOnly?: boolean; language?: EditorLanguage; editorTheme?: CodeTheme }) {
   const labelId = useId();
   return (
     <section className="editor-panel">
       <span className="editor-label" id={labelId}>{label}</span>
-      <div className="code-editor"><CodeEditor labelledBy={labelId} label={label} language={language} minHeight="220px" onChange={onChange} placeholder={placeholder} readOnly={readOnly} value={value} /></div>
+      <div className="code-editor" data-code-theme={editorTheme}><CodeEditor labelledBy={labelId} label={label} language={language} editorTheme={editorTheme} minHeight="220px" onChange={onChange} placeholder={placeholder} readOnly={readOnly} value={value} /></div>
       <div className="editor-footer"><span>{value.length.toLocaleString(locale)} {characterLabels[locale]}</span><span>UTF-8</span></div>
     </section>
   );

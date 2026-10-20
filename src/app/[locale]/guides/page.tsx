@@ -53,6 +53,7 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'url-encoder': 'URL 구성 요소를 퍼센트 인코딩하는 방법', 'unix-timestamp': '초·밀리초와 날짜를 시간대별로 변환하는 방법',
     'uuid-generator': 'Web Crypto로 UUID v4를 생성하는 방법', 'hash-generator': 'SHA-2 digest를 브라우저에서 계산하는 방법',
     'regex-tester': 'JavaScript 정규식과 캡처 그룹을 점검하는 방법', 'yaml-json': 'YAML과 JSON을 안전하게 양방향 변환하는 방법',
+    'code-formatter': '여러 언어의 코드를 색상 테마로 정렬하고 이미지로 저장하는 방법',
   },
   en: {
     'json-formatter': 'Validate JSON and choose readable indentation', 'sql-formatter': 'Format SQL clauses without running a query',
@@ -61,6 +62,7 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'url-encoder': 'Percent-encode a URL component safely', 'unix-timestamp': 'Convert seconds, milliseconds, and dates by time zone',
     'uuid-generator': 'Generate UUID v4 values with Web Crypto', 'hash-generator': 'Calculate SHA-2 digests in the browser',
     'regex-tester': 'Inspect JavaScript matches and capture groups', 'yaml-json': 'Convert YAML and JSON in both directions',
+    'code-formatter': 'Format code with selectable themes and save it as an image',
   },
   ja: {
     'json-formatter': 'JSON の検証と読みやすいインデント', 'sql-formatter': 'SQL を実行せず句と字下げを整形',
@@ -69,6 +71,7 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'url-encoder': 'URL コンポーネントをパーセントエンコード', 'unix-timestamp': '秒・ミリ秒と日時をタイムゾーン別に変換',
     'uuid-generator': 'Web Crypto で UUID v4 を生成', 'hash-generator': 'ブラウザーで SHA-2 digest を計算',
     'regex-tester': 'JavaScript の一致とキャプチャを確認', 'yaml-json': 'YAML と JSON を双方向に変換',
+    'code-formatter': 'テーマを選んでコードを整形し、画像として保存',
   },
   zh: {
     'json-formatter': '校验 JSON 并设置易读缩进', 'sql-formatter': '整理 SQL 子句但不执行查询',
@@ -77,5 +80,6 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'url-encoder': '安全地对 URL 组件进行百分号编码', 'unix-timestamp': '按时区转换秒、毫秒和日期',
     'uuid-generator': '使用 Web Crypto 生成 UUID v4', 'hash-generator': '在浏览器中计算 SHA-2 摘要',
     'regex-tester': '查看 JavaScript 匹配项和捕获组', 'yaml-json': '双向转换 YAML 与 JSON',
+    'code-formatter': '选择主题格式化代码并保存为图片',
   },
 };

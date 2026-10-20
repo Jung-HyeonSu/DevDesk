@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 const locales = ['ko', 'en', 'ja', 'zh'];
-const expectedTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json'];
+const expectedTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
 
 async function parseTypeScript(relativePath) {
   const text = await readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8');
@@ -71,6 +71,14 @@ const workbenchByLocale = new Map(locales.map((locale) => [locale, workbenchMess
 const workbenchKeys = [...properties(workbenchByLocale.get('ko'), 'ko workbench messages').keys()];
 for (const locale of locales) assertSameKeys(properties(workbenchByLocale.get(locale), `${locale} workbench messages`), workbenchKeys, `${locale} workbench message`);
 assertPlaceholderParity(workbenchByLocale, 'workbench messages');
+
+const codeFormatterSource = await parseTypeScript('src/i18n/code-formatter.ts');
+const codeFormatterMessages = properties(variableObject(codeFormatterSource, 'codeFormatterMessages'), 'codeFormatterMessages');
+assertSameKeys(codeFormatterMessages, locales, 'code formatter locale');
+const codeFormatterByLocale = new Map(locales.map((locale) => [locale, codeFormatterMessages.get(locale)]));
+const codeFormatterKeys = [...properties(codeFormatterByLocale.get('ko'), 'ko code formatter messages').keys()];
+for (const locale of locales) assertSameKeys(properties(codeFormatterByLocale.get(locale), `${locale} code formatter messages`), codeFormatterKeys, `${locale} code formatter message`);
+assertPlaceholderParity(codeFormatterByLocale, 'code formatter messages');
 
 const dataSource = await parseTypeScript('src/data/tool-content.ts');
 const toolContent = properties(variableObject(dataSource, 'toolContent'), 'toolContent');

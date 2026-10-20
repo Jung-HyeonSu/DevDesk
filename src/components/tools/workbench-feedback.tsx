@@ -7,6 +7,12 @@ const toolSuccessEvent = 'devdesk:tool-success';
 
 export type WorkbenchStatus = { kind: 'success' | 'error' | 'info'; message: string };
 
+export function notifyWorkbenchSuccess() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(toolSuccessEvent));
+  }
+}
+
 export function useWorkbenchStatus(initialStatus: WorkbenchStatus | null = null) {
   const [status, setStatus] = useState(initialStatus);
   const statusRef = useRef(status);
@@ -14,9 +20,7 @@ export function useWorkbenchStatus(initialStatus: WorkbenchStatus | null = null)
     const nextStatus = typeof nextState === 'function' ? nextState(statusRef.current) : nextState;
     statusRef.current = nextStatus;
     setStatus(nextStatus);
-    if (nextStatus?.kind === 'success' && typeof window !== 'undefined') {
-      window.dispatchEvent(new Event(toolSuccessEvent));
-    }
+    if (nextStatus?.kind === 'success') notifyWorkbenchSuccess();
   }, []);
 
   return [status, setWorkbenchStatus] as const;
