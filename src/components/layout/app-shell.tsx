@@ -14,6 +14,7 @@ type Preferences = {
   recentIds: string[];
   toggleFavorite: (id: string) => void;
   markRecent: (id: string) => void;
+  clearRecent: () => void;
 };
 
 type StoredPreferences = { favoriteIds: string[]; recentIds: string[] };
@@ -72,8 +73,12 @@ function PreferencesProvider({ children }: { children: ReactNode }) {
     try { window.localStorage.setItem('devdesk:recent', JSON.stringify(next)); } catch { /* Recent history is optional. */ }
     notifyPreferencesChanged();
   }, []);
+  const clearRecent = useCallback(() => {
+    try { window.localStorage.setItem('devdesk:recent', JSON.stringify([])); } catch { /* Recent history is optional. */ }
+    notifyPreferencesChanged();
+  }, []);
 
-  const value = useMemo(() => ({ ...stored, toggleFavorite, markRecent }), [stored, toggleFavorite, markRecent]);
+  const value = useMemo(() => ({ ...stored, toggleFavorite, markRecent, clearRecent }), [stored, toggleFavorite, markRecent, clearRecent]);
   return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>;
 }
 
@@ -151,6 +156,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   const { favoriteIds, recentIds, markRecent } = useToolPreferences();
   const { discardUnlessTarget } = useToolHandoff();
   const theme = useSyncExternalStore(subscribePreferences, getThemeSnapshot, () => 'system');
+  const isLocaleHome = pathname === `/${locale}/` || pathname === `/${locale}`;
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -190,6 +196,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   }, []);
 
   const closeMobileNav = () => setMobileNavOpen(false);
+  const navigateHomeCategory = (category: ToolCategory | 'all') => window.dispatchEvent(new CustomEvent('devdesk:home-category', { detail: category }));
   const changeLocale = (nextLocale: Locale) => {
     closeMobileNav();
     const rest = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '');
@@ -206,16 +213,16 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   });
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isLocaleHome ? ' is-home' : ''}`}>
       <header className="topbar">
         <div className="topbar-inner">
-          <Link className="brand" href={`/${locale}/`} onClick={closeMobileNav}><Image alt="" aria-hidden="true" className="brand-mark" height={32} src="/icon.svg" width={32} /><span>DevDesk</span></Link>
-          <nav className="top-nav" aria-label={text.tools}>
-            <Link aria-current={pathname.includes('/tools') ? 'page' : undefined} href={`/${locale}/tools/`} onClick={closeMobileNav}>{text.tools}</Link>
+          <Link className="brand" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><Image alt="" aria-hidden="true" className="brand-mark" height={32} src="/icon.svg" width={32} /><span>DevDesk</span></Link>
+          <nav className="top-nav" aria-label={text.primaryNavigation}>
+            <Link aria-current={isLocaleHome ? 'page' : undefined} href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}>{text.home}</Link>
             <Link href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
           </nav>
           <div className="top-actions">
-            <button aria-label={`${text.search} ⌘ K`} className="search-trigger" onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
+            <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
             <label className="visually-hidden" htmlFor="locale-select">{text.language}</label>
             <select className="locale-select" id="locale-select" onChange={(event) => changeLocale(event.target.value as Locale)} value={locale}>
               {locales.map((item) => <option key={item} value={item}>{localeMetadata[item].label}</option>)}
@@ -228,10 +235,10 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
 
       <div className="shell-body">
         <aside className={`sidebar${mobileNavOpen ? ' is-open' : ''}`} aria-label={text.categories}>
-          <Link className="sidebar-primary-link" href={`/${locale}/tools/`} onClick={closeMobileNav}><span aria-hidden="true">⌘</span>{text.allTools}<kbd>12</kbd></Link>
+          <Link className="sidebar-primary-link" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><span aria-hidden="true">⌘</span>{text.allTools}<kbd>12</kbd></Link>
           <div className="sidebar-group">
             <p className="sidebar-heading">{text.categories}</p>
-            {categories.map((category) => <Link className="sidebar-category-link" href={`/${locale}/tools/#${category}`} key={category} onClick={closeMobileNav}><span className={`category-dot category-${category}`} />{text.categoryNames[category]}</Link>)}
+            {categories.map((category) => <Link className="sidebar-category-link" href={`/${locale}/#home-category-${category}`} key={category} onClick={() => { closeMobileNav(); navigateHomeCategory(category); }}><span className={`category-dot category-${category}`} />{text.categoryNames[category]}</Link>)}
           </div>
           <div className="sidebar-group">
             <p className="sidebar-heading">{text.favorites}</p>

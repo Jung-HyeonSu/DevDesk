@@ -6,7 +6,7 @@
 
 ### 2.1 정적 URL
 
-언어별 경로를 **실제 빌드 시점에 생성한다**. 런타임 리다이렉트, 쿠키 기반 로케일 탐색, 서버 미들웨어는 사용하지 않는다.
+언어별 경로를 **실제 빌드 시점에 생성한다**. 쿠키 기반 로케일 탐색과 서버 미들웨어는 사용하지 않는다. 도구 목록은 홈에 통합하며 별도의 `/{locale}/tools/` 목록 경로는 제공하지 않는다. 각 도구의 상세 기능은 개별 도구 경로에서 제공한다.
 
 ```text
 /                        # 4개 언어 선택과 대표 기능을 보여주는 정적 랜딩
@@ -15,7 +15,6 @@
 /ja/                     # 日本語 home
 /zh/                     # 简体中文 home
 
-/{locale}/tools/                  # 전체 도구 검색/목록
 /{locale}/tools/json-formatter/   # JSON 정렬
 /{locale}/tools/sql-formatter/
 /{locale}/tools/jwt-decoder/
@@ -44,27 +43,30 @@
 - `locale` 허용 값: `ko | en | ja | zh`; 중국어는 **간체**만 제공하고 hreflang은 `zh-CN`으로 한다.
 - 슬러그는 언어와 무관하게 동일하게 유지하여 번역/경로 연결을 단순화한다.
 - `trailingSlash: true`로 정적 호스팅에서 슬래시 URL과 실제 `index.html`이 일치하도록 한다.
+- 홈 화면에 전체 도구 카탈로그를 둔다. 카테고리와 즐겨찾기 필터, 각 도구 행의 별표로 찾기와 즐겨찾기 관리를 제공한다.
 - 404 페이지는 정적 페이지로 제공하고 사용자가 홈/목록으로 돌아갈 수 있게 한다.
 - `/` 페이지는 JS를 끄거나 검색 봇으로 접근해도 4개 언어 링크를 확인할 수 있어야 한다. `navigator.language`에 따른 자동 강제 리다이렉트 금지.
 - 모든 URL은 직접 새로고침하거나 주소창에 입력해도 `out/`만으로 정상 접근 가능해야 한다.
 
 ### 2.2 프레임 및 페이지 레이아웃
 
-**Desktop (기본)**
+**홈 화면 (Desktop)**
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────┐
-│ DevDesk        Tools  Guides                       Search  🌐 Theme │
+│ DevDesk        Home  Guides                        Search  🌐 Theme │
 ├──────────────┬───────────────────────────────────────────────────────┤
-│ Categories   │ Breadcrumb                                            │
-│ Favorites    │ Tool name + short description                         │
-│ Recent       │ [ Input Editor   │   Output Editor ]                  │
-│ All tools    │ [Format] [Validate] [Copy] [Clear] [Download]        │
-│              │ Status, tips and validation messages                 │
-│              │ [Reserved Ad Slot - disabled until approval]         │
-│              │ How to use / Examples / FAQ / Related tools          │
+│              │ Search and localized home heading                     │
+│              │ [All] [Favorites] [Format] [Encoding] ...             │
+│              │ Recent tools                                           │
+│              │ Category groups, descriptions and favorite stars      │
 └──────────────┴───────────────────────────────────────────────────────┘
 ```
+
+**도구 상세 화면 (Desktop)**
+
+- 공통 사이드바에 카테고리, 즐겨찾기, 최근 사용 및 전체 도구 홈 링크를 둔다.
+- 상단 내비게이션의 `Home`은 현재 언어 홈으로 이동한다.
 
 **Mobile**
 

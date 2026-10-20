@@ -7,7 +7,7 @@ const locales = ['ko', 'en', 'ja', 'zh'];
 const hreflangs = { ko: 'ko', en: 'en', ja: 'ja', zh: 'zh-CN' };
 const toolSlugs = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json'];
 const sections = ['about', 'privacy', 'terms', 'contact'];
-const sharedPaths = ['/', '/tools', '/guides', ...sections.map((section) => `/${section}`)];
+const sharedPaths = ['/', '/guides', ...sections.map((section) => `/${section}`)];
 const toolPaths = toolSlugs.flatMap((slug) => [`/tools/${slug}`, `/guides/${slug}`]);
 const localizedPaths = [...sharedPaths, ...toolPaths];
 
@@ -57,6 +57,15 @@ for (const locale of locales) {
   for (const path of localizedPaths) requiredFiles.push(`${locale}${path === '/' ? '' : path}/index.html`);
 }
 for (const path of requiredFiles) await access(join(root, path));
+for (const locale of locales) {
+  const toolsIndex = join(root, locale, 'tools', 'index.html');
+  try {
+    await access(toolsIndex);
+    throw new Error(`Unexpected standalone tools index route: ${locale}/tools/`);
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error;
+  }
+}
 
 const rootHtml = await readFile(join(root, 'index.html'), 'utf8');
 if (!/<html[^>]+lang=["']en["']/i.test(rootHtml)) throw new Error('Language selector must have a valid HTML lang');

@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pagePaths = [
-    '/', '/tools', '/guides', '/about', '/privacy', '/terms', '/contact',
+    '/', '/guides', '/about', '/privacy', '/terms', '/contact',
     ...toolRegistry.map((tool) => `/tools/${tool.slug}`),
     ...toolRegistry.map((tool) => `/guides/${tool.slug}`),
   ];

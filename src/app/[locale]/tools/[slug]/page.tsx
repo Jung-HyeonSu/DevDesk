@@ -40,7 +40,7 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
   return (
     <main className="tool-detail-page">
       <nav aria-label={{ ko: '이동 경로', en: 'Breadcrumb', ja: 'パンくずリスト', zh: '面包屑导航' }[locale]} className="breadcrumbs">
-        <Link href={`/${locale}/tools/`}>{labels.backToTools}</Link><span aria-hidden="true">/</span><span>{tool.name[locale]}</span>
+        <Link href={`/${locale}/`}>{labels.backToTools}</Link><span aria-hidden="true">/</span><span>{tool.name[locale]}</span>
       </nav>
       <p className="eyebrow">{tool.category.toUpperCase()} / DEVDESK</p>
       <div className="tool-title-row"><h1>{tool.name[locale]}</h1><ToolFavoriteToggle locale={locale} tool={tool} /></div>

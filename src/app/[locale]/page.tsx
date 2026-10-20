@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
+import { HomeToolDirectory } from '@/components/home/home-tool-directory';
 
-const homeText: Record<Locale, { title: string; copy: string; tools: string; languages: string }> = {
-  ko: { title: '개발 도구를, 필요한 순간에.', copy: '브라우저에서 바로 처리하는 빠르고 안전한 개발자 유틸리티.', tools: '도구 둘러보기', languages: '언어' },
-  en: { title: 'Developer tools, ready when you are.', copy: 'Fast, private utilities that work right in your browser.', tools: 'Explore tools', languages: 'Language' },
-  ja: { title: '必要なときに、すぐ使える開発ツール。', copy: 'ブラウザー内で処理する、速くて安心な開発者向けツールです。', tools: 'ツールを見る', languages: '言語' },
-  zh: { title: '随时可用的开发者工具。', copy: '在浏览器中本地处理，快速又安心。', tools: '浏览工具', languages: '语言' },
+const homeText: Record<Locale, { title: string; heading: string; copy: string }> = {
+  ko: { title: '개발 도구를, 필요한 순간에.', heading: '도구를 골라 바로 시작하세요', copy: '12개의 개발 도구를 카테고리별로 살펴보세요. 입력과 변환은 브라우저 안에서 처리됩니다.' },
+  en: { title: 'Developer tools, ready when you are.', heading: 'Choose a tool and get started', copy: 'Browse 12 developer tools by category. Inputs and conversions stay in your browser.' },
+  ja: { title: '必要なときに、すぐ使える開発ツール。', heading: 'ツールを選んですぐに使い始めましょう', copy: '12の開発ツールをカテゴリ別に表示。入力と変換はブラウザー内で処理します。' },
+  zh: { title: '随时可用的开发者工具。', heading: '选择工具，立即开始', copy: '按分类浏览 12 款开发工具。输入和转换仅在浏览器中处理。' },
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -27,14 +26,12 @@ export default async function LocaleHomePage({ params }: { params: Promise<{ loc
 
   return (
     <main className="home-content">
-      <section className="home-hero">
-        <Image alt="" aria-hidden="true" className="landing-mark" height={48} src="/icon.svg" width={48} />
+      <header className="home-directory-heading">
         <p className="eyebrow">DEVELOPER TOOLKIT</p>
-        <h1>{text.title}</h1>
+        <h1>{text.heading}</h1>
         <p>{text.copy}</p>
-        <Link className="primary-link" href={`/${locale}/tools/`}>{text.tools}<span aria-hidden="true">→</span></Link>
-      </section>
-      <div className="home-trust-row"><span>◉ {locale === 'ko' ? '입력은 브라우저 안에서 처리' : locale === 'ja' ? '入力はブラウザー内で処理' : locale === 'zh' ? '输入仅在浏览器中处理' : 'Inputs stay in your browser'}</span><span>⌁ {locale === 'ko' ? '계정 없이 무료 사용' : locale === 'ja' ? '登録不要・無料' : locale === 'zh' ? '免费使用，无需注册' : 'Free, no account required'}</span></div>
+      </header>
+      <HomeToolDirectory locale={locale} />
     </main>
   );
 }
