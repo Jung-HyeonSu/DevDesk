@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { toolRegistry } from '@/data/tools';
+import { workflowGuideBySlug, workflowGuideSlugs } from '@/data/workflow-guides';
 import { contentLabels } from '@/i18n/content';
 import { isLocale, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
@@ -30,13 +31,30 @@ export default async function GuideIndexPage({ params }: { params: Promise<{ loc
       <p className="eyebrow">DEVDESK / GUIDES</p>
       <h1>{labels.guideIndexTitle}</h1>
       <p>{labels.guideIndexDescription}</p>
-      <ul className="guide-list">
-        {toolRegistry.map((tool) => (
-          <li key={tool.slug}>
-            <Link href={`/${locale}/guides/${tool.slug}/`}><span className="tool-glyph" aria-hidden="true">{tool.icon}</span><span><strong>{tool.name[locale]}</strong><small>{toolContentSummary(locale, tool.slug)}</small></span><span aria-hidden="true">→</span></Link>
-          </li>
-        ))}
-      </ul>
+      <section className="content-section" aria-labelledby="workflow-list-heading">
+        <h2 id="workflow-list-heading">{labels.workflowCollectionTitle}</h2>
+        <ul className="guide-list workflow-guide-list">
+          {workflowGuideSlugs.map((slug) => {
+            const workflow = workflowGuideBySlug(locale, slug);
+            if (!workflow) return null;
+            return (
+              <li key={slug}>
+                <Link href={`/${locale}/guides/${slug}/`}><span className="tool-glyph" aria-hidden="true">↗</span><span><strong>{workflow.title}</strong><small>{workflow.summary}</small></span><span aria-hidden="true">→</span></Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+      <section className="content-section" aria-labelledby="tool-reference-heading">
+        <h2 id="tool-reference-heading">{labels.toolCollectionTitle}</h2>
+        <ul className="guide-list">
+          {toolRegistry.map((tool) => (
+            <li key={tool.slug}>
+              <Link href={`/${locale}/tools/${tool.slug}/`}><span className="tool-glyph" aria-hidden="true">{tool.icon}</span><span><strong>{tool.name[locale]}</strong><small>{toolContentSummary(locale, tool.slug)}</small></span><span aria-hidden="true">→</span></Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   );
 }
@@ -54,6 +72,8 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'uuid-generator': 'Web Crypto로 UUID v4를 생성하는 방법', 'hash-generator': 'SHA-2 digest를 브라우저에서 계산하는 방법',
     'regex-tester': 'JavaScript 정규식과 캡처 그룹을 점검하는 방법', 'yaml-json': 'YAML과 JSON을 안전하게 양방향 변환하는 방법',
     'code-formatter': '여러 언어의 코드를 색상 테마로 정렬하고 이미지로 저장하는 방법',
+    'json-pointer': 'RFC 6901 경로로 응답 JSON의 중첩 값을 찾는 방법', 'csv-json': '따옴표가 있는 CSV와 JSON 배열을 변환하는 방법',
+    'url-inspector': '중복 쿼리를 보존하며 URL 구성 요소를 분석하는 방법', 'html-entities': 'HTML 문자 참조를 텍스트로 인코딩하고 디코딩하는 방법',
   },
   en: {
     'json-formatter': 'Validate JSON and choose readable indentation', 'sql-formatter': 'Format SQL clauses without running a query',
@@ -63,6 +83,8 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'uuid-generator': 'Generate UUID v4 values with Web Crypto', 'hash-generator': 'Calculate SHA-2 digests in the browser',
     'regex-tester': 'Inspect JavaScript matches and capture groups', 'yaml-json': 'Convert YAML and JSON in both directions',
     'code-formatter': 'Format code with selectable themes and save it as an image',
+    'json-pointer': 'Find nested response values with RFC 6901 paths', 'csv-json': 'Convert quoted CSV and JSON arrays',
+    'url-inspector': 'Inspect URL components while preserving repeated query keys', 'html-entities': 'Encode and decode HTML character references as text',
   },
   ja: {
     'json-formatter': 'JSON の検証と読みやすいインデント', 'sql-formatter': 'SQL を実行せず句と字下げを整形',
@@ -72,6 +94,8 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'uuid-generator': 'Web Crypto で UUID v4 を生成', 'hash-generator': 'ブラウザーで SHA-2 digest を計算',
     'regex-tester': 'JavaScript の一致とキャプチャを確認', 'yaml-json': 'YAML と JSON を双方向に変換',
     'code-formatter': 'テーマを選んでコードを整形し、画像として保存',
+    'json-pointer': 'RFC 6901 パスで JSON のネストした値を確認', 'csv-json': '引用符付き CSV と JSON 配列を変換',
+    'url-inspector': '重複したクエリを保って URL 要素を解析', 'html-entities': 'HTML 文字参照をテキストとして変換',
   },
   zh: {
     'json-formatter': '校验 JSON 并设置易读缩进', 'sql-formatter': '整理 SQL 子句但不执行查询',
@@ -81,5 +105,7 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'uuid-generator': '使用 Web Crypto 生成 UUID v4', 'hash-generator': '在浏览器中计算 SHA-2 摘要',
     'regex-tester': '查看 JavaScript 匹配项和捕获组', 'yaml-json': '双向转换 YAML 与 JSON',
     'code-formatter': '选择主题格式化代码并保存为图片',
+    'json-pointer': '使用 RFC 6901 路径查找嵌套 JSON 值', 'csv-json': '转换带引号字段的 CSV 与 JSON 数组',
+    'url-inspector': '保留重复查询键并分析 URL 组成部分', 'html-entities': '以文本形式编码和解码 HTML 字符引用',
   },
 };

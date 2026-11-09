@@ -20,6 +20,7 @@
 | §13 — 최종 보고 형식 | [13-final-report.md](./13-final-report.md) |
 | §14 — 기술 근거 및 공식 문서 | [14-technical-references.md](./14-technical-references.md) |
 | §15 — Git 커밋 및 Push 정책 | [15-git-workflow.md](./15-git-workflow.md) |
+| §16 — 콘텐츠 품질 및 편집 운영 | [16-content-quality.md](./16-content-quality.md) |
 
 ## 유지 규칙
 

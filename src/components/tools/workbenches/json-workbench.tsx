@@ -122,6 +122,11 @@ export function JsonWorkbench({ locale }: { locale: Locale }) {
     router.push(`/${locale}/tools/yaml-json/`);
   };
 
+  const openInJsonPointer = () => {
+    sendHandoff('json-pointer', input);
+    router.push(`/${locale}/tools/json-pointer/`);
+  };
+
   return (
     <section className="json-workbench" aria-label={text.jsonToolLabel}>
       <div className="workbench-settings">
@@ -137,6 +142,7 @@ export function JsonWorkbench({ locale }: { locale: Locale }) {
         <ActionButton onClick={() => run('minify')}>{text.minify}</ActionButton>
         <ActionButton onClick={() => run('validate')}>{text.validate}</ActionButton>
         <ActionButton onClick={openInYaml} disabled={!input.trim()}>{handoffText.openYaml}</ActionButton>
+        <ActionButton onClick={openInJsonPointer} disabled={!input.trim()}>{handoffText.openPointer}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>
       </ActionToolbar>
       {status && <StatusMessage kind={status.kind}>{status.message}</StatusMessage>}

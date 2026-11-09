@@ -122,6 +122,32 @@
 - 도구 이름, 설명, 언어명, 테마, 버튼, 오류·상태 메시지를 ko/en/ja/zh로 현지화하고 키보드 접근 및 적절한 대비를 지원한다.
 - 테스트: 14개 언어 구문 강조와 자동 포맷, Perl 블록·중첩 블록·Unicode·문자열·heredoc·잘못된 문법, 포맷 실패 시 원문 보존, 복사 권한 거절, 테마를 유지한 에디터 영역만 PNG 내보내기, 정렬·복사·이미지 저장 성공 시 색종이 효과, 1 MiB 경계값.
 
+### T14 — JSON Pointer Inspector (`json-pointer`)
+
+- RFC 6901의 단일 JSON Pointer를 적용해 object key와 array index를 순서대로 조회한다. 빈 포인터는 root를 뜻하며, `~1`과 `~0`만 유효한 토큰 escape다.
+- JSON 문법 오류, 잘못된 포인터, 존재하지 않는 경로를 구분하고 결과 값과 타입을 표시한다.
+- JSONPath, filter, wildcard, multi-result query는 지원하지 않는다고 명시한다. 1 MiB 제한을 적용한다.
+- 테스트: root 및 scalar 값, 중첩 객체, 배열 경계, `/`와 `~`가 들어간 키, 잘못된 escape, 비어 있거나 잘못된 JSON, 없는 경로.
+
+### T15 — CSV ↔ JSON Converter (`csv-json`)
+
+- comma, tab, semicolon 구분자를 지원하고 quoted delimiter, quote escaping, quoted newline, CRLF 입력을 처리한다.
+- CSV 첫 행을 고유한 object key로 사용해 JSON object array로 변환한다. JSON 방향은 object array를 받아 최초 발견 순서로 CSV columns를 구성한다.
+- CSV 타입을 자동 추측하지 않고 모든 imported cell을 string으로 보존한다. 중첩 JSON 값의 직렬화와 빠진 속성의 빈 셀 규칙을 표시한다. 입력은 1 MiB로 제한한다.
+- 테스트: delimiter 종류, quoted comma/tab, doubled quote, quoted multiline cell, CRLF, BOM, 빈 줄, 중복/빈 헤더, 행 열 개수 불일치, JSON 비배열·비객체, 값 escaping.
+
+### T16 — URL Inspector (`url-inspector`)
+
+- 브라우저의 표준 URL parser로 absolute HTTP/HTTPS URL의 origin, host, path, query, fragment를 분석한다. 중복 query key와 순서를 보존한다.
+- 파싱만 수행하고 입력 URL로 요청하지 않는다. user/password 값은 결과에 넣지 않으며 query string에 민감한 값이 있을 수 있음을 알린다. 64 KiB 제한을 적용한다.
+- 테스트: percent-encoded query, 중복 매개변수, 기본·사용자 지정 port, fragment, credentials redaction, relative/invalid URL, 비 HTTP(S) scheme.
+
+### T17 — HTML Entity Encoder / Decoder (`html-entities`)
+
+- HTML 텍스트 문맥을 위해 `&`, `<`, `>`, 큰따옴표, 작은따옴표를 escape한다. decoder는 `amp`, `apos`, `gt`, `lt`, `nbsp`, `quot`와 semicolon-terminated numeric character reference를 처리한다.
+- HTML을 DOM에 넣거나 실행하지 않는다. sanitizer나 XSS 방지 도구가 아님을 UI와 콘텐츠에 명시한다. 1 MiB 제한을 적용한다.
+- 테스트: 각 escape 문자, 앰퍼샌드 처리 순서, named/numeric/hex references, HTML C1 code point mapping, 잘못된 Unicode scalar, 알 수 없는 entity 보존, 반복 변환, 크기 제한.
+
 ### 4.1 공통 실행 편의 기능
 
 - `Ctrl/Cmd + K`: 도구 검색 커맨드 팔레트.

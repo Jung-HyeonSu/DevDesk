@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ActionButton, ActionToolbar, EditorPanel, StatusMessage } from '@/components/tools/workbench-primitives';
 import { useWorkbenchStatus } from '@/components/tools/workbench-feedback';
+import { useToolHandoff } from '@/components/tools/tool-handoff';
 import type { Locale } from '@/i18n/config';
+import { handoffMessages } from '@/i18n/handoff';
 import { workbenchMessages } from '@/i18n/workbench';
 import { CronToolError, describeCronExpression, parseCronSchedule } from '@/lib/tools/cron';
 
@@ -16,14 +18,30 @@ type CronOccurrence = { local: string; utc: string };
 
 export function CronWorkbench({ locale }: { locale: Locale }) {
   const text = workbenchMessages[locale];
-  const [fields, setFields] = useState<CronFields>(emptyFields);
-  const [expression, setExpression] = useState('');
+  const handoffText = handoffMessages[locale];
+  const { peekHandoff, receiveHandoff } = useToolHandoff();
+  const [initialHandoff] = useState(() => peekHandoff('cron-generator'));
+  const initialExpressionFields = initialHandoff?.value.trim().split(/\s+/);
+  const [fields, setFields] = useState<CronFields>(() => initialExpressionFields?.length === 5 ? {
+    minute: initialExpressionFields[0],
+    hour: initialExpressionFields[1],
+    dayOfMonth: initialExpressionFields[2],
+    month: initialExpressionFields[3],
+    dayOfWeek: initialExpressionFields[4],
+  } : emptyFields);
+  const [expression, setExpression] = useState(initialHandoff?.value ?? '');
   const [timeZone, setTimeZone] = useState('UTC');
   const [resultZone, setResultZone] = useState('');
   const [occurrences, setOccurrences] = useState<CronOccurrence[] | null>(null);
   const [explanation, setExplanation] = useState('');
   const [output, setOutput] = useState('');
-  const [status, setStatus] = useWorkbenchStatus(null);
+  const [status, setStatus] = useWorkbenchStatus(
+    initialHandoff ? { kind: 'info', message: handoffText.received } : null,
+  );
+
+  useEffect(() => {
+    if (initialHandoff) receiveHandoff('cron-generator');
+  }, [initialHandoff, receiveHandoff]);
 
   const explain = useCallback((value: string) => {
     const description = describeCronExpression(value);

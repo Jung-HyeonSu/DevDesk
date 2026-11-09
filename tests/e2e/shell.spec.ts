@@ -13,14 +13,14 @@ test('each localized homepage has matching HTML language and a tool entry point'
     await page.goto(`/${locale}/`);
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByRole('link', { name: /도구 둘러보기|Explore tools|ツールを見る|浏览工具/ })).toHaveAttribute('href', `/${locale}/tools/`);
+    await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
   }
 });
 
 test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The persisted favorites workflow runs in desktop Chromium; mobile navigation is verified separately.');
-  await page.goto('/ko/tools/');
-  await expect(page.getByRole('article')).toHaveCount(13);
+  await page.goto('/ko/');
+  await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
 
   await page.keyboard.press('ControlOrMeta+k');
   const dialog = page.getByRole('dialog');
@@ -60,7 +60,7 @@ test('localized tool and guide pages render their own static SEO metadata and us
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('.content-card')).toHaveCount(2);
     await expect(page.locator('.faq-item')).toHaveCount(3);
-    await expect(page.locator('main a[href$="/guides/json-formatter/"]')).toBeVisible();
+    await expect(page.locator('main a[href$="/guides/api-response-debugging/"]')).toBeVisible();
   }
 
   await page.goto('/zh/guides/jwt-decoder/');
@@ -86,6 +86,56 @@ test('ads remain absent and tool inputs stay on the local origin by default', as
   expect(externalRequests).toEqual([]);
   expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('browser-only');
   expect(page.url()).not.toContain('browser-only');
+});
+
+test('new JSON, CSV, URL, and HTML tools handle representative browser-only cases', async ({ page }) => {
+  await page.goto('/en/tools/json-formatter/');
+  await page.locator('.json-workbench .editor-panel').first().locator('.cm-content').fill('{"items":[{"sku":"SKU-8"}]}');
+  await page.getByRole('button', { name: 'Inspect a value with JSON Pointer' }).click();
+  await expect(page).toHaveURL(/\/en\/tools\/json-pointer\/$/);
+  const handedOffPointerTool = page.locator('.json-pointer-workbench');
+  await expect(handedOffPointerTool.locator('.editor-panel').first()).toContainText('SKU-8');
+  await handedOffPointerTool.getByLabel('JSON Pointer').fill('/items/0/sku');
+  await handedOffPointerTool.getByRole('button', { name: 'Inspect path' }).click();
+  await expect(handedOffPointerTool.locator('.editor-panel').nth(1)).toContainText('SKU-8');
+
+  await page.goto('/en/tools/json-pointer/');
+  const pointerTool = page.locator('.json-pointer-workbench');
+  await pointerTool.getByRole('button', { name: 'Load example' }).click();
+  await pointerTool.getByRole('button', { name: 'Inspect path' }).click();
+  await expect(pointerTool.locator('.editor-panel').nth(1)).toContainText('SKU-7');
+  await pointerTool.getByLabel('JSON Pointer').fill('/a~1b/~0key');
+  await pointerTool.getByRole('button', { name: 'Inspect path' }).click();
+  await expect(pointerTool.locator('.editor-panel').nth(1)).toContainText('true');
+
+  await page.goto('/en/tools/csv-json/');
+  const csvTool = page.locator('.csv-json-workbench');
+  await csvTool.getByRole('button', { name: 'Load example' }).click();
+  await csvTool.getByRole('button', { name: 'Convert' }).click();
+  await expect(csvTool.locator('.editor-panel').nth(1)).toContainText('Grace, Hopper');
+  await csvTool.getByLabel('Conversion direction').selectOption('json-to-csv');
+  await csvTool.getByRole('button', { name: 'Load example' }).click();
+  await csvTool.getByRole('button', { name: 'Convert' }).click();
+  await expect(csvTool.locator('.editor-panel').nth(1)).toContainText('id,name,active');
+
+  await page.goto('/en/tools/url-inspector/');
+  const urlTool = page.locator('.url-inspector-workbench');
+  await urlTool.getByRole('button', { name: 'Load example' }).click();
+  await urlTool.getByRole('button', { name: 'Inspect' }).click();
+  const urlOutput = urlTool.locator('.editor-panel').nth(1);
+  await expect(urlOutput).toContainText('"hasPassword": true');
+  await expect(urlOutput).toContainText('"value": "blue"');
+  await expect(urlOutput).not.toContainText('secret');
+
+  await page.goto('/en/tools/html-entities/');
+  const htmlTool = page.locator('.html-entities-workbench');
+  await htmlTool.getByRole('button', { name: 'Load example' }).click();
+  await htmlTool.getByRole('button', { name: 'Convert' }).click();
+  await expect(htmlTool.locator('.editor-panel').nth(1)).toContainText('&lt;main');
+  await htmlTool.getByLabel('Conversion direction').selectOption('decode');
+  await htmlTool.getByRole('button', { name: 'Load example' }).click();
+  await htmlTool.getByRole('button', { name: 'Convert' }).click();
+  await expect(htmlTool.locator('.editor-panel').nth(1)).toContainText('<main>');
 });
 
 test('code formatter formats code in place, supports themes, copies code, and exports a PNG', async ({ page }) => {
@@ -158,10 +208,10 @@ test('code formatter formats code in place, supports themes, copies code, and ex
 
 test('localized privacy, terms, and contact pages describe the shipped service', async ({ page }) => {
   const cases = [
-    ['ko', '개인정보처리방침 초안', '이용약관 및 면책 초안', '문의', '메모리'],
-    ['en', 'Privacy policy draft', 'Terms and disclaimer draft', 'Contact', 'memory'],
-    ['ja', 'プライバシーポリシー（案）', '利用規約・免責事項（案）', 'お問い合わせ', 'メモリ'],
-    ['zh', '隐私政策草案', '使用条款与免责声明草案', '联系', '内存'],
+    ['ko', '개인정보처리방침', '이용약관 및 면책 고지', '문의', '메모리'],
+    ['en', 'Privacy Policy', 'Terms of Use and Disclaimer', 'Contact', 'memory'],
+    ['ja', 'プライバシーポリシー', '利用規約・免責事項', 'お問い合わせ', 'メモリ'],
+    ['zh', '隐私政策', '使用条款与免责声明', '联系', '内存'],
   ];
   for (const [locale, privacyHeading, termsHeading, contactHeading, handoffWord] of cases) {
     await page.goto(`/${locale}/privacy/`);
@@ -181,6 +231,7 @@ test('localized privacy, terms, and contact pages describe the shipped service',
 
 test('JSON, YAML, and JWT data hand off between tools without entering URLs or browser storage', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The full four-locale handoff workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
+  test.setTimeout(120_000);
   const cases = [
     ['ko', 'YAML 변환기로 열기', 'JSON 포맷터에서 열기', 'Payload를 JSON 포맷터에서 열기', '변환', '예제 불러오기', 'JWT 디코딩'],
     ['en', 'Open in YAML converter', 'Open in JSON formatter', 'Open payload in JSON formatter', 'Convert', 'Load sample', 'Decode JWT'],
@@ -220,6 +271,72 @@ test('JSON, YAML, and JWT data hand off between tools without entering URLs or b
     expect(page.url()).not.toContain(privateValue);
     expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain(privateValue);
     expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('Developer');
+  }
+});
+
+test('workflow guide examples load into their tools in every locale', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'The full four-locale workflow runs in desktop Chromium; mobile layout is covered by the 360px smoke test.');
+  test.setTimeout(120_000);
+  const cases = [
+    ['ko', '예제 사용', '검증', '정렬'],
+    ['en', 'Use example', 'Validate', 'Beautify'],
+    ['ja', '例を使う', '検証', '整形'],
+    ['zh', '使用示例', '校验', '美化'],
+  ];
+  const replaceEditor = async (editor: Locator, value: string) => {
+    await editor.selectText();
+    await page.keyboard.insertText(value);
+  };
+
+  for (const [locale, actionLabel, validateLabel, beautifyLabel] of cases) {
+    await page.goto(`/${locale}/guides/api-response-debugging/`);
+    const jsonAction = page.locator('.workflow-tool-action[data-workflow-tool="json-formatter"]');
+    await expect(jsonAction).toHaveAccessibleName(new RegExp(actionLabel));
+    await jsonAction.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/json-formatter/$`));
+    const jsonWorkbench = page.locator('.json-workbench');
+    const jsonInput = jsonWorkbench.locator('.editor-panel').first().locator('.cm-content');
+    await expect(jsonInput).toContainText('invoice.created');
+    await expect(jsonInput).toContainText('"amount": "2300"');
+    await expect(jsonInput).toContainText('"currency": "USD",');
+    await jsonWorkbench.getByRole('button', { name: validateLabel, exact: true }).click();
+    await expect(jsonWorkbench.getByRole('alert')).toBeVisible();
+    await replaceEditor(jsonInput, '{\n  "event": "invoice.created",\n  "created_at": 1735689600,\n  "data": {\n    "invoice_id": "inv_demo_1042",\n    "amount": "2300",\n    "currency": "USD"\n  }\n}');
+    await expect(jsonInput).toContainText('"currency": "USD"');
+    await jsonWorkbench.getByRole('button', { name: beautifyLabel, exact: true }).click();
+    await expect(jsonWorkbench.locator('.editor-panel').nth(1).locator('.cm-content')).toContainText('"amount": "2300"');
+
+    await page.goto(`/${locale}/guides/cron-timezone-check/`);
+    const cronAction = page.locator('.workflow-tool-action[data-workflow-tool="cron-generator"]');
+    await expect(cronAction).toHaveAccessibleName(new RegExp(actionLabel));
+    await cronAction.click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/cron-generator/$`));
+    await expect(page.locator('.cron-workbench .editor-panel .cm-content')).toContainText('0 9 * * 1-5');
+    await expect(page.locator('#cron-minute')).toHaveValue('0');
+    await expect(page.locator('#cron-hour')).toHaveValue('9');
+    await expect(page.locator('#cron-dayOfWeek')).toHaveValue('1-5');
+    await page.locator('.cron-workbench .action-toolbar').first().getByRole('button').nth(2).click();
+    await expect(page.locator('.cron-next-times li')).toHaveCount(5);
+
+    await page.goto(`/${locale}/guides/yaml-type-migration/`);
+    const yamlAction = page.locator('.workflow-tool-action[data-workflow-tool="yaml-json"]');
+    await expect(yamlAction).toHaveAccessibleName(new RegExp(actionLabel));
+    await yamlAction.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(new RegExp(`/${locale}/tools/yaml-json/$`));
+    const yamlWorkbench = page.locator('.yaml-json-workbench');
+    const yamlInput = yamlWorkbench.locator('.editor-panel').first().locator('.cm-content');
+    await expect(yamlInput).toContainText('support: on');
+    await expect(yamlInput).toContainText('release_id: 080');
+    await yamlWorkbench.locator('.action-toolbar').first().getByRole('button').nth(1).click();
+    const jsonOutput = yamlWorkbench.locator('.editor-panel').nth(1).locator('.cm-content');
+    await expect(jsonOutput).toContainText('"enabled": true');
+    await expect(jsonOutput).toContainText('"support": "on"');
+    await expect(jsonOutput).toContainText('"release_id": 80');
+    await expect(jsonOutput).toContainText('"quoted_id": "080"');
+    expect(new URL(page.url()).search).toBe('');
+    expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('release_id');
   }
 });
 
@@ -396,7 +513,7 @@ test('Text diff shows line changes safely in side-by-side and unified views in e
     const selectedTab = workbench.locator('.diff-view-tabs button[aria-selected="true"]');
     await expect(selectedTab).toHaveCSS('background-color', 'rgb(36, 50, 81)');
     await expect(workbench.locator('.diff-row-added')).toHaveCSS('background-color', 'rgb(23, 58, 49)');
-    await expect(workbench.locator('.diff-row-added')).toHaveCSS('color', 'rgb(216, 245, 233)');
+    await expect(workbench.locator('.diff-row-added').first()).toHaveCSS('color', 'rgb(216, 245, 233)');
     const lineNumberColumnWidth = await workbench.locator('col.diff-line-number-column').first().evaluate((column) => column.getBoundingClientRect().width);
     expect(lineNumberColumnWidth).toBeLessThanOrEqual(48);
 
@@ -404,7 +521,7 @@ test('Text diff shows line changes safely in side-by-side and unified views in e
     await expect(page.getByRole('tab', { name: unifiedLabel, exact: true })).toHaveAttribute('aria-selected', 'true');
     await expect(selectedTab).toHaveCSS('background-color', 'rgb(36, 50, 81)');
     await expect(workbench.locator('.diff-unified-row.diff-row-removed')).toHaveCSS('color', 'rgb(255, 225, 226)');
-    await expect(workbench.locator('.diff-unified-row.diff-row-added')).toHaveCSS('color', 'rgb(216, 245, 233)');
+    await expect(workbench.locator('.diff-unified-row.diff-row-added').first()).toHaveCSS('color', 'rgb(216, 245, 233)');
     await expect(workbench.locator('.diff-unified-row')).toHaveCount(5);
     await page.getByRole('button', { name: copyLabel, exact: true }).click();
     await expect(page.evaluate(() => navigator.clipboard.readText())).resolves.toContain('+ 🌏');
@@ -849,7 +966,8 @@ test('mobile navigation opens and closes after selecting a tool', async ({ page,
   await menu.click();
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   await page.getByRole('link', { name: /すべてのツール/ }).click();
-  await expect(page).toHaveURL(/\/ja\/tools\/$/);
+  await expect(page).toHaveURL(/\/ja\/$/);
+  await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
 });
 

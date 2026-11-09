@@ -27,13 +27,18 @@
 /{locale}/tools/hash-generator/
 /{locale}/tools/regex-tester/
 /{locale}/tools/yaml-json/
+/{locale}/tools/code-formatter/
+/{locale}/tools/json-pointer/
+/{locale}/tools/csv-json/
+/{locale}/tools/url-inspector/
+/{locale}/tools/html-entities/
 
 /{locale}/about/                 # 서비스 소개
 /{locale}/privacy/               # 개인정보처리방침
 /{locale}/terms/                 # 이용약관/면책
 /{locale}/contact/               # 문의 안내
-/{locale}/guides/                # 사용 가이드 목록(초기 12개 가이드)
-/{locale}/guides/{guideSlug}/    # 해당 언어의 개별 가이드
+/{locale}/guides/                # 실전 워크플로 가이드 색인
+/{locale}/guides/{guideSlug}/    # 워크플로 또는 noindex 처리된 도구별 레거시 주소
 
 /sitemap.xml
 /robots.txt

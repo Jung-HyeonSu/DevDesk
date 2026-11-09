@@ -1,8 +1,8 @@
 import type { Locale } from '@/i18n/config';
 
 export type ToolCategory = 'format' | 'encoding' | 'security' | 'time' | 'text' | 'generator' | 'data';
-export type ToolSlug = 'json-formatter' | 'sql-formatter' | 'jwt-decoder' | 'cron-generator' | 'text-diff' | 'base64' | 'url-encoder' | 'unix-timestamp' | 'uuid-generator' | 'hash-generator' | 'regex-tester' | 'yaml-json' | 'code-formatter';
-export const toolSlugs: readonly ToolSlug[] = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
+export type ToolSlug = 'json-formatter' | 'sql-formatter' | 'jwt-decoder' | 'cron-generator' | 'text-diff' | 'base64' | 'url-encoder' | 'unix-timestamp' | 'uuid-generator' | 'hash-generator' | 'regex-tester' | 'yaml-json' | 'code-formatter' | 'json-pointer' | 'csv-json' | 'url-inspector' | 'html-entities';
+export const toolSlugs: readonly ToolSlug[] = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter', 'json-pointer', 'csv-json', 'url-inspector', 'html-entities'];
 
 export type ToolDefinition = {
   id: ToolSlug;
@@ -157,6 +157,50 @@ export const toolRegistry: ToolDefinition[] = [
       en: ['format code', 'code formatter', 'code beautifier', 'syntax highlighting', 'color theme', 'save code as image'],
       ja: ['コード整形', 'コードフォーマット', '構文強調表示', 'カラーテーマ', 'コード画像', 'beautifier'],
       zh: ['代码格式化', '代码美化', '语法高亮', '颜色主题', '代码图片', 'beautifier'],
+    },
+  },
+  {
+    id: 'json-pointer', slug: 'json-pointer', category: 'data', icon: '#/', order: 14,
+    relatedToolIds: ['json-formatter', 'yaml-json', 'csv-json'],
+    name: { ko: 'JSON Pointer 탐색기', en: 'JSON Pointer Inspector', ja: 'JSON Pointer 検査ツール', zh: 'JSON Pointer 检查器' },
+    keywords: {
+      ko: ['JSON 경로', 'JSON 포인터', '중첩 값 찾기', 'RFC 6901', 'JSON Pointer'],
+      en: ['JSON path', 'nested value', 'RFC 6901', 'JSON Pointer', 'inspect JSON'],
+      ja: ['JSON パス', 'ネスト値', 'RFC 6901', 'JSON Pointer'],
+      zh: ['JSON 路径', '嵌套值', 'RFC 6901', 'JSON Pointer'],
+    },
+  },
+  {
+    id: 'csv-json', slug: 'csv-json', category: 'data', icon: 'CSV', order: 15,
+    relatedToolIds: ['json-formatter', 'json-pointer', 'yaml-json'],
+    name: { ko: 'CSV ↔ JSON 변환기', en: 'CSV ↔ JSON Converter', ja: 'CSV ↔ JSON 変換', zh: 'CSV ↔ JSON 转换器' },
+    keywords: {
+      ko: ['CSV JSON 변환', 'TSV', '쉼표 구분', '표 데이터', 'CSV to JSON'],
+      en: ['CSV to JSON', 'JSON to CSV', 'TSV', 'delimited data', 'spreadsheet export'],
+      ja: ['CSV JSON 変換', 'TSV', '区切りテキスト', '表データ'],
+      zh: ['CSV JSON 转换', 'TSV', '分隔文本', '表格数据'],
+    },
+  },
+  {
+    id: 'url-inspector', slug: 'url-inspector', category: 'data', icon: 'URL·', order: 16,
+    relatedToolIds: ['url-encoder', 'json-formatter', 'base64'],
+    name: { ko: 'URL 분석기', en: 'URL Inspector', ja: 'URL 構成チェッカー', zh: 'URL 结构检查器' },
+    keywords: {
+      ko: ['URL 파서', 'URL 구성 요소', '쿼리 매개변수', '중복 파라미터', 'URL parser'],
+      en: ['URL parser', 'query parameters', 'URL components', 'duplicate query keys', 'inspect URL'],
+      ja: ['URL パーサー', 'クエリパラメーター', 'URL 構成要素', '重複キー'],
+      zh: ['URL 解析器', '查询参数', 'URL 组成部分', '重复参数'],
+    },
+  },
+  {
+    id: 'html-entities', slug: 'html-entities', category: 'encoding', icon: '&;', order: 17,
+    relatedToolIds: ['url-encoder', 'code-formatter', 'json-formatter'],
+    name: { ko: 'HTML 엔티티 변환기', en: 'HTML Entity Encoder / Decoder', ja: 'HTML エンティティ変換', zh: 'HTML 实体编码 / 解码' },
+    keywords: {
+      ko: ['HTML 이스케이프', 'HTML 엔티티', '문자 인코딩', '특수 문자', 'escape HTML'],
+      en: ['HTML escape', 'HTML entities', 'special characters', 'escape HTML', 'decode entities'],
+      ja: ['HTML エスケープ', 'HTML エンティティ', '特殊文字', '文字参照'],
+      zh: ['HTML 转义', 'HTML 实体', '特殊字符', '字符引用'],
     },
   },
 ];

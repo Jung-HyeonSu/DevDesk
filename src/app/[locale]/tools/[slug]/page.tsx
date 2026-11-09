@@ -5,6 +5,7 @@ import { ToolFavoriteToggle } from '@/components/tools/tool-card';
 import { ToolWorkbench } from '@/components/tools/tool-workbench';
 import { toolContent, toolExamples } from '@/data/tool-content';
 import { toolBySlug, toolRegistry } from '@/data/tools';
+import { workflowGuideBySlug, workflowGuideSlugs } from '@/data/workflow-guides';
 import { contentLabels } from '@/i18n/content';
 import { isLocale, locales, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
@@ -33,6 +34,9 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
   const content = toolContent[locale][tool.slug];
   const examples = toolExamples[tool.slug];
   const labels = contentLabels[locale];
+  const relatedWorkflow = workflowGuideSlugs
+    .map((workflowSlug) => ({ slug: workflowSlug, content: workflowGuideBySlug(locale, workflowSlug) }))
+    .find(({ content }) => content?.steps.some((step) => step.toolSlug === tool.slug));
   const related = tool.relatedToolIds
     .map((id) => toolBySlug(id))
     .filter((relatedTool): relatedTool is NonNullable<typeof relatedTool> => Boolean(relatedTool));
@@ -81,7 +85,15 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
         <h2 id="related-heading">{labels.related}</h2>
         <ul className="related-tools">{related.map((relatedTool) => <li key={relatedTool.slug}><Link href={`/${locale}/tools/${relatedTool.slug}/`}>{relatedTool.name[locale]}<span aria-hidden="true"> →</span></Link></li>)}</ul>
       </section>
-      <p className="guide-link"><Link href={`/${locale}/guides/${tool.slug}/`}>{labels.fullGuide}: {tool.name[locale]}<span aria-hidden="true"> →</span></Link></p>
+      {content.references && content.references.length > 0 && (
+        <section className="content-section tool-references" aria-labelledby="references-heading">
+          <h2 id="references-heading">{labels.references}</h2>
+          <ul className="workflow-references">{content.references.map((reference) => (
+            <li key={reference.href}><a href={reference.href} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>
+          ))}</ul>
+        </section>
+      )}
+      {relatedWorkflow?.content && <p className="guide-link"><Link href={`/${locale}/guides/${relatedWorkflow.slug}/`}>{labels.fullGuide}: {relatedWorkflow.content.title}<span aria-hidden="true"> →</span></Link></p>}
     </main>
   );
 }

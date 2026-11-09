@@ -30,7 +30,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '제공하는 도구',
           paragraphs: [
-            'JSON 포맷터, SQL 포맷터, JWT 디코더, Cron 표현식 생성기, 텍스트 비교, Base64 인코더·디코더, URL 인코더·디코더, Unix Timestamp 변환기, UUID 생성기, 해시 생성기, 정규식 테스터, YAML·JSON 변환기를 제공합니다.',
+            'JSON·SQL 포맷터, 코드 포맷터, JWT 디코더, Cron 표현식 생성기, 텍스트 비교, Base64·URL 인코더와 디코더, Unix Timestamp 변환기, UUID·해시 생성기, 정규식 테스터, YAML·JSON 및 CSV·JSON 변환기, JSON Pointer 검사기, URL 검사기, HTML 엔티티 변환기를 제공합니다.',
             '각 도구는 한 가지 개발 작업을 명확히 처리하도록 구성했습니다. 도구별 가이드에는 입력 형식, 사용 순서, 실제 예시, 자주 묻는 질문과 기능의 제한을 함께 설명합니다.',
           ],
         },
@@ -155,7 +155,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '1. 서비스',
           paragraphs: [
-            'DevDesk는 JSON·SQL 포맷팅, JWT 디코딩, Cron 표현식 작성, 텍스트 비교, 인코딩·디코딩, 시간 변환, 식별자·해시 생성, 정규식 테스트와 YAML·JSON 변환을 제공하는 무료 브라우저 도구 모음입니다. 가입이나 결제 없이 이용할 수 있으며, 기능과 제공 범위는 페이지에 표시된 설명을 따릅니다.',
+            'DevDesk는 JSON·SQL·코드 포맷팅, JWT 디코딩, Cron 표현식 작성, 텍스트 비교, Base64·URL 인코딩 및 디코딩, 시간 변환, JSON Pointer·URL 검사, UUID·해시 생성, 정규식 테스트, YAML·JSON 및 CSV·JSON 변환, HTML 엔티티 변환을 제공하는 무료 브라우저 도구 모음입니다. 가입이나 결제 없이 이용할 수 있으며, 기능과 제공 범위는 페이지에 표시된 설명을 따릅니다.',
           ],
         },
         {
@@ -232,7 +232,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: 'Tools for everyday development',
           paragraphs: [
-            'DevDesk includes a JSON formatter, SQL formatter, JWT decoder, cron expression generator, text diff, Base64 encoder and decoder, URL encoder and decoder, Unix timestamp converter, UUID generator, hash generator, regular expression tester, and YAML-to-JSON converter.',
+            'DevDesk includes JSON and SQL formatters, a code formatter, JWT decoder, cron expression generator, text diff, Base64 and URL encoders and decoders, Unix timestamp converter, UUID and hash generators, regular expression tester, YAML/JSON and CSV/JSON converters, JSON Pointer inspector, URL inspector, and HTML entity converter.',
             'Each tool focuses on a specific task. Its guide explains accepted input, steps, examples, common questions, and known limitations so you can decide whether the output fits your use case.',
           ],
         },
@@ -355,7 +355,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '1. The service',
           paragraphs: [
-            'DevDesk is a free collection of browser tools for JSON and SQL formatting, JWT decoding, cron expressions, text comparison, encoding and decoding, time conversion, identifier and hash generation, regular expression testing, and YAML/JSON conversion. No account or payment is required. The features and scope shown on each page describe the service provided.',
+            'DevDesk is a free collection of browser tools for JSON, SQL, and code formatting; JWT decoding; cron expressions; text comparison; Base64 and URL encoding; time conversion; JSON Pointer and URL inspection; UUID and hash generation; regular expression testing; YAML/JSON and CSV/JSON conversion; and HTML entity conversion. No account or payment is required. The features and scope shown on each page describe the service provided.',
           ],
         },
         {
@@ -432,7 +432,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '日常の開発に使えるツール',
           paragraphs: [
-            'JSON フォーマッター、SQL フォーマッター、JWT デコーダー、Cron 式ジェネレーター、テキスト比較、Base64 エンコーダー・デコーダー、URL エンコーダー・デコーダー、Unix Timestamp 変換、UUID 生成、ハッシュ生成、正規表現テスター、YAML・JSON 変換を提供しています。',
+            'JSON・SQL フォーマッター、コードフォーマッター、JWT デコーダー、Cron 式ジェネレーター、テキスト比較、Base64・URL エンコーダーとデコーダー、Unix Timestamp 変換、UUID・ハッシュ生成、正規表現テスター、YAML・JSON と CSV・JSON の変換、JSON Pointer 検査、URL 検査、HTML エンティティ変換を提供しています。',
             '各ツールは特定の作業に焦点を当てています。ガイドでは入力形式、手順、例、よくある質問、機能の制限を説明し、結果が用途に合うか判断できるようにしています。',
           ],
         },
@@ -555,7 +555,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '1. サービス内容',
           paragraphs: [
-            'DevDesk は、JSON・SQL の整形、JWT のデコード、Cron 式の作成、テキスト比較、エンコード・デコード、時刻変換、識別子・ハッシュ生成、正規表現テスト、YAML・JSON 変換を行う無料のブラウザーツール集です。アカウント登録や支払いは不要です。各ページの説明が提供機能と範囲を示します。',
+            'DevDesk は、JSON・SQL・コードの整形、JWT のデコード、Cron 式の作成、テキスト比較、Base64・URL のエンコードとデコード、時刻変換、JSON Pointer・URL の検査、UUID・ハッシュ生成、正規表現テスト、YAML・JSON と CSV・JSON の変換、HTML エンティティ変換を行う無料のブラウザーツール集です。アカウント登録や支払いは不要です。各ページの説明が提供機能と範囲を示します。',
           ],
         },
         {
@@ -632,7 +632,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '日常开发工具',
           paragraphs: [
-            'DevDesk 提供 JSON 格式化、SQL 格式化、JWT 解码、Cron 表达式生成、文本比较、Base64 编码与解码、URL 编码与解码、Unix 时间戳转换、UUID 生成、哈希生成、正则表达式测试以及 YAML 与 JSON 转换。',
+            'DevDesk 提供 JSON 与 SQL 格式化、代码格式化、JWT 解码、Cron 表达式生成、文本比较、Base64 与 URL 编码和解码、Unix 时间戳转换、UUID 与哈希生成、正则表达式测试、YAML/JSON 与 CSV/JSON 转换、JSON Pointer 检查、URL 检查以及 HTML 实体转换。',
             '每个工具都专注于一项具体任务。对应指南说明输入格式、操作步骤、示例、常见问题和功能限制，帮助你判断结果是否适合当前用途。',
           ],
         },
@@ -755,7 +755,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '1. 服务内容',
           paragraphs: [
-            'DevDesk 是免费的浏览器工具集，提供 JSON 与 SQL 格式化、JWT 解码、Cron 表达式生成、文本比较、编码与解码、时间转换、标识符与哈希生成、正则表达式测试以及 YAML/JSON 转换。使用服务无需账号或付费。各页面的说明描述了对应功能和范围。',
+            'DevDesk 是免费的浏览器工具集，提供 JSON、SQL 与代码格式化，JWT 解码，Cron 表达式生成，文本比较，Base64 与 URL 编码和解码，时间戳转换，JSON Pointer 与 URL 检查，UUID 与哈希生成，正则表达式测试，YAML/JSON 与 CSV/JSON 转换，以及 HTML 实体转换。使用服务无需账号或付费。各页面的说明描述了对应功能和范围。',
           ],
         },
         {

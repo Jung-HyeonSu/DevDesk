@@ -5,11 +5,31 @@ const root = resolve(process.cwd(), 'out');
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://devdesk-7e7.pages.dev').replace(/\/$/, '');
 const locales = ['ko', 'en', 'ja', 'zh'];
 const hreflangs = { ko: 'ko', en: 'en', ja: 'ja', zh: 'zh-CN' };
-const toolSlugs = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
+const toolSlugs = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter', 'json-pointer', 'csv-json', 'url-inspector', 'html-entities'];
+const workbenchBySlug = { 'json-formatter': 'json', base64: 'base64', 'url-encoder': 'url', 'unix-timestamp': 'timestamp', 'uuid-generator': 'uuid', 'hash-generator': 'hash', 'sql-formatter': 'sql', 'jwt-decoder': 'jwt', 'cron-generator': 'cron', 'text-diff': 'diff', 'regex-tester': 'regex', 'yaml-json': 'yaml-json', 'code-formatter': 'code-formatter', 'json-pointer': 'json-pointer', 'csv-json': 'csv-json', 'url-inspector': 'url-inspector', 'html-entities': 'html-entities' };
+const toolReferenceBySlug = {
+  'json-pointer': 'https://www.rfc-editor.org/rfc/rfc6901.html',
+  'csv-json': 'https://www.rfc-editor.org/rfc/rfc4180.html',
+  'url-inspector': 'https://url.spec.whatwg.org/',
+  'html-entities': 'https://html.spec.whatwg.org/multipage/syntax.html#character-references',
+};
+const workflowSlugs = ['api-response-debugging', 'cron-timezone-check', 'yaml-type-migration'];
+const workflowToolsBySlug = {
+  'api-response-debugging': ['json-formatter', 'text-diff', 'unix-timestamp', 'url-encoder', 'jwt-decoder'],
+  'cron-timezone-check': ['cron-generator', 'unix-timestamp'],
+  'yaml-type-migration': ['yaml-json', 'json-formatter'],
+};
+const workflowActionToolBySlug = {
+  'api-response-debugging': 'json-formatter',
+  'cron-timezone-check': 'cron-generator',
+  'yaml-type-migration': 'yaml-json',
+};
 const sections = ['about', 'privacy', 'terms', 'contact'];
 const sharedPaths = ['/', '/guides', ...sections.map((section) => `/${section}`)];
-const toolPaths = toolSlugs.flatMap((slug) => [`/tools/${slug}`, `/guides/${slug}`]);
-const localizedPaths = [...sharedPaths, ...toolPaths];
+const toolPaths = toolSlugs.map((slug) => `/tools/${slug}`);
+const workflowPaths = workflowSlugs.map((slug) => `/guides/${slug}`);
+const localizedPaths = [...sharedPaths, ...toolPaths, ...workflowPaths];
+const legacyToolGuidePaths = toolSlugs.map((slug) => `/guides/${slug}`);
 
 function filePath(path) {
   const normalized = path.replace(/^\/+|\/+$/g, '');
@@ -54,7 +74,7 @@ function assertPageSeo(html, locale, path, label) {
 
 const requiredFiles = ['index.html', 'sitemap.xml', 'robots.txt'];
 for (const locale of locales) {
-  for (const path of localizedPaths) requiredFiles.push(`${locale}${path === '/' ? '' : path}/index.html`);
+  for (const path of [...localizedPaths, ...legacyToolGuidePaths]) requiredFiles.push(`${locale}${path === '/' ? '' : path}/index.html`);
 }
 for (const path of requiredFiles) await access(join(root, path));
 for (const locale of locales) {
@@ -64,6 +84,30 @@ for (const locale of locales) {
     throw new Error(`Unexpected standalone tools index route: ${locale}/tools/`);
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error;
+  }
+  for (const slug of workflowSlugs) {
+    const html = await readFile(filePath(`/${locale}/guides/${slug}`), 'utf8');
+    const label = `${locale}/guides/${slug}`;
+    assertPageSeo(html, locale, `/guides/${slug}`, label);
+    if ((html.match(/class="content-card workflow-step"/g) ?? []).length !== 5) throw new Error(`${label} must have five static workflow steps`);
+    if (!/class="[^"]*workflow-payloads/.test(html) || (html.match(/<article class="content-card">/g) ?? []).length < 2) throw new Error(`${label} is missing its expected and observed payloads`);
+    if (!html.includes('workflow-step-examples')) throw new Error(`${label} is missing its inline worked example`);
+    if (slug === 'api-response-debugging' && !html.includes('https%3A%2F%2Fapp.example.test%2Fa%3Fx%3D1%26y%3D2')) throw new Error(`${label} is missing its URL component example`);
+    const referenceList = html.match(/<ul class="workflow-references">([\s\S]*?)<\/ul>/)?.[1] ?? '';
+    if ((referenceList.match(/<a\b/g) ?? []).length < 3) throw new Error(`${label} is missing its linked standards references`);
+    if (!html.includes('class="workflow-checklist"')) throw new Error(`${label} is missing its target-environment checklist`);
+    for (const toolSlug of workflowToolsBySlug[slug]) {
+      if (!html.includes(`/${locale}/tools/${toolSlug}/`)) throw new Error(`${label} is missing its ${toolSlug} link`);
+    }
+    const actionTool = workflowActionToolBySlug[slug];
+    if ((html.match(/class="[^"]*workflow-tool-action[^"]*"/g) ?? []).length !== 1) throw new Error(`${label} must have one sample action button`);
+    if (!html.includes(`data-workflow-tool="${actionTool}"`)) throw new Error(`${label} sample action does not target ${actionTool}`);
+  }
+  for (const slug of toolSlugs) {
+    const html = await readFile(filePath(`/${locale}/guides/${slug}`), 'utf8');
+    const label = `${locale}/guides/${slug} legacy URL`;
+    assertPageSeo(html, locale, `/tools/${slug}`, label);
+    if (!/<meta\b(?=[^>]*name=["']robots["'])(?=[^>]*content=["'][^"']*noindex[^"']*["'])[^>]*>/i.test(html)) throw new Error(`${label} must be excluded from indexing`);
   }
 }
 
@@ -76,31 +120,25 @@ for (const [locale, lang] of Object.entries(hreflangs)) {
 if (!linkTags(rootHtml).some((tag) => attr(tag, 'hreflang').toLowerCase() === 'x-default')) throw new Error('Language selector is missing x-default');
 
 for (const locale of locales) {
+  const homeHtml = await readFile(filePath(`/${locale}`), 'utf8');
+  for (const slug of workflowSlugs) {
+    if (!homeHtml.includes(`/${locale}/guides/${slug}/`)) throw new Error(`${locale} home page is missing the ${slug} workflow link`);
+  }
   for (const path of localizedPaths) {
     const html = await readFile(filePath(`/${locale}${path === '/' ? '' : path}`), 'utf8');
     assertPageSeo(html, locale, path, `${locale}${path}`);
   }
   for (const slug of toolSlugs) {
-    for (const type of ['tools', 'guides']) {
-      const html = await readFile(filePath(`/${locale}/${type}/${slug}`), 'utf8');
-      const label = `${locale}/${type}/${slug}`;
-      assertPageSeo(html, locale, `/${type}/${slug}`, label);
-      if ((html.match(/class="content-card"/g) ?? []).length < 2) throw new Error(`${label} needs two static examples`);
-      if ((html.match(/class="faq-item"/g) ?? []).length < 3) throw new Error(`${label} needs three static FAQs`);
-      if (!html.includes('content-steps')) throw new Error(`${label} is missing its static usage steps`);
-      if (type === 'tools' && slug === 'json-formatter' && !html.includes('class="json-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'base64' && !html.includes('class="base64-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'url-encoder' && !html.includes('class="url-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'unix-timestamp' && !html.includes('class="timestamp-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'uuid-generator' && !html.includes('class="uuid-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'hash-generator' && !html.includes('class="hash-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'sql-formatter' && !html.includes('class="sql-workbench"')) throw new Error(`${label} is missing its statically rendered workbench`);
-      if (type === 'tools' && slug === 'jwt-decoder' && !html.includes('class="jwt-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
-      if (type === 'tools' && slug === 'cron-generator' && !html.includes('class="cron-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
-      if (type === 'tools' && slug === 'text-diff' && !html.includes('class="diff-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
-      if (type === 'tools' && slug === 'regex-tester' && !html.includes('class="regex-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
-      if (type === 'tools' && slug === 'yaml-json' && !html.includes('class="yaml-json-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
-      if (type === 'tools' && slug === 'code-formatter' && !html.includes('class="code-formatter-workbench"')) throw new Error(label + ' is missing its statically rendered workbench');
+    const html = await readFile(filePath(`/${locale}/tools/${slug}`), 'utf8');
+    const label = `${locale}/tools/${slug}`;
+    assertPageSeo(html, locale, `/tools/${slug}`, label);
+    if ((html.match(/class="content-card"/g) ?? []).length < 2) throw new Error(`${label} needs two static examples`);
+    if ((html.match(/class="faq-item"/g) ?? []).length < 3) throw new Error(`${label} needs three static FAQs`);
+    if (!html.includes('content-steps')) throw new Error(`${label} is missing its static usage steps`);
+    const workbench = workbenchBySlug[slug];
+    if (workbench && !html.includes(`class="${workbench}-workbench"`)) throw new Error(`${label} is missing its statically rendered workbench`);
+    if (toolReferenceBySlug[slug] && (!html.includes('class="content-section tool-references"') || !html.includes(`href="${toolReferenceBySlug[slug]}"`))) {
+      throw new Error(`${label} is missing its linked primary reference`);
     }
   }
 }
@@ -135,4 +173,4 @@ for (const relativeFile of htmlFiles) {
   }
 }
 
-console.log(`Static output verified (${requiredFiles.length} required paths, ${locales.length * toolSlugs.length} tool pages, ${locales.length * toolSlugs.length} guides, sitemap, robots, metadata, and internal links).`);
+console.log(`Static output verified (${requiredFiles.length} required paths, ${locales.length * toolSlugs.length} tool pages, ${locales.length * workflowSlugs.length} indexable workflow guides with sample actions, canonical/noindex legacy guide URLs, sitemap, robots, metadata, and internal links).`);

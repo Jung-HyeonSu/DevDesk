@@ -2,7 +2,13 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 const locales = ['ko', 'en', 'ja', 'zh'];
-const expectedTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter'];
+const expectedTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter', 'json-pointer', 'csv-json', 'url-inspector', 'html-entities'];
+const expectedToolReferences = {
+  'json-pointer': 'https://www.rfc-editor.org/rfc/rfc6901.html',
+  'csv-json': 'https://www.rfc-editor.org/rfc/rfc4180.html',
+  'url-inspector': 'https://url.spec.whatwg.org/',
+  'html-entities': 'https://html.spec.whatwg.org/multipage/syntax.html#character-references',
+};
 
 async function parseTypeScript(relativePath) {
   const text = await readFile(new URL(`../${relativePath}`, import.meta.url), 'utf8');
@@ -101,6 +107,17 @@ for (const locale of locales) {
     if (questions.some((question) => !question || !ts.isStringLiteral(question)) || new Set(questions.map((question) => question.text)).size !== questions.length) {
       throw new Error(`${locale}/${slug} has missing or duplicate FAQ questions`);
     }
+    if (expectedToolReferences[slug]) {
+      const references = fields.get('references');
+      if (!references || !ts.isArrayLiteralExpression(references) || references.elements.length < 1) throw new Error(`${locale}/${slug} needs a linked source reference`);
+      for (const reference of references.elements) {
+        const referenceFields = properties(reference, `${locale}/${slug} reference`);
+        const label = referenceFields.get('label');
+        const href = referenceFields.get('href');
+        if (!label || !ts.isStringLiteral(label) || !label.text.trim()) throw new Error(`${locale}/${slug} reference needs a label`);
+        if (!href || !ts.isStringLiteral(href) || href.text !== expectedToolReferences[slug]) throw new Error(`${locale}/${slug} must link to its expected primary source`);
+      }
+    }
   }
   assertPlaceholderParity(new Map(locales.map((candidate) => [candidate, toolContentByLocale.get(candidate)])), 'tool content');
 }
@@ -116,3 +133,79 @@ for (const [slug, initializer] of toolExamples) {
 }
 
 console.log(`i18n verified (${locales.length} locales, ${labelKeys.length} shared content labels, ${workbenchKeys.length} workbench labels, ${expectedTools.length} tools, ${expectedTools.length * locales.length} localized tool entries, 2 examples and 3 FAQs per localized tool).`);
+
+const workflowSource = await parseTypeScript('src/data/workflow-guides.ts');
+const workflowGuides = properties(variableObject(workflowSource, 'workflowGuides'), 'workflowGuides');
+const expectedWorkflowGuides = ['api-response-debugging', 'cron-timezone-check', 'yaml-type-migration'];
+const workflowHandoffTools = {
+  'api-response-debugging': 'json-formatter',
+  'cron-timezone-check': 'cron-generator',
+  'yaml-type-migration': 'yaml-json',
+};
+const workflowHandoffsByLocale = new Map();
+assertSameKeys(workflowGuides, locales, 'workflow guide locale');
+for (const locale of locales) {
+  const localeGuides = properties(workflowGuides.get(locale), `${locale} workflow guides`);
+  assertSameKeys(localeGuides, expectedWorkflowGuides, `${locale} workflow guide`);
+  const localeHandoffs = new Map();
+  for (const [slug, initializer] of localeGuides) {
+    const fields = properties(initializer, `${locale}/${slug}`);
+    for (const field of ['title', 'summary', 'introduction', 'privacyTitle', 'privacyNote', 'scenarioTitle', 'scenarioNote', 'expectedLabel', 'receivedLabel', 'expectedPayload', 'receivedPayload', 'stepsTitle', 'checklistTitle', 'referencesTitle', 'useExampleLabel']) {
+      const value = fields.get(field);
+      if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} has no ${field}`);
+    }
+    const steps = fields.get('steps');
+    if (!steps || !ts.isArrayLiteralExpression(steps) || steps.elements.length !== 5) throw new Error(`${locale}/${slug} must have five workflow steps`);
+    let exampleCount = 0;
+    for (const step of steps.elements) {
+      const stepFields = properties(step, `${locale}/${slug} workflow step`);
+      for (const field of ['title', 'toolSlug', 'action', 'reading', 'boundary']) {
+        const value = stepFields.get(field);
+        if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} workflow step is missing ${field}`);
+      }
+      const toolSlug = stepFields.get('toolSlug');
+      if (!expectedTools.includes(toolSlug.text)) throw new Error(`${locale}/${slug} workflow step references an unknown tool: ${toolSlug.text}`);
+      if (stepFields.has('handoffInput')) {
+        const handoffInput = stepFields.get('handoffInput');
+        if (!handoffInput || !ts.isStringLiteral(handoffInput) || !handoffInput.text.trim()) throw new Error(`${locale}/${slug} workflow handoff input must be non-empty text`);
+        if (toolSlug.text !== workflowHandoffTools[slug]) throw new Error(`${locale}/${slug} handoff input targets ${toolSlug.text}, expected ${workflowHandoffTools[slug]}`);
+        if (localeHandoffs.has(slug)) throw new Error(`${locale}/${slug} must have only one sample handoff action`);
+        localeHandoffs.set(slug, handoffInput.text);
+      }
+      const example = stepFields.get('example');
+      if (example) {
+        exampleCount += 1;
+        const exampleFields = properties(example, `${locale}/${slug} workflow example`);
+        for (const field of ['inputLabel', 'outputLabel', 'input', 'output']) {
+          const value = exampleFields.get(field);
+          if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} workflow example is missing ${field}`);
+        }
+      }
+    }
+    if (!localeHandoffs.has(slug)) throw new Error(`${locale}/${slug} needs one sample handoff action`);
+    if (exampleCount < 1) throw new Error(`${locale}/${slug} needs at least one inline workflow example`);
+    const checklist = fields.get('checklist');
+    if (!checklist || !ts.isArrayLiteralExpression(checklist) || checklist.elements.length < 5) throw new Error(`${locale}/${slug} needs at least five target-environment checks`);
+    if (checklist.elements.some((item) => !ts.isStringLiteral(item) || !item.text.trim())) throw new Error(`${locale}/${slug} has an empty checklist item`);
+    const references = fields.get('references');
+    if (!references || !ts.isArrayLiteralExpression(references) || references.elements.length < 3) throw new Error(`${locale}/${slug} needs at least three references`);
+    for (const reference of references.elements) {
+      const referenceFields = properties(reference, `${locale}/${slug} reference`);
+      for (const field of ['label', 'href']) {
+        const value = referenceFields.get(field);
+        if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} reference is missing ${field}`);
+      }
+      if (!referenceFields.get('href').text.startsWith('https://')) throw new Error(`${locale}/${slug} reference must use HTTPS`);
+    }
+  }
+  workflowHandoffsByLocale.set(locale, localeHandoffs);
+}
+
+for (const slug of expectedWorkflowGuides) {
+  const expectedInput = workflowHandoffsByLocale.get(locales[0]).get(slug);
+  for (const locale of locales.slice(1)) {
+    if (workflowHandoffsByLocale.get(locale).get(slug) !== expectedInput) throw new Error(`${slug} sample handoff input differs for ${locale}`);
+  }
+}
+
+console.log(`Workflow content verified (${locales.length} locales, ${expectedWorkflowGuides.length} original workflow guides, five steps, localized sample actions, five checks, inline examples, and standards references per locale).`);

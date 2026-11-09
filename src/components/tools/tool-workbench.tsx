@@ -22,6 +22,10 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'regex-tester': dynamic(() => import('./workbenches/regex-workbench').then((module) => module.RegexWorkbench)),
   'yaml-json': dynamic(() => import('./workbenches/yaml-json-workbench').then((module) => module.YamlJsonWorkbench)),
   'code-formatter': dynamic(() => import('./workbenches/code-formatter-workbench').then((module) => module.CodeFormatterWorkbench)),
+  'json-pointer': dynamic(() => import('./workbenches/json-pointer-workbench').then((module) => module.JsonPointerWorkbench)),
+  'csv-json': dynamic(() => import('./workbenches/csv-json-workbench').then((module) => module.CsvJsonWorkbench)),
+  'url-inspector': dynamic(() => import('./workbenches/url-inspector-workbench').then((module) => module.UrlInspectorWorkbench)),
+  'html-entities': dynamic(() => import('./workbenches/html-entities-workbench').then((module) => module.HtmlEntitiesWorkbench)),
 };
 
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {

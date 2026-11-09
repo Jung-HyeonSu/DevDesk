@@ -8,7 +8,7 @@ DevDesk is a multilingual collection of practical developer tools that run in yo
 
 ## Features
 
-- **13 developer tools:**
+- **17 developer tools:**
   - Format, minify, and validate JSON
   - Format SQL
   - Decode JWT headers and payloads (signature verification is not performed)
@@ -21,6 +21,11 @@ DevDesk is a multilingual collection of practical developer tools that run in yo
   - Generate SHA-2 hashes
   - Test regular expressions in a stoppable Web Worker
   - Convert between YAML and JSON
+  - Format code in 14 languages, with syntax highlighting and PNG export
+  - Inspect nested JSON values with RFC 6901 JSON Pointer
+  - Convert CSV and JSON, including quoted and tab-delimited fields
+  - Inspect URL components and repeated query parameters
+  - Encode and decode common HTML character references
 - Browse the interface, tool pages, and guides in Korean, English, Japanese, or Simplified Chinese.
 - Search the tool catalog, save favorites, and revisit recently used tools.
 - Choose a light, dark, or system-matched theme.

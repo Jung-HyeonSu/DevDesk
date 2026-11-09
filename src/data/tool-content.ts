@@ -8,6 +8,7 @@ export type ToolContent = {
   steps: [string, string, string];
   caution: string;
   faqs: [ToolFaq, ToolFaq, ToolFaq];
+  references?: { label: string; href: string }[];
 };
 
 export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
@@ -62,6 +63,22 @@ export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
   'yaml-json': [
     { input: 'name: DevDesk\nactive: true', output: '{\n  "name": "DevDesk",\n  "active": true\n}' },
     { input: '{"retries":3,"enabled":false}', output: 'retries: 3\nenabled: false\n' },
+  ],
+  'json-pointer': [
+    { input: '{"invoice":{"items":[{"sku":"SKU-7"}]}}\nPointer: /invoice/items/0/sku', output: '"SKU-7"' },
+    { input: '{"a/b":{"~key":true}}\nPointer: /a~1b/~0key', output: 'true' },
+  ],
+  'csv-json': [
+    { input: 'id,name,active\n1,Ada Lovelace,true\n2,"Grace, Hopper",false', output: '[\n  {\n    "id": "1",\n    "name": "Ada Lovelace",\n    "active": "true"\n  },\n  {\n    "id": "2",\n    "name": "Grace, Hopper",\n    "active": "false"\n  }\n]' },
+    { input: '[{"id":1,"name":"Ada"},{"id":2,"name":"Grace, Hopper"}]', output: 'id,name\r\n1,Ada\r\n2,"Grace, Hopper"' },
+  ],
+  'url-inspector': [
+    { input: 'https://demo:secret@example.test:8443/orders/42?tag=blue&tag=green#payment', output: '{\n  "protocol": "https:",\n  "host": "example.test:8443",\n  "pathname": "/orders/42",\n  "searchParams": [{ "name": "tag", "value": "blue" }, { "name": "tag", "value": "green" }],\n  "hash": "#payment",\n  "hasUsername": true,\n  "hasPassword": true\n}' },
+    { input: 'https://example.test/search?q=hello%20world', output: '{\n  "protocol": "https:",\n  "hostname": "example.test",\n  "pathname": "/search",\n  "searchParams": [{ "name": "q", "value": "hello world" }]\n}' },
+  ],
+  'html-entities': [
+    { input: '<div title="A & B">"Hi"</div>', output: '&lt;div title=&quot;A &amp; B&quot;&gt;&quot;Hi&quot;&lt;/div&gt;' },
+    { input: '&lt;tag&gt; &amp; &#x1F600;', output: '<tag> & 😀' },
   ],
 };
 
@@ -197,6 +214,50 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
         { question: 'YAML에서 코드를 실행하나요?', answer: '아니요. 안전한 파싱과 직렬화만 수행하며 eval이나 사용자 코드 실행은 사용하지 않습니다.' },
       ],
     },
+    'json-pointer': {
+      description: 'RFC 6901 JSON Pointer로 API 응답의 중첩 키나 배열 인덱스를 따라가 원하는 값을 확인합니다. 전체 문서를 다시 훑지 않고 경로의 실제 값을 출력합니다.',
+      steps: ['JSON 응답 본문을 붙여넣습니다.', '루트는 빈 문자열, 중첩 경로는 /로 시작하는 포인터를 입력합니다.', '값과 JSON 타입을 확인하고 필요한 결과를 복사합니다.'],
+      caution: 'JSON Pointer는 JSONPath가 아니므로 필터, 와일드카드, 여러 결과 선택을 지원하지 않습니다. 키 이름의 /는 ~1, ~는 ~0으로 씁니다. JSON 파서는 중복 키를 마지막 값으로 처리하므로 중복 키 검증기로 사용하지 마세요.',
+      faqs: [
+        { question: '배열 원소는 어떻게 지정하나요?', answer: '배열 인덱스를 경로 토큰으로 사용합니다. 예를 들어 /items/0은 첫 번째 원소입니다.' },
+        { question: '키 이름에 슬래시나 물결표가 있으면 어떻게 하나요?', answer: 'RFC 6901 규칙에 따라 슬래시는 ~1, 물결표는 ~0으로 이스케이프합니다. 변환 순서는 결과에 영향을 줍니다.' },
+        { question: '값을 찾지 못하면 입력 JSON이 잘못된 건가요?', answer: '아닙니다. JSON 문법 오류와 존재하지 않는 경로를 구분해 안내합니다. 키 대소문자와 배열 범위를 확인하세요.' },
+      ],
+      references: [{ label: 'RFC 6901 — JSON Pointer', href: 'https://www.rfc-editor.org/rfc/rfc6901.html' }],
+    },
+    'csv-json': {
+      description: '쉼표·탭·세미콜론 구분 텍스트를 JSON 객체 배열로 바꾸거나 객체 배열을 CSV로 내보냅니다. 따옴표로 감싼 구분자와 줄바꿈을 처리합니다.',
+      steps: ['CSV → JSON 또는 JSON → CSV 방향을 선택합니다.', '쉼표·탭·세미콜론 중 입력과 맞는 구분자를 고릅니다.', '표 데이터를 붙여넣어 변환한 뒤 셀 값을 검토합니다.'],
+      caution: 'CSV에서 가져온 값은 모두 문자열입니다. 내보낼 JSON은 객체들의 배열이어야 하며, 중첩 값은 셀 안에 JSON 텍스트로 기록됩니다. CSV를 스프레드시트에서 열면 =, +, - 또는 @로 시작하는 값이 수식으로 해석될 수 있으므로 신뢰할 수 없는 셀을 확인하세요.',
+      faqs: [
+        { question: 'CSV의 숫자와 true/false는 자동으로 타입 변환되나요?', answer: '아니요. CSV에는 표준 데이터 타입 정보가 없어 모든 셀을 문자열로 보존합니다.' },
+        { question: '값 안에 쉼표나 줄바꿈이 있으면 어떻게 하나요?', answer: 'CSV 따옴표 규칙을 사용합니다. 필드 안의 따옴표는 두 번 써서 이스케이프합니다.' },
+        { question: 'JSON 행마다 열 구성이 달라도 되나요?', answer: 'JSON → CSV는 모든 객체의 키를 처음 나온 순서대로 모읍니다. 없는 속성은 빈 셀로 기록합니다.' },
+      ],
+      references: [{ label: 'RFC 4180 — CSV 파일의 일반 형식과 MIME 유형', href: 'https://www.rfc-editor.org/rfc/rfc4180.html' }],
+    },
+    'url-inspector': {
+      description: '절대 HTTP(S) URL을 구성 요소로 나누고 반복된 쿼리 매개변수를 순서대로 확인합니다. 주소 파싱만 수행하며 대상 서버에 연결하지 않습니다.',
+      steps: ['http:// 또는 https://로 시작하는 전체 URL을 붙여넣습니다.', '분석을 실행해 호스트·경로·쿼리·fragment를 살펴봅니다.', '반복된 쿼리 키와 디코딩된 값이 필요한지 확인합니다.'],
+      caution: '사용자 이름과 비밀번호 값은 결과에서 제외하지만 쿼리 문자열에는 토큰이나 개인정보가 있을 수 있습니다. 민감한 주소는 외부에 공유하지 마세요.',
+      faqs: [
+        { question: '상대 경로나 mailto 링크를 분석할 수 있나요?', answer: '아니요. 혼동을 줄이기 위해 절대 HTTP 및 HTTPS URL만 받습니다.' },
+        { question: '같은 쿼리 키가 여러 번 나오면 덮어쓰나요?', answer: '아니요. URLSearchParams의 항목 순서대로 각각 표시하므로 중복 매개변수를 확인할 수 있습니다.' },
+        { question: '입력한 주소로 요청을 보내나요?', answer: '아니요. 브라우저의 URL 파서만 사용하며 페이지를 열거나 네트워크 요청을 전송하지 않습니다.' },
+      ],
+      references: [{ label: 'WHATWG URL Standard — URL 및 URLSearchParams API', href: 'https://url.spec.whatwg.org/' }],
+    },
+    'html-entities': {
+      description: '텍스트의 HTML 특수 문자를 엔티티로 이스케이프하거나 지원되는 문자 참조를 다시 문자로 변환합니다. HTML 파싱이나 실행은 하지 않습니다.',
+      steps: ['인코딩 또는 디코딩 방향을 선택합니다.', 'HTML 조각이나 문자 참조가 포함된 텍스트를 붙여넣습니다.', '변환 결과를 검토한 뒤 복사합니다.'],
+      caution: '디코더는 amp, apos, gt, lt, nbsp, quot와 세미콜론으로 끝나는 숫자 문자 참조를 처리합니다. 이 기능은 HTML sanitizer가 아니므로 신뢰할 수 없는 마크업을 안전하게 만들지 않습니다.',
+      faqs: [
+        { question: 'HTML을 실행하거나 미리 보나요?', answer: '아니요. 문자열만 변환하며 DOM에 마크업을 삽입하거나 코드를 실행하지 않습니다.' },
+        { question: '모든 HTML5 이름 엔티티를 디코딩하나요?', answer: '아니요. 흔히 쓰는 amp, apos, gt, lt, nbsp, quot 이름과 숫자 참조를 지원합니다. 다른 이름은 원문으로 남습니다.' },
+        { question: '이 결과로 HTML XSS를 방지할 수 있나요?', answer: '단독으로는 불가능합니다. 출력 문맥에 맞는 검증된 HTML sanitizer를 사용해야 하며, 이 변환기는 보안 필터가 아닙니다.' },
+      ],
+      references: [{ label: 'WHATWG HTML Standard — Character references', href: 'https://html.spec.whatwg.org/multipage/syntax.html#character-references' }],
+    },
   },
   en: {
     'code-formatter': {
@@ -328,6 +389,50 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
         { question: 'Are YAML aliases and deep nesting unlimited?', answer: 'No. Input size and nesting are bounded to limit excessive computation and memory use.' },
         { question: 'Can YAML execute code here?', answer: 'No. The tool parses and serializes data only; it does not use eval or execute user code.' },
       ],
+    },
+    'json-pointer': {
+      description: 'Follow nested keys and array indexes in an API response with RFC 6901 JSON Pointer. Inspect the value at one exact path without scanning the document manually.',
+      steps: ['Paste a JSON response body.', 'Enter an empty string for the root or a pointer path beginning with /.', 'Review the selected value and its JSON type, then copy it if needed.'],
+      caution: 'JSON Pointer is not JSONPath: filters, wildcards, and multi-value selection are not supported. Escape / in a key as ~1 and ~ as ~0. JSON.parse keeps the last duplicate object key, so this is not a duplicate-key validator.',
+      faqs: [
+        { question: 'How do I select an array item?', answer: 'Use its zero-based index as a path token. For example, /items/0 selects the first item.' },
+        { question: 'What if a key contains a slash or tilde?', answer: 'RFC 6901 encodes slash as ~1 and tilde as ~0. The order of these escapes matters.' },
+        { question: 'Does a missing value mean my JSON is invalid?', answer: 'No. The tool distinguishes JSON syntax errors from paths that do not exist. Check key spelling, case, and array bounds.' },
+      ],
+      references: [{ label: 'RFC 6901 — JSON Pointer', href: 'https://www.rfc-editor.org/rfc/rfc6901.html' }],
+    },
+    'csv-json': {
+      description: 'Convert comma-, tab-, or semicolon-delimited text to an array of JSON objects, or export an array of objects as CSV. Quoted delimiters and line breaks are supported.',
+      steps: ['Choose CSV → JSON or JSON → CSV.', 'Select the delimiter used by the input.', 'Paste the table data, convert it, and review the cell values.'],
+      caution: 'Imported CSV values are strings because CSV has no standard type metadata. JSON input must be an array of objects; nested values are written as JSON text inside a cell. Spreadsheet apps may interpret cells starting with =, +, -, or @ as formulas, so review untrusted values before opening an export.',
+      faqs: [
+        { question: 'Are numbers and true/false values typed automatically?', answer: 'No. CSV does not define data types, so every imported cell is preserved as a string.' },
+        { question: 'How are commas and newlines inside a value handled?', answer: 'Use CSV quoting. A quote inside a quoted field is escaped by doubling it.' },
+        { question: 'Can JSON rows have different keys?', answer: 'Yes. JSON → CSV collects keys in first-seen order and writes a blank cell when a row lacks a key.' },
+      ],
+      references: [{ label: 'RFC 4180 — Common Format and MIME Type for CSV Files', href: 'https://www.rfc-editor.org/rfc/rfc4180.html' }],
+    },
+    'url-inspector': {
+      description: 'Break an absolute HTTP(S) URL into components and inspect repeated query parameters in order. It parses the address without contacting the target server.',
+      steps: ['Paste a full URL starting with http:// or https://.', 'Inspect its host, path, query, and fragment.', 'Check repeated query keys and decoded parameter values.'],
+      caution: 'Username and password values are omitted, but query strings can still contain tokens or personal data. Do not share sensitive URLs or results.',
+      faqs: [
+        { question: 'Can I inspect a relative path or a mailto link?', answer: 'No. The tool accepts absolute HTTP and HTTPS URLs to keep parsing unambiguous.' },
+        { question: 'Are repeated query keys overwritten?', answer: 'No. Each URLSearchParams entry is listed in order, so duplicate parameters remain visible.' },
+        { question: 'Does the tool request the URL?', answer: 'No. It uses the browser URL parser only; it does not open the address or make a network request.' },
+      ],
+      references: [{ label: 'WHATWG URL Standard — URL and URLSearchParams API', href: 'https://url.spec.whatwg.org/' }],
+    },
+    'html-entities': {
+      description: 'Escape HTML special characters in text or decode supported character references. The tool transforms strings without parsing or executing HTML.',
+      steps: ['Choose encode or decode.', 'Paste an HTML fragment or text containing character references.', 'Review the converted text and copy it.'],
+      caution: 'The decoder handles amp, apos, gt, lt, nbsp, quot, and semicolon-terminated numeric references. This is not an HTML sanitizer and does not make untrusted markup safe.',
+      faqs: [
+        { question: 'Does the tool render or execute HTML?', answer: 'No. It transforms text only and never inserts the markup into a DOM or runs code.' },
+        { question: 'Does it decode every named HTML5 entity?', answer: 'No. It supports the common names amp, apos, gt, lt, nbsp, and quot, plus numeric references. Other names are left unchanged.' },
+        { question: 'Will this prevent HTML XSS?', answer: 'Not by itself. Use a vetted sanitizer appropriate to the output context; this converter is not a security filter.' },
+      ],
+      references: [{ label: 'WHATWG HTML Standard — Character references', href: 'https://html.spec.whatwg.org/multipage/syntax.html#character-references' }],
     },
   },
   ja: {
@@ -461,6 +566,50 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
         { question: 'YAML からコードを実行しますか？', answer: 'いいえ。安全な解析とシリアライズのみを行い、eval やユーザーコード実行は使いません。' },
       ],
     },
+    'json-pointer': {
+      description: 'RFC 6901 JSON Pointer を使い、API レスポンス内のネストしたキーや配列インデックスをたどって値を確認します。文書全体を手作業で探す必要はありません。',
+      steps: ['JSON レスポンス本文を貼り付けます。', 'ルートには空文字列、それ以外は / で始まるポインターを入力します。', '値と JSON 型を確認し、必要に応じてコピーします。'],
+      caution: 'JSON Pointer は JSONPath ではありません。フィルター、ワイルドカード、複数値の選択には対応しません。キー内の / は ~1、~ は ~0 として記述します。JSON.parse は重複キーの最後の値を採用するため、重複キーの検証には使えません。',
+      faqs: [
+        { question: '配列の要素はどう指定しますか？', answer: '0 から始まるインデックスをパスのトークンとして使います。たとえば /items/0 は先頭の要素です。' },
+        { question: 'キーにスラッシュやチルダが含まれる場合は？', answer: 'RFC 6901 に従ってスラッシュは ~1、チルダは ~0 にエスケープします。置換順にも注意してください。' },
+        { question: '値が見つからない場合、JSON が不正ですか？', answer: 'いいえ。JSON 構文エラーと存在しないパスを区別して表示します。キーの綴りや大文字小文字、配列の範囲を確認してください。' },
+      ],
+      references: [{ label: 'RFC 6901 — JSON Pointer', href: 'https://www.rfc-editor.org/rfc/rfc6901.html' }],
+    },
+    'csv-json': {
+      description: 'カンマ・タブ・セミコロン区切りのテキストを JSON オブジェクト配列に変換し、逆方向の CSV 出力も行います。引用符内の区切り文字や改行に対応します。',
+      steps: ['CSV → JSON または JSON → CSV を選びます。', '入力に使われている区切り文字を指定します。', '表データを貼り付けて変換し、セルの内容を確認します。'],
+      caution: 'CSV から読み込む値はすべて文字列です。CSV には標準の型情報がありません。JSON のネストした値はセル内に JSON テキストとして出力します。表計算ソフトでは =、+、-、@ で始まるセルが数式として解釈される場合があるため、信頼できない値を開く前に確認してください。',
+      faqs: [
+        { question: '数字や true/false を自動で型変換しますか？', answer: 'いいえ。CSV はデータ型を標準化していないため、読み込んだセルはすべて文字列として扱います。' },
+        { question: '値の中にカンマや改行がある場合は？', answer: 'CSV の引用符ルールを使います。引用符内の引用符は 2 つ続けて記述します。' },
+        { question: 'JSON の各行でキーが違っても変換できますか？', answer: 'できます。JSON → CSV では最初に現れた順に列を集め、存在しないプロパティは空欄にします。' },
+      ],
+      references: [{ label: 'RFC 4180 — CSV ファイルの共通形式と MIME タイプ', href: 'https://www.rfc-editor.org/rfc/rfc4180.html' }],
+    },
+    'url-inspector': {
+      description: '絶対 HTTP(S) URL を構成要素に分け、重複したクエリパラメーターを順番どおりに確認します。URL を解析するだけで接続は行いません。',
+      steps: ['http:// または https:// で始まる URL 全体を貼り付けます。', 'ホスト、パス、クエリ、フラグメントを確認します。', '重複したキーとデコード後の値を調べます。'],
+      caution: 'ユーザー名とパスワードは結果に含めませんが、クエリにトークンや個人情報が含まれることがあります。機密 URL や結果は共有しないでください。',
+      faqs: [
+        { question: '相対パスや mailto リンクも解析できますか？', answer: 'いいえ。曖昧さを避けるため、絶対 HTTP と HTTPS URL のみを受け付けます。' },
+        { question: '同じクエリキーがあると上書きされますか？', answer: 'いいえ。URLSearchParams の順に項目を列挙するため、重複パラメーターも確認できます。' },
+        { question: '入力した URL にリクエストを送信しますか？', answer: 'いいえ。ブラウザーの URL パーサーだけを使い、ページ表示やネットワークリクエストは行いません。' },
+      ],
+      references: [{ label: 'WHATWG URL Standard — URL と URLSearchParams API', href: 'https://url.spec.whatwg.org/' }],
+    },
+    'html-entities': {
+      description: 'HTML の特殊文字をエンティティにエスケープするか、対応する文字参照を文字に戻します。HTML の解析や実行は行いません。',
+      steps: ['エンコードまたはデコードを選びます。', 'HTML 断片、または文字参照を含むテキストを貼り付けます。', '変換結果を確認してコピーします。'],
+      caution: 'amp、apos、gt、lt、nbsp、quot とセミコロン付きの数値文字参照を扱います。HTML サニタイザーではないため、信頼できないマークアップを安全化するものではありません。',
+      faqs: [
+        { question: 'HTML を表示したり実行したりしますか？', answer: 'いいえ。文字列のみを変換し、マークアップを DOM に挿入したりコードを実行したりしません。' },
+        { question: 'HTML5 の名前付きエンティティをすべてデコードしますか？', answer: 'いいえ。amp、apos、gt、lt、nbsp、quot と数値参照に対応します。それ以外の名前はそのまま残します。' },
+        { question: 'この変換で HTML XSS を防げますか？', answer: '単独では防げません。出力先の文脈に適した検証済みサニタイザーを使用してください。このツールはセキュリティフィルターではありません。' },
+      ],
+      references: [{ label: 'WHATWG HTML Standard — Character references', href: 'https://html.spec.whatwg.org/multipage/syntax.html#character-references' }],
+    },
   },
   zh: {
     'code-formatter': {
@@ -592,6 +741,50 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
         { question: 'YAML 别名和深层嵌套没有限制吗？', answer: '不是。为了限制过多计算和内存使用，输入大小和嵌套层级都有上限。' },
         { question: 'YAML 可以在这里执行代码吗？', answer: '不可以。工具只解析和序列化数据，不使用 eval，也不运行用户代码。' },
       ],
+    },
+    'json-pointer': {
+      description: '使用 RFC 6901 JSON Pointer 沿着 API 响应中的嵌套键和数组索引查找值，无需手动遍历整个文档。',
+      steps: ['粘贴 JSON 响应正文。', '根路径使用空字符串，其他路径以 / 开头。', '查看选中值及其 JSON 类型，需要时复制结果。'],
+      caution: 'JSON Pointer 不等同于 JSONPath，不支持筛选器、通配符或多值选择。键名中的 / 写作 ~1，~ 写作 ~0。JSON.parse 会保留重复键的最后一个值，因此本工具不能检查重复键。',
+      faqs: [
+        { question: '如何选择数组中的元素？', answer: '使用从 0 开始的索引作为路径片段。例如 /items/0 表示第一个元素。' },
+        { question: '键名包含斜杠或波浪号怎么办？', answer: '按照 RFC 6901 将斜杠转义为 ~1、波浪号转义为 ~0。替换顺序也会影响结果。' },
+        { question: '找不到值是否表示 JSON 无效？', answer: '不表示。工具会区分 JSON 语法错误和不存在的路径。请检查键名、大小写和数组范围。' },
+      ],
+      references: [{ label: 'RFC 6901 — JSON Pointer', href: 'https://www.rfc-editor.org/rfc/rfc6901.html' }],
+    },
+    'csv-json': {
+      description: '将逗号、制表符或分号分隔文本转换为 JSON 对象数组，也可反向导出为 CSV。支持带引号的分隔符和换行。',
+      steps: ['选择 CSV → JSON 或 JSON → CSV。', '选择输入所用的分隔符。', '粘贴表格数据，转换后检查单元格内容。'],
+      caution: '从 CSV 导入的值全部是字符串，因为 CSV 没有标准类型元数据。JSON 输入必须是对象数组；嵌套值会作为 JSON 文本写入单元格。在电子表格应用中，以 =、+、- 或 @ 开头的单元格可能被当作公式执行，打开不可信导出内容前请先检查。',
+      faqs: [
+        { question: '数字和 true/false 会自动转换成类型吗？', answer: '不会。CSV 没有标准数据类型定义，因此每个导入单元格都会保留为字符串。' },
+        { question: '值中含有逗号或换行怎么办？', answer: '使用 CSV 引号规则。带引号字段中的引号需要写成两个连续的引号。' },
+        { question: 'JSON 每行的键可以不同吗？', answer: '可以。JSON → CSV 会按首次出现顺序收集键；缺少的属性会输出为空单元格。' },
+      ],
+      references: [{ label: 'RFC 4180 — CSV 文件的通用格式与 MIME 类型', href: 'https://www.rfc-editor.org/rfc/rfc4180.html' }],
+    },
+    'url-inspector': {
+      description: '将绝对 HTTP(S) URL 拆分为组成部分，并按顺序检查重复查询参数。此工具只解析地址，不会连接目标服务器。',
+      steps: ['粘贴以 http:// 或 https:// 开头的完整 URL。', '检查主机、路径、查询字符串和片段。', '查看重复查询键及解码后的参数值。'],
+      caution: '结果不会包含用户名和密码，但查询字符串仍可能包含令牌或个人信息。请勿分享敏感 URL 或分析结果。',
+      faqs: [
+        { question: '可以分析相对路径或 mailto 链接吗？', answer: '不可以。为避免歧义，此工具只接受绝对 HTTP 和 HTTPS URL。' },
+        { question: '重复查询键会互相覆盖吗？', answer: '不会。结果会按 URLSearchParams 的顺序列出每个参数，因此可以看到重复项。' },
+        { question: '工具会请求输入的 URL 吗？', answer: '不会。它只使用浏览器 URL 解析器，不会打开地址或发送网络请求。' },
+      ],
+      references: [{ label: 'WHATWG URL Standard — URL 与 URLSearchParams API', href: 'https://url.spec.whatwg.org/' }],
+    },
+    'html-entities': {
+      description: '将文本中的 HTML 特殊字符转义为实体，或将支持的字符引用解码回文本。工具只转换字符串，不解析或执行 HTML。',
+      steps: ['选择编码或解码。', '粘贴 HTML 片段或包含字符引用的文本。', '检查转换结果并复制。'],
+      caution: '解码器处理 amp、apos、gt、lt、nbsp、quot，以及以分号结尾的数字引用。本工具不是 HTML 清理器，不能保证不可信标记安全。',
+      faqs: [
+        { question: '工具会渲染或执行 HTML 吗？', answer: '不会。工具只转换文本，不会将标记插入 DOM，也不会运行代码。' },
+        { question: '可以解码所有 HTML5 命名实体吗？', answer: '不可以。仅支持常用的 amp、apos、gt、lt、nbsp、quot 和数字引用，其他名称会保持原样。' },
+        { question: '这样能防止 HTML XSS 吗？', answer: '仅靠此工具不能。应使用适合输出上下文的可信清理器；此转换器不是安全过滤器。' },
+      ],
+      references: [{ label: 'WHATWG HTML Standard — Character references', href: 'https://html.spec.whatwg.org/multipage/syntax.html#character-references' }],
     },
   },
 };
