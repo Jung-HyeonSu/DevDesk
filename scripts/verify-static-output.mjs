@@ -121,8 +121,17 @@ if (!linkTags(rootHtml).some((tag) => attr(tag, 'hreflang').toLowerCase() === 'x
 
 for (const locale of locales) {
   const homeHtml = await readFile(filePath(`/${locale}`), 'utf8');
+  const guidesHtml = await readFile(filePath(`/${locale}/guides`), 'utf8');
   for (const slug of workflowSlugs) {
-    if (!homeHtml.includes(`/${locale}/guides/${slug}/`)) throw new Error(`${locale} home page is missing the ${slug} workflow link`);
+    const workflowUrl = `/${locale}/guides/${slug}/`;
+    if (homeHtml.includes(workflowUrl)) throw new Error(`${locale} home page must not repeat the ${slug} workflow collection`);
+    if (guidesHtml.includes(workflowUrl)) throw new Error(`${locale} guide index must not repeat the ${slug} workflow collection`);
+    const discoveryTool = workflowActionToolBySlug[slug];
+    const toolHtml = await readFile(filePath(`/${locale}/tools/${discoveryTool}`), 'utf8');
+    if (!toolHtml.includes(workflowUrl)) throw new Error(`${locale}/${discoveryTool} must retain its ${slug} workflow link`);
+  }
+  for (const slug of toolSlugs) {
+    if (!guidesHtml.includes(`/${locale}/tools/${slug}/`)) throw new Error(`${locale} guide index is missing its ${slug} tool reference`);
   }
   for (const path of localizedPaths) {
     const html = await readFile(filePath(`/${locale}${path === '/' ? '' : path}`), 'utf8');
@@ -173,4 +182,4 @@ for (const relativeFile of htmlFiles) {
   }
 }
 
-console.log(`Static output verified (${requiredFiles.length} required paths, ${locales.length * toolSlugs.length} tool pages, ${locales.length * workflowSlugs.length} indexable workflow guides with sample actions, canonical/noindex legacy guide URLs, sitemap, robots, metadata, and internal links).`);
+console.log(`Static output verified (${requiredFiles.length} required paths, ${locales.length * toolSlugs.length} tool pages, ${locales.length * workflowSlugs.length} indexable workflow guides with sample actions, tool-linked guide discovery, canonical/noindex legacy guide URLs, sitemap, robots, metadata, and internal links).`);

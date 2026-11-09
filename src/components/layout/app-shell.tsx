@@ -157,6 +157,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   const { discardUnlessTarget } = useToolHandoff();
   const theme = useSyncExternalStore(subscribePreferences, getThemeSnapshot, () => 'system');
   const isLocaleHome = pathname === `/${locale}/` || pathname === `/${locale}`;
+  const isGuidePage = pathname === `/${locale}/guides` || pathname.startsWith(`/${locale}/guides/`);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -213,13 +214,13 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   });
 
   return (
-    <div className={`app-shell${isLocaleHome ? ' is-home' : ''}`}>
+    <div className={`app-shell${isLocaleHome ? ' is-home' : ''}${isGuidePage ? ' is-guide-page' : ''}`}>
       <header className="topbar">
         <div className="topbar-inner">
           <Link className="brand" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><Image alt="" aria-hidden="true" className="brand-mark" height={32} src="/icon.svg" width={32} /><span>DevDesk</span></Link>
           <nav className="top-nav" aria-label={text.primaryNavigation}>
             <Link aria-current={isLocaleHome ? 'page' : undefined} href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}>{text.home}</Link>
-            <Link href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
+            <Link aria-current={isGuidePage ? 'page' : undefined} href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
           </nav>
           <div className="top-actions">
             <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
@@ -228,14 +229,14 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
               {locales.map((item) => <option key={item} value={item}>{localeMetadata[item].label}</option>)}
             </select>
             <button aria-label={`${text.theme}: ${themeLabel}`} className="icon-button theme-button" onClick={cycleTheme} type="button"><span aria-hidden="true">{theme === 'dark' ? '☾' : theme === 'light' ? '☼' : '◐'}</span><span className="theme-label">{themeLabel}</span></button>
-            <button aria-expanded={mobileNavOpen} aria-label={text.menu} className="icon-button mobile-menu-button" onClick={() => setMobileNavOpen((open) => !open)} type="button"><span aria-hidden="true">☰</span></button>
+            {!isGuidePage && <button aria-expanded={mobileNavOpen} aria-label={text.menu} className="icon-button mobile-menu-button" onClick={() => setMobileNavOpen((open) => !open)} type="button"><span aria-hidden="true">☰</span></button>}
           </div>
         </div>
       </header>
 
       <div className="shell-body">
-        <aside className={`sidebar${mobileNavOpen ? ' is-open' : ''}`} aria-label={text.categories}>
-          <Link className="sidebar-primary-link" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><span aria-hidden="true">⌘</span>{text.allTools}<kbd>12</kbd></Link>
+        {!isGuidePage && <aside className={`sidebar${mobileNavOpen ? ' is-open' : ''}`} aria-label={text.categories}>
+          <Link className="sidebar-primary-link" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><span aria-hidden="true">⌘</span>{text.allTools}<kbd>{toolRegistry.length}</kbd></Link>
           <div className="sidebar-group">
             <p className="sidebar-heading">{text.categories}</p>
             {categories.map((category) => <Link className="sidebar-category-link" href={`/${locale}/#home-category-${category}`} key={category} onClick={() => { closeMobileNav(); navigateHomeCategory(category); }}><span className={`category-dot category-${category}`} />{text.categoryNames[category]}</Link>)}
@@ -249,7 +250,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
             {recentIds.length ? toolLinks(recentIds) : <p className="sidebar-empty">{text.emptyRecent}</p>}
           </div>
           <p className="sidebar-privacy"><span aria-hidden="true">◉</span>{text.description}</p>
-        </aside>
+        </aside>}
 
         <div className="main-column">
           <div className="page-content">{children}</div>

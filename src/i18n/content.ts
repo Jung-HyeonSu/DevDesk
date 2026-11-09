@@ -3,7 +3,7 @@ import type { Locale } from './config';
 type ContentLabels = {
   backToTools: string; examples: string; example: string; input: string; output: string;
   howTo: string; caution: string; faq: string; related: string; fullGuide: string;
-  guideIndexTitle: string; guideIndexDescription: string; workflowCollectionTitle: string; toolCollectionTitle: string; guideFor: string; copyExample: string; openTool: string; references: string;
+  guideIndexTitle: string; guideIndexDescription: string; toolCollectionTitle: string; guideFor: string; copyExample: string; openTool: string; references: string;
 };
 
 export const contentLabels: Record<Locale, ContentLabels> = {
@@ -12,7 +12,6 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     howTo: '사용 방법', caution: '주의사항과 오류 해결', faq: '자주 묻는 질문', related: '관련 도구',
     fullGuide: '자세한 사용 가이드', guideIndexTitle: '개발 도구 가이드',
     guideIndexDescription: '입력 형식과 실제 사용 방법, 경계 조건, 개인정보 유의사항을 도구별로 확인하세요.',
-    workflowCollectionTitle: '실전 개발 워크플로',
     toolCollectionTitle: '도구별 참조',
     guideFor: '사용 가이드', copyExample: '예제 복사', openTool: '도구 열기', references: '표준과 참고 자료',
   },
@@ -21,7 +20,6 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     howTo: 'How to use it', caution: 'Limitations and troubleshooting', faq: 'Frequently asked questions', related: 'Related tools',
     fullGuide: 'Full usage guide', guideIndexTitle: 'Developer tool guides',
     guideIndexDescription: 'Check each tool’s input format, practical steps, edge cases, and privacy notes.',
-    workflowCollectionTitle: 'End-to-end workflows',
     toolCollectionTitle: 'Tool-by-tool references',
     guideFor: 'Usage guide', copyExample: 'Copy example', openTool: 'Open tool', references: 'Standards and references',
   },
@@ -30,7 +28,6 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     howTo: '使い方', caution: '注意事項とトラブルシューティング', faq: 'よくある質問', related: '関連ツール',
     fullGuide: '詳しい使い方ガイド', guideIndexTitle: '開発ツールガイド',
     guideIndexDescription: '各ツールの入力形式、使い方、境界条件、プライバシー上の注意を確認できます。',
-    workflowCollectionTitle: '実践ワークフロー',
     toolCollectionTitle: 'ツール別リファレンス',
     guideFor: '使い方ガイド', copyExample: '例をコピー', openTool: 'ツールを開く', references: '標準仕様と参考資料',
   },
@@ -39,7 +36,6 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     howTo: '使用方法', caution: '注意事项与故障排查', faq: '常见问题', related: '相关工具',
     fullGuide: '完整使用指南', guideIndexTitle: '开发工具指南',
     guideIndexDescription: '查看各工具的输入格式、操作步骤、边界情况和隐私注意事项。',
-    workflowCollectionTitle: '端到端开发工作流',
     toolCollectionTitle: '单项工具参考',
     guideFor: '使用指南', copyExample: '复制示例', openTool: '打开工具', references: '标准与参考资料',
   },

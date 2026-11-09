@@ -13,8 +13,32 @@ test('each localized homepage has matching HTML language and a tool entry point'
     await page.goto(`/${locale}/`);
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('.home-workflows')).toHaveCount(0);
     await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
   }
+});
+
+test('guide index uses focused navigation without the tool sidebar or workflow collection', async ({ page, isMobile }) => {
+  for (const locale of ['ko', 'en', 'ja', 'zh']) {
+    await page.goto(`/${locale}/guides/`);
+    await expect(page.locator('.sidebar')).toHaveCount(0);
+    await expect(page.locator('.top-nav a[aria-current="page"]')).toHaveAttribute('href', `/${locale}/guides/`);
+    await expect(page.locator('.top-nav')).toBeVisible();
+    await expect(page.locator('.workflow-guide-list')).toHaveCount(0);
+    await expect(page.locator('.guide-index .guide-list > li')).toHaveCount(17);
+    if (isMobile) {
+      await expect(page.locator('.mobile-menu-button')).toHaveCount(0);
+      const dimensions = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        document: document.documentElement.scrollWidth,
+      }));
+      expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
+    }
+  }
+
+  await page.goto('/ko/guides/api-response-debugging/');
+  await expect(page.locator('.sidebar')).toHaveCount(0);
+  await expect(page.locator('.top-nav a[aria-current="page"]')).toHaveAttribute('href', '/ko/guides/');
 });
 
 test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page, isMobile }) => {

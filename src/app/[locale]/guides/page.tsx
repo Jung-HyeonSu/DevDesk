@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { toolRegistry } from '@/data/tools';
-import { workflowGuideBySlug, workflowGuideSlugs } from '@/data/workflow-guides';
 import { contentLabels } from '@/i18n/content';
 import { isLocale, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
@@ -31,20 +30,6 @@ export default async function GuideIndexPage({ params }: { params: Promise<{ loc
       <p className="eyebrow">DEVDESK / GUIDES</p>
       <h1>{labels.guideIndexTitle}</h1>
       <p>{labels.guideIndexDescription}</p>
-      <section className="content-section" aria-labelledby="workflow-list-heading">
-        <h2 id="workflow-list-heading">{labels.workflowCollectionTitle}</h2>
-        <ul className="guide-list workflow-guide-list">
-          {workflowGuideSlugs.map((slug) => {
-            const workflow = workflowGuideBySlug(locale, slug);
-            if (!workflow) return null;
-            return (
-              <li key={slug}>
-                <Link href={`/${locale}/guides/${slug}/`}><span className="tool-glyph" aria-hidden="true">↗</span><span><strong>{workflow.title}</strong><small>{workflow.summary}</small></span><span aria-hidden="true">→</span></Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
       <section className="content-section" aria-labelledby="tool-reference-heading">
         <h2 id="tool-reference-heading">{labels.toolCollectionTitle}</h2>
         <ul className="guide-list">

@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
 import { HomeToolDirectory } from '@/components/home/home-tool-directory';
-import { contentLabels } from '@/i18n/content';
-import { workflowGuideBySlug, workflowGuideSlugs } from '@/data/workflow-guides';
 
 const homeText: Record<Locale, { title: string; heading: string; copy: string }> = {
   ko: { title: '개발 도구를, 필요한 순간에.', heading: '도구를 골라 바로 시작하세요', copy: '17개의 개발 도구를 카테고리별로 살펴보세요. 입력과 변환은 브라우저 안에서 처리됩니다.' },
@@ -34,20 +31,6 @@ export default async function LocaleHomePage({ params }: { params: Promise<{ loc
         <h1>{text.heading}</h1>
         <p>{text.copy}</p>
       </header>
-      <section aria-labelledby="home-workflow-title" className="content-section home-workflows">
-        <h2 id="home-workflow-title">{contentLabels[locale].workflowCollectionTitle}</h2>
-        <ul className="guide-list workflow-guide-list">
-          {workflowGuideSlugs.map((slug) => {
-            const workflow = workflowGuideBySlug(locale, slug);
-            if (!workflow) return null;
-            return (
-              <li key={slug}>
-                <Link href={`/${locale}/guides/${slug}/`}><span className="tool-glyph" aria-hidden="true">↗</span><span><strong>{workflow.title}</strong><small>{workflow.summary}</small></span><span aria-hidden="true">→</span></Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
       <HomeToolDirectory locale={locale} />
     </main>
   );
