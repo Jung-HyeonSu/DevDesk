@@ -223,7 +223,7 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
             <Link aria-current={isGuidePage ? 'page' : undefined} href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
           </nav>
           <div className="top-actions">
-            <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
+            <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome || isGuidePage ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome || isGuidePage ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
             <label className="visually-hidden" htmlFor="locale-select">{text.language}</label>
             <select className="locale-select" id="locale-select" onChange={(event) => changeLocale(event.target.value as Locale)} value={locale}>
               {locales.map((item) => <option key={item} value={item}>{localeMetadata[item].label}</option>)}

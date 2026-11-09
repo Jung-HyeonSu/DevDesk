@@ -20,10 +20,26 @@ test('each localized homepage has matching HTML language and a tool entry point'
 
 test('guide index uses focused navigation without the tool sidebar or workflow collection', async ({ page, isMobile }) => {
   for (const locale of ['ko', 'en', 'ja', 'zh']) {
+    await page.goto(`/${locale}/`);
+    const homeSearchText = await page.locator('.search-trigger').innerText();
+    const homeHeaderLayout = await page.locator('.topbar-inner').evaluate((element) => {
+      const nav = element.querySelector<HTMLElement>('.top-nav')?.getBoundingClientRect();
+      const search = element.querySelector<HTMLElement>('.search-trigger')?.getBoundingClientRect();
+      return nav && search ? { nav: [nav.x, nav.y, nav.width, nav.height], search: [search.x, search.y, search.width, search.height] } : null;
+    });
+
     await page.goto(`/${locale}/guides/`);
     await expect(page.locator('.sidebar')).toHaveCount(0);
     await expect(page.locator('.top-nav a[aria-current="page"]')).toHaveAttribute('href', `/${locale}/guides/`);
-    await expect(page.locator('.top-nav')).toBeVisible();
+    await expect(page.locator('.top-nav')).toHaveCSS('display', isMobile ? 'none' : 'flex');
+    await expect(page.locator('.search-trigger')).toHaveClass(/home-search-trigger/);
+    expect(await page.locator('.search-trigger').innerText()).toBe(homeSearchText);
+    const guideHeaderLayout = await page.locator('.topbar-inner').evaluate((element) => {
+      const nav = element.querySelector<HTMLElement>('.top-nav')?.getBoundingClientRect();
+      const search = element.querySelector<HTMLElement>('.search-trigger')?.getBoundingClientRect();
+      return nav && search ? { nav: [nav.x, nav.y, nav.width, nav.height], search: [search.x, search.y, search.width, search.height] } : null;
+    });
+    expect(guideHeaderLayout).toEqual(homeHeaderLayout);
     await expect(page.locator('.workflow-guide-list')).toHaveCount(0);
     await expect(page.locator('.guide-index .guide-list > li')).toHaveCount(17);
     if (isMobile) {

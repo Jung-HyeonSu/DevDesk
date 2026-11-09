@@ -359,18 +359,15 @@ html[data-theme="dark"] .regex-highlight mark { background: #735d15; color: #fff
 @media (max-width: 720px) { .content-grid { grid-template-columns: 1fr; } }
 @media (max-width: 540px) { .example-columns { grid-template-columns: 1fr; } .content-card, .faq-item, .notice-card { padding: 14px; } }
 
-.app-shell.is-home .topbar-inner { grid-template-columns: auto auto minmax(0, 1fr); gap: 22px; }
-.app-shell.is-home .top-actions { min-width: 0; justify-content: flex-end; }
-.app-shell.is-home .home-search-trigger { width: clamp(240px, 42vw, 620px); min-width: 0; max-width: 620px; flex: 1 1 420px; min-height: 46px; padding: 0 13px; background: var(--canvas); }
-.app-shell.is-home .home-search-trigger > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.app-shell.is-home .theme-button, .app-shell.is-home .locale-select { flex: 0 0 auto; white-space: nowrap; }
+.app-shell.is-home .topbar-inner, .app-shell.is-guide-page .topbar-inner { grid-template-columns: auto auto minmax(0, 1fr); gap: 22px; }
+.app-shell.is-home .top-actions, .app-shell.is-guide-page .top-actions { min-width: 0; justify-content: flex-end; }
+.app-shell.is-home .home-search-trigger, .app-shell.is-guide-page .home-search-trigger { width: clamp(240px, 42vw, 620px); min-width: 0; max-width: 620px; flex: 1 1 420px; min-height: 46px; padding: 0 13px; background: var(--canvas); }
+.app-shell.is-home .home-search-trigger > span:nth-child(2), .app-shell.is-guide-page .home-search-trigger > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-shell.is-home .theme-button, .app-shell.is-home .locale-select, .app-shell.is-guide-page .theme-button, .app-shell.is-guide-page .locale-select { flex: 0 0 auto; white-space: nowrap; }
 .app-shell.is-home .shell-body { display: block; }
 .app-shell.is-home .sidebar { display: none; }
 .app-shell.is-home .page-content { width: min(100%, 1380px); padding-top: 22px; }
 .app-shell.is-home .home-content { min-height: calc(100vh - 165px); }
-.app-shell.is-guide-page .topbar-inner { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-.app-shell.is-guide-page .top-nav { justify-content: center; }
-.app-shell.is-guide-page .top-actions { justify-content: flex-end; }
 .app-shell.is-guide-page .shell-body { grid-template-columns: minmax(0, 1fr); }
 .app-shell.is-guide-page .page-content { width: min(100%, 1260px); }
 .home-directory-heading { text-align: center; }
@@ -428,18 +425,17 @@ html[data-theme="dark"] .regex-highlight mark { background: #735d15; color: #fff
 .home-recent-list a:focus-visible { outline: 3px solid #91a9ff; outline-offset: 2px; }
 
 @media (max-width: 980px) {
-  .app-shell.is-home .topbar-inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; }
-  .app-shell.is-home .top-actions { gap: 9px; }
-  .app-shell.is-home .home-search-trigger { width: 42px; min-width: 42px; flex: 0 0 42px; padding: 0; }
-  .app-shell.is-home .home-search-trigger > span:nth-child(2), .app-shell.is-home .home-search-trigger kbd { display: none; }
+  .app-shell.is-home .topbar-inner, .app-shell.is-guide-page .topbar-inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; }
+  .app-shell.is-home .top-actions, .app-shell.is-guide-page .top-actions { gap: 9px; }
+  .app-shell.is-home .home-search-trigger, .app-shell.is-guide-page .home-search-trigger { width: 42px; min-width: 42px; flex: 0 0 42px; padding: 0; }
+  .app-shell.is-home .home-search-trigger > span:nth-child(2), .app-shell.is-home .home-search-trigger kbd, .app-shell.is-guide-page .home-search-trigger > span:nth-child(2), .app-shell.is-guide-page .home-search-trigger kbd { display: none; }
   .home-tool-list a { grid-template-columns: 38px minmax(150px, 210px) minmax(0, 1fr) 18px; gap: 10px; }
 }
-@media (max-width: 980px) {
-  .app-shell.is-guide-page .topbar-inner { gap: 14px; padding-inline: 20px; }
-}
 @media (max-width: 720px) {
-  .app-shell.is-home .topbar-inner { grid-template-columns: auto 1fr; gap: 10px; }
-  .app-shell.is-home .top-actions { gap: 7px; }
+  .app-shell.is-home .topbar-inner, .app-shell.is-guide-page .topbar-inner { grid-template-columns: auto 1fr; gap: 10px; }
+  .app-shell.is-home .top-actions, .app-shell.is-guide-page .top-actions { gap: 7px; }
+  /* Keep the guide search aligned with Home without showing an unused menu button. */
+  .app-shell.is-guide-page .top-actions::after { content: "☰"; display: inline-flex; min-height: 38px; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid transparent; font-size: 12px; visibility: hidden; }
   .app-shell.is-home .sidebar.is-open { display: flex; }
   .app-shell.is-home .page-content { padding: 22px 18px 30px; }
   .home-directory-heading h1 { font-size: clamp(28px, 8vw, 36px); }
@@ -455,22 +451,6 @@ html[data-theme="dark"] .regex-highlight mark { background: #735d15; color: #fff
   .home-tool-list .home-tool-name { grid-column: 2; grid-row: 1; align-self: end; }
   .home-tool-list .home-tool-description { grid-column: 2; grid-row: 2; align-self: start; font-size: 11px; }
   .home-tool-list .home-tool-arrow { grid-column: 3; grid-row: 1 / span 2; }
-}
-@media (max-width: 720px) {
-  .app-shell.is-guide-page .topbar-inner { grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; padding-inline: 10px; }
-  .app-shell.is-guide-page .top-nav { display: flex; justify-content: center; gap: 10px; white-space: nowrap; }
-  .app-shell.is-guide-page .top-nav a { font-size: 12px; }
-  .app-shell.is-guide-page .top-actions { gap: 5px; }
-  .app-shell.is-guide-page .search-trigger { width: 34px; min-width: 34px; justify-content: center; padding: 0; }
-  .app-shell.is-guide-page .search-trigger > span:nth-child(2), .app-shell.is-guide-page .search-trigger kbd { display: none; }
-  .app-shell.is-guide-page .locale-select { max-width: 68px; padding-inline: 4px; }
-  .app-shell.is-guide-page .theme-button { min-width: 34px; padding-inline: 6px; }
-}
-@media (max-width: 380px) {
-  .app-shell.is-guide-page .topbar-inner { gap: 3px; padding-inline: 6px; }
-  .app-shell.is-guide-page .top-nav { gap: 7px; }
-  .app-shell.is-guide-page .search-trigger, .app-shell.is-guide-page .theme-button { width: 32px; min-width: 32px; }
-  .app-shell.is-guide-page .locale-select { max-width: 60px; padding-inline: 2px; }
 }
 @media (max-width: 420px) {
   .app-shell.is-home .page-content { padding-inline: 14px; }
