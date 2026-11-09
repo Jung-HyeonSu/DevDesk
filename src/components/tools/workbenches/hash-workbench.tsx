@@ -109,7 +109,7 @@ export function HashWorkbench({ locale }: { locale: Locale }) {
         </label>
       </div>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="text" placeholder={text.hashInputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={() => void run()} variant="primary" disabled={busy}>{text.hashGenerate}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

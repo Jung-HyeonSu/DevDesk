@@ -224,7 +224,7 @@ export function RegexWorkbench({ locale }: { locale: Locale }) {
         </label>
       </div>
       <EditorPanel locale={locale} label={text.regexInput} value={input} onChange={setInput} placeholder={text.regexInputHint} readOnly={pending} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={run} variant="primary" disabled={pending}>{pending ? text.regexRunning : text.regexRun}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

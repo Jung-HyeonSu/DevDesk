@@ -128,7 +128,7 @@ export function JwtWorkbench({ locale }: { locale: Locale }) {
     <section className="jwt-workbench" aria-label={text.jwtToolLabel}>
       <p className="workbench-note">{text.jwtNotice}</p>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} placeholder={text.jwtInputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={run} variant="primary">{text.jwtDecode}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

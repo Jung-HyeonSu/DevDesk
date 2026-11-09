@@ -93,7 +93,7 @@ export function JsonPointerWorkbench({ locale }: { locale: Locale }) {
         <label htmlFor="json-pointer-path">{text.pointer}</label>
         <input id="json-pointer-path" value={pointer} onChange={(event) => setPointer(event.target.value)} placeholder={text.hint} />
       </div>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={inspect} variant="primary">{text.inspect}</ActionButton>
         <ActionButton onClick={openInJson} disabled={!json.trim()}>{handoffText.openJson}</ActionButton>

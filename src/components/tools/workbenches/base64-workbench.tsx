@@ -96,7 +96,7 @@ export function Base64Workbench({ locale }: { locale: Locale }) {
   return (
     <section className="base64-workbench" aria-label={text.base64ToolLabel}>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="text" placeholder={text.base64InputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={() => run('encode')} variant="primary">{text.encode}</ActionButton>
         <ActionButton onClick={() => run('decode')}>{text.decode}</ActionButton>

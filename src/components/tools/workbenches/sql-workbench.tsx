@@ -99,7 +99,7 @@ export function SqlWorkbench({ locale }: { locale: Locale }) {
         </select>
       </div>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="sql" placeholder={text.sqlInputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={run} variant="primary">{text.sqlFormat}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

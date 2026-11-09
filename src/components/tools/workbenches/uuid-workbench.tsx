@@ -89,7 +89,7 @@ export function UuidWorkbench({ locale }: { locale: Locale }) {
         <span>{text.uuidCountLabel}</span>
         <input className="workbench-input" id="uuid-count" type="number" min="1" max="100" step="1" value={count} onChange={(event) => setCount(event.target.value)} />
       </label>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.uuidCountSample}</ActionButton>
         <ActionButton onClick={run} variant="primary">{text.uuidGenerate}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

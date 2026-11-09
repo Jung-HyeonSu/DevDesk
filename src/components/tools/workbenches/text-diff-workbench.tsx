@@ -113,7 +113,7 @@ export function TextDiffWorkbench({ locale }: { locale: Locale }) {
         <input type="checkbox" checked={ignoreWhitespace} onChange={(event) => setIgnoreWhitespace(event.target.checked)} />
         <span>{text.diffIgnoreWhitespace}</span>
       </label>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={run} variant="primary">{text.diffCompare}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

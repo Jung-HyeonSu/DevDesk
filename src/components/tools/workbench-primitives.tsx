@@ -20,8 +20,8 @@ export function EditorPanel({ locale, label, value, onChange, placeholder, readO
   );
 }
 
-export function ActionToolbar({ children }: { children: ReactNode }) {
-  return <div className="action-toolbar" role="toolbar">{children}</div>;
+export function ActionToolbar({ children, sticky = false }: { children: ReactNode; sticky?: boolean }) {
+  return <div className={`action-toolbar${sticky ? ' action-toolbar-sticky' : ''}`} role="toolbar">{children}</div>;
 }
 
 export function ActionButton({ children, onClick, variant = 'secondary', disabled = false, title }: { children: ReactNode; onClick: () => void; variant?: 'primary' | 'secondary' | 'quiet'; disabled?: boolean; title?: string }) {

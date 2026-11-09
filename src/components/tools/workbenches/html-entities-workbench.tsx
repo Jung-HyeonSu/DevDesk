@@ -71,7 +71,7 @@ export function HtmlEntitiesWorkbench({ locale }: { locale: Locale }) {
         </select>
       </div>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="html" placeholder={text.inputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={convert} variant="primary">{text.convert}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

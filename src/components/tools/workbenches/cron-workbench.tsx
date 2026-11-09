@@ -210,7 +210,7 @@ export function CronWorkbench({ locale }: { locale: Locale }) {
         <datalist id="cron-time-zone-options">{suggestedTimeZones.map((zone) => <option key={zone} value={zone} />)}</datalist>
         <small id="cron-time-zone-hint">{text.cronTimeZoneHint}</small>
       </div>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={buildFromFields}>{text.cronBuildFromFields}</ActionButton>
         <ActionButton onClick={() => runExpression(expression)} variant="primary">{text.cronGenerate}</ActionButton>

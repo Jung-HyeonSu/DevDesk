@@ -96,7 +96,7 @@ export function UrlWorkbench({ locale }: { locale: Locale }) {
     <section className="url-workbench" aria-label={text.urlToolLabel}>
       <p className="workbench-note">{text.urlComponentNotice}</p>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="text" placeholder={text.urlInputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={() => run('encode')} variant="primary">{text.urlEncode}</ActionButton>
         <ActionButton onClick={() => run('decode')}>{text.urlDecode}</ActionButton>

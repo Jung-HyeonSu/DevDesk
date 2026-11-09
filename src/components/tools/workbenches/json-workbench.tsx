@@ -136,7 +136,7 @@ export function JsonWorkbench({ locale }: { locale: Locale }) {
         </select>
       </div>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="json" placeholder={text.jsonInputHint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={() => run('beautify')} variant="primary">{text.beautify}</ActionButton>
         <ActionButton onClick={() => run('minify')}>{text.minify}</ActionButton>

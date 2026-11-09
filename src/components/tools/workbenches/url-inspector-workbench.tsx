@@ -66,7 +66,7 @@ export function UrlInspectorWorkbench({ locale }: { locale: Locale }) {
   return (
     <section className="url-inspector-workbench" aria-label={text.label}>
       <EditorPanel locale={locale} label={text.input} value={input} onChange={setInput} language="text" placeholder={text.hint} />
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={inspect} variant="primary">{text.inspect}</ActionButton>
         <ActionButton onClick={clear} variant="quiet">{text.clear}</ActionButton>

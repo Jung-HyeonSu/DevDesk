@@ -150,7 +150,7 @@ export function TimestampWorkbench({ locale }: { locale: Locale }) {
           <small id="timestamp-time-zone-hint">{text.timeZoneHint}</small>
         </div>
       </div>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.epochSample}</ActionButton>
         <ActionButton onClick={runTimestamp} variant="primary">{text.timestampToDate}</ActionButton>
         <ActionButton onClick={runDateTime}>{text.dateToTimestamp}</ActionButton>

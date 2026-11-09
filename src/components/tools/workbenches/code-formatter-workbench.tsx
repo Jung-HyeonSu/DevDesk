@@ -210,7 +210,7 @@ export function CodeFormatterWorkbench({ locale }: { locale: Locale }) {
       <div className="code-image-card" ref={imageRef}>
         <EditorPanel editorTheme={theme} language={language} locale={locale} label={text.inputLabel} value={input} onChange={(nextValue) => { setInput(nextValue); setStatus(null); }} placeholder={text.inputHint} />
       </div>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={format} variant="primary" disabled={formatting || !canFormatCode(language)}>{text.format}</ActionButton>
         <ActionButton onClick={() => void copy()} disabled={!input}>{text.copy}</ActionButton>

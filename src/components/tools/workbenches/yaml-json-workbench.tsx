@@ -162,7 +162,7 @@ export function YamlJsonWorkbench({ locale }: { locale: Locale }) {
         <EditorPanel locale={locale} label={inputLabel} value={input} onChange={(value) => { setInput(value); setOutput(''); setStatus(null); }} language={inputLanguage} placeholder={isYamlInput ? text.yamlInputHint : text.jsonInputHint} />
         <EditorPanel locale={locale} label={outputLabel} value={output} readOnly language={outputLanguage} placeholder={text.yamlOutputHint} />
       </div>
-      <ActionToolbar>
+      <ActionToolbar sticky>
         <ActionButton onClick={loadSample}>{text.sample}</ActionButton>
         <ActionButton onClick={() => run('convert')} variant="primary">{text.yamlConvert}</ActionButton>
         <ActionButton onClick={() => run('validate')}>{text.validate}</ActionButton>
