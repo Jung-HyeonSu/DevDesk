@@ -158,6 +158,8 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   const theme = useSyncExternalStore(subscribePreferences, getThemeSnapshot, () => 'system');
   const isLocaleHome = pathname === `/${locale}/` || pathname === `/${locale}`;
   const isGuidePage = pathname === `/${locale}/guides` || pathname.startsWith(`/${locale}/guides/`);
+  const isWorkflowPage = pathname === `/${locale}/workflows` || pathname === `/${locale}/workflows/`;
+  const isWidePage = isGuidePage || isWorkflowPage;
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -214,28 +216,29 @@ function AppShellFrame({ locale, children }: { locale: Locale; children: ReactNo
   });
 
   return (
-    <div className={`app-shell${isLocaleHome ? ' is-home' : ''}${isGuidePage ? ' is-guide-page' : ''}`}>
+    <div className={`app-shell${isLocaleHome ? ' is-home' : ''}${isGuidePage ? ' is-guide-page' : ''}${isWorkflowPage ? ' is-workflow-page' : ''}`}>
       <header className="topbar">
         <div className="topbar-inner">
           <Link className="brand" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><Image alt="" aria-hidden="true" className="brand-mark" height={32} src="/icon.svg" width={32} /><span>DevDesk</span></Link>
           <nav className="top-nav" aria-label={text.primaryNavigation}>
             <Link aria-current={isLocaleHome ? 'page' : undefined} href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}>{text.home}</Link>
             <Link aria-current={isGuidePage ? 'page' : undefined} href={`/${locale}/guides/`} onClick={closeMobileNav}>{text.guides}</Link>
+            <Link aria-current={isWorkflowPage ? 'page' : undefined} href={`/${locale}/workflows/`} onClick={closeMobileNav}>{text.workflows}</Link>
           </nav>
           <div className="top-actions">
-            <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome || isGuidePage ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome || isGuidePage ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
+            <button aria-label={`${text.search}: ${text.searchPlaceholder} ⌘ K`} className={`search-trigger${isLocaleHome || isWidePage ? ' home-search-trigger' : ''}`} onClick={() => setSearchOpen(true)} type="button"><span className="search-icon" aria-hidden="true">⌕</span><span>{isLocaleHome || isWidePage ? text.searchPlaceholder : text.search}</span><kbd aria-hidden="true">⌘ K</kbd></button>
             <label className="visually-hidden" htmlFor="locale-select">{text.language}</label>
             <select className="locale-select" id="locale-select" onChange={(event) => changeLocale(event.target.value as Locale)} value={locale}>
               {locales.map((item) => <option key={item} value={item}>{localeMetadata[item].label}</option>)}
             </select>
             <button aria-label={`${text.theme}: ${themeLabel}`} className="icon-button theme-button" onClick={cycleTheme} type="button"><span aria-hidden="true">{theme === 'dark' ? '☾' : theme === 'light' ? '☼' : '◐'}</span><span className="theme-label">{themeLabel}</span></button>
-            {!isGuidePage && <button aria-expanded={mobileNavOpen} aria-label={text.menu} className="icon-button mobile-menu-button" onClick={() => setMobileNavOpen((open) => !open)} type="button"><span aria-hidden="true">☰</span></button>}
+            {!isWidePage && <button aria-expanded={mobileNavOpen} aria-label={text.menu} className="icon-button mobile-menu-button" onClick={() => setMobileNavOpen((open) => !open)} type="button"><span aria-hidden="true">☰</span></button>}
           </div>
         </div>
       </header>
 
       <div className="shell-body">
-        {!isGuidePage && <aside className={`sidebar${mobileNavOpen ? ' is-open' : ''}`} aria-label={text.categories}>
+        {!isWidePage && <aside className={`sidebar${mobileNavOpen ? ' is-open' : ''}`} aria-label={text.categories}>
           <Link className="sidebar-primary-link" href={`/${locale}/`} onClick={() => { closeMobileNav(); navigateHomeCategory('all'); }}><span aria-hidden="true">⌘</span>{text.allTools}<kbd>{toolRegistry.length}</kbd></Link>
           <div className="sidebar-group">
             <p className="sidebar-heading">{text.categories}</p>

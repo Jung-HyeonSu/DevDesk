@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { toolRegistry } from '@/data/tools';
 import { workflowGuideSlugs } from '@/data/workflow-guides';
+import { workflowRecipeGuideSlugs } from '@/data/workflow-recipe-guides';
 import { locales } from '@/i18n/config';
 import { absoluteUrl, localeAlternates } from '@/lib/seo';
 
@@ -8,9 +9,10 @@ export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pagePaths = [
-    '/', '/guides', '/about', '/privacy', '/terms', '/contact',
+    '/', '/guides', '/workflows', '/about', '/privacy', '/terms', '/contact',
     ...toolRegistry.map((tool) => `/tools/${tool.slug}`),
     ...workflowGuideSlugs.map((slug) => `/guides/${slug}`),
+    ...workflowRecipeGuideSlugs.map((slug) => `/guides/${slug}`),
   ];
   const localizedPages = locales.flatMap((locale) => pagePaths.map((path) => ({
     url: localeAlternates(locale, path).canonical,

@@ -8,6 +8,8 @@
 
 - 모든 도구는 입력 예제 로드, 실행/자동 처리(필요 시 debounce), 결과 복사, 입력 초기화, 성공/오류 상태 표현을 제공한다.
 - 포맷 가능한 도구는 2/4칸 들여쓰기 등 해당 설정 제공.
+- 긴 입력을 편집해도 기본 실행 버튼이 입력창 아래로 밀려나지 않도록 도구별 기본 액션 바를 입력 영역 위에 배치하고 sticky 방식으로 접근 가능하게 유지한다. 성공 상태, 오류 상태, 복사·내보내기 액션은 구분한다.
+- 모든 실제 도구 작업·복사·내보내기가 성공하면 공용 성공 피드백(폭죽)을 표시한다. 실패·빈 입력·권한 거절에서는 표시하지 않고 `prefers-reduced-motion`을 준수한다.
 - 입력/출력을 로컬에 자동 영구 저장하지 않는다. 도구 전환 시 원문 전달은 반드시 사용자가 명시적으로 선택한다.
 - 각 도구에 오류·경계값 테스트를 작성한다.
 - 1 MB 정도의 큰 텍스트부터 경고 또는 크기 제한을 적용하고, CPU 부담 도구에는 더 엄격한 제한을 둔다. 도구별 한계는 UI와 README에 명시한다.
@@ -156,6 +158,64 @@
 - 즐겨찾기 및 최근 사용 **도구 ID만** `localStorage`에 저장; 민감한 입력 원문 저장 금지.
 - 실행 결과 Copy/Download, Sample 버튼; 브라우저 권한 오류 시 폴백/메시지.
 - 도구 간 연계(선택적): JSON Formatter ↔ YAML Converter, JWT Payload → JSON Formatter. **사용자가 명시적으로 클릭**했을 때만 메모리 내 데이터 전달; URL query/string 또는 분석 로그에 입력값 포함 금지.
+
+## 4.2 콘텐츠 가치 확장 도구 (T18–T25)
+
+공통 규칙은 T01–T17을 따른다. 각 신규 도구는 브라우저에서 실제 입력을 처리하고, 네 언어에 재현 가능한 예제·결과 판독법·지원 범위·한계·FAQ·공식 출처를 제공한다.
+
+### T18 — JSON Schema Validator (`json-schema-validator`)
+
+- JSON Schema Draft 2020-12 스키마와 JSON 인스턴스를 별도로 받아 문법 오류와 유효성 오류를 구분한다. 오류에는 JSON Pointer 경로, keyword, 사람이 읽을 수 있는 설명을 제공한다.
+- 외부 `$ref`를 네트워크에서 가져오지 않는다. 사용자 정의 format은 annotation으로만 취급하며, 외부 참조가 필요한 경우 지원하지 않음을 표시한다.
+- 테스트: 유효/무효 스키마와 인스턴스, 타입·required 오류, JSON 문법 오류, 로컬 참조 경계, 외부 `$ref` 차단, format annotation.
+
+### T19 — OpenAPI Explorer (`openapi-explorer`)
+
+- JSON 또는 YAML OpenAPI 3.2 문서를 파싱해 제목·버전·HTTP operation·경로·요약·parameter·request content type·response status를 읽기 쉬운 목록으로 보여준다.
+- API를 호출하거나 문서의 외부 `$ref`를 네트워크에서 가져오지 않는다. 전체 적합성 검증기는 아니며, paths에서 찾은 operation을 탐색하는 도구다.
+- 테스트: 3.2 문서의 operation 추출, 잘못된 문서, 미지원 버전, 빈 paths, 외부 참조, YAML 입력.
+
+### T20 — cURL ↔ Fetch Converter (`curl-fetch-converter`)
+
+- 제한된 정적 문법으로 `curl`의 URL, 흔한 method, header, data 옵션을 Fetch 코드로 바꾸고, 정적 `fetch("url", {method, headers, body})` 호출을 cURL 명령으로 바꾼다.
+- 명령이나 JavaScript를 실행하지 않는다. 동적 표현식과 미지원 옵션을 구분해 오류로 표시하고, URL userinfo는 출력에서 제거한다. 결과를 공유하기 전 민감한 값 검토를 안내한다.
+- 테스트: 양방향 기본 변환, 공백·따옴표, 미지원 cURL 옵션, 동적 Fetch 코드, 잘못된 URL·header, GET/HEAD body, 크기 제한.
+
+### T21 — HTTP Response Header Diagnostics (`http-header-inspector`)
+
+- 사용자가 붙여넣은 HTTP status line과 response header만 파싱한다. 보안·캐시·콘텐츠 정책 관련 누락 또는 의심 구성을 설명하되 사이트에 요청을 보내거나 서버 설정을 확정적으로 판정하지 않는다.
+- 테스트: status line, 중복·잘못된 헤더, 대소문자, 여러 정책 조합, 빈 입력.
+
+### T22 — `.env` Key Diff (`env-diff`)
+
+- 두 환경 파일의 키 집합과 값의 존재 여부(설정·빈 값·누락)를 비교한다. 중복 키와 파싱 실패 줄을 위치로 알린다. 값 원문은 보고서에 포함하지 않는다.
+- 테스트: 추가·누락·중복·빈 키·빈 값, export 접두사, 주석·따옴표, 잘못된 줄, 민감 값이 결과에 없는지 확인.
+
+### T23 — `.gitignore` Pattern Checker (`gitignore-tester`)
+
+- 패턴 목록과 가상 파일 경로 목록으로 각 경로의 무시 여부를 확인하고 마지막으로 일치한 규칙과 예외 패턴(`!`)을 설명한다.
+- 실제 파일 시스템이나 Git 저장소를 읽지 않으며, 경로 테스트 결과는 입력한 패턴에 대한 설명으로 한정한다.
+- 테스트: glob·디렉터리·슬래시·중첩 경로·마지막 규칙 우선순위·예외 패턴·빈 규칙.
+
+### T24 — HAR Privacy Scrubber (`har-scrubber`)
+
+- HAR 1.2 JSON의 request/response header·cookie·URL query·post data·response text 등 알려진 민감 위치를 휴리스틱으로 가린다. 변환 결과를 검토·복사·다운로드할 수 있다.
+- 완전한 익명화를 보장하지 않는다. 사용자 정의 필드, 자유 텍스트, 인코딩된 데이터에 민감 정보가 남을 수 있으므로 공유 전 직접 검토하도록 알린다.
+- 테스트: authorization/cookie/query/body의 알려진 민감 값, 중첩 객체 키, 사용자 정의 텍스트 한계 경고, 잘못된 HAR와 미지원 버전.
+
+### T25 — Markdown Link & Anchor Checker (`markdown-link-checker`)
+
+- 사용자가 선택한 Markdown 파일 최대 20개 사이에서 로컬 파일 경로·상대 링크·heading anchor·reference link를 검사한다. 코드 블록 내 링크는 제외하고 파일과 줄 번호를 제공한다.
+- 선택한 파일만 메모리에서 다루며 외부 링크는 요청하지 않는다. 선택하지 않은 로컬 파일의 존재나 웹사이트 전체 경로를 검증하지 않는다.
+- 테스트: 정상·누락 로컬 경로, 존재하지 않는 anchor, heading slug, reference 정의, 코드 블록 제외, 공백·상대 경로, 파일 개수·크기 한계.
+
+### 4.3 워크플로 조립기
+
+- 도구 레지스트리 어댑터가 타입이 지정된 input/output port와 실행 함수를 선언한다. 타입이 일치하는 포트만 연결할 수 있고, 순환·분기·반복은 막는다.
+- 레시피는 로케일별 제목·설명, node ID/adapter ID, typed edge만 담는다. 입력과 실행 결과는 브라우저 메모리에만 존재하고 URL, `localStorage`, 분석 로그 또는 서버에 저장하지 않는다.
+- JSON 레시피는 데이터 없이 가져오기/내보내기한다. 실행은 브라우저 Worker를 사용하고 각 단계의 결과·경고·오류를 표시한다.
+- 키보드로 도구 추가·연결·실행할 수 있어야 한다. 작은 화면에서는 한 열의 순서형 단계 편집으로 제공한다.
+- 초기 레시피는 API 계약 진단, 배포 설정 사전 점검, HAR 이슈 제보 준비다. 사용자 코드 실행, 조건 분기와 반복은 지원하지 않는다.
 
 ---
 

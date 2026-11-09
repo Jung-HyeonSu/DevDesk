@@ -30,6 +30,7 @@ export default async function GuideIndexPage({ params }: { params: Promise<{ loc
       <p className="eyebrow">DEVDESK / GUIDES</p>
       <h1>{labels.guideIndexTitle}</h1>
       <p>{labels.guideIndexDescription}</p>
+      <p className="guide-link"><Link href={`/${locale}/workflows/`}>{labels.workflowStudio}<span aria-hidden="true"> →</span></Link></p>
       <section className="content-section" aria-labelledby="tool-reference-heading">
         <h2 id="tool-reference-heading">{labels.toolCollectionTitle}</h2>
         <ul className="guide-list">
@@ -59,6 +60,14 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'code-formatter': '여러 언어의 코드를 색상 테마로 정렬하고 이미지로 저장하는 방법',
     'json-pointer': 'RFC 6901 경로로 응답 JSON의 중첩 값을 찾는 방법', 'csv-json': '따옴표가 있는 CSV와 JSON 배열을 변환하는 방법',
     'url-inspector': '중복 쿼리를 보존하며 URL 구성 요소를 분석하는 방법', 'html-entities': 'HTML 문자 참조를 텍스트로 인코딩하고 디코딩하는 방법',
+    'json-schema-validator': 'Draft 2020-12 스키마로 JSON 응답의 필수 필드와 타입을 검사하는 방법',
+    'openapi-explorer': '외부 요청 없이 OpenAPI 3.2 문서의 작업과 매개변수를 살펴보는 방법',
+    'curl-fetch-converter': '지원하는 cURL 옵션을 검토 가능한 Fetch 코드로 바꾸는 방법',
+    'http-header-inspector': '붙여 넣은 HTTP 응답 헤더에서 보안·캐시 설정을 점검하는 방법',
+    'env-diff': '.env의 값은 숨기고 키 존재와 빈 값만 비교하는 방법',
+    'gitignore-tester': '저장소 상대 경로와 .gitignore 예외 패턴을 시험하는 방법',
+    'har-scrubber': 'HAR 1.2의 알려진 민감 필드를 가린 후 직접 검토하는 방법',
+    'markdown-link-checker': '선택한 Markdown 파일의 로컬 경로와 제목 앵커를 확인하는 방법',
   },
   en: {
     'json-formatter': 'Validate JSON and choose readable indentation', 'sql-formatter': 'Format SQL clauses without running a query',
@@ -70,6 +79,14 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'code-formatter': 'Format code with selectable themes and save it as an image',
     'json-pointer': 'Find nested response values with RFC 6901 paths', 'csv-json': 'Convert quoted CSV and JSON arrays',
     'url-inspector': 'Inspect URL components while preserving repeated query keys', 'html-entities': 'Encode and decode HTML character references as text',
+    'json-schema-validator': 'Check required fields and JSON types with a Draft 2020-12 schema',
+    'openapi-explorer': 'Inspect operations and parameters in OpenAPI 3.2 without network requests',
+    'curl-fetch-converter': 'Convert supported cURL options into reviewable Fetch code',
+    'http-header-inspector': 'Review security and caching headers from pasted HTTP responses',
+    'env-diff': 'Compare .env key presence and empty values without showing values',
+    'gitignore-tester': 'Test repository-relative paths against .gitignore patterns and exceptions',
+    'har-scrubber': 'Redact known sensitive fields in HAR 1.2 for manual review',
+    'markdown-link-checker': 'Check local paths and heading anchors across selected Markdown files',
   },
   ja: {
     'json-formatter': 'JSON の検証と読みやすいインデント', 'sql-formatter': 'SQL を実行せず句と字下げを整形',
@@ -81,6 +98,14 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'code-formatter': 'テーマを選んでコードを整形し、画像として保存',
     'json-pointer': 'RFC 6901 パスで JSON のネストした値を確認', 'csv-json': '引用符付き CSV と JSON 配列を変換',
     'url-inspector': '重複したクエリを保って URL 要素を解析', 'html-entities': 'HTML 文字参照をテキストとして変換',
+    'json-schema-validator': 'Draft 2020-12 スキーマで JSON の必須項目と型を検証',
+    'openapi-explorer': 'ネットワーク要求なしで OpenAPI 3.2 の操作とパラメーターを確認',
+    'curl-fetch-converter': '対応する cURL オプションを確認可能な Fetch コードに変換',
+    'http-header-inspector': '貼り付けた HTTP 応答のセキュリティとキャッシュヘッダーを確認',
+    'env-diff': '.env の値を表示せずキーの有無と空値を比較',
+    'gitignore-tester': 'リポジトリ相対パスを .gitignore と例外パターンで検査',
+    'har-scrubber': 'HAR 1.2 の既知の機密フィールドをマスキングして確認',
+    'markdown-link-checker': '選択した Markdown ファイルのローカルパスと見出しアンカーを検査',
   },
   zh: {
     'json-formatter': '校验 JSON 并设置易读缩进', 'sql-formatter': '整理 SQL 子句但不执行查询',
@@ -92,5 +117,13 @@ const descriptionsByTool: Record<Locale, Record<(typeof toolRegistry)[number]['s
     'code-formatter': '选择主题格式化代码并保存为图片',
     'json-pointer': '使用 RFC 6901 路径查找嵌套 JSON 值', 'csv-json': '转换带引号字段的 CSV 与 JSON 数组',
     'url-inspector': '保留重复查询键并分析 URL 组成部分', 'html-entities': '以文本形式编码和解码 HTML 字符引用',
+    'json-schema-validator': '使用 Draft 2020-12 Schema 检查 JSON 必填字段和类型',
+    'openapi-explorer': '无需网络请求即可查看 OpenAPI 3.2 操作和参数',
+    'curl-fetch-converter': '将支持的 cURL 选项转换为可检查的 Fetch 代码',
+    'http-header-inspector': '检查粘贴的 HTTP 响应中的安全和缓存标头',
+    'env-diff': '隐藏 .env 值，只比较键是否存在以及是否为空',
+    'gitignore-tester': '根据 .gitignore 模式和例外规则测试仓库相对路径',
+    'har-scrubber': '遮盖 HAR 1.2 中已知敏感字段以便人工复核',
+    'markdown-link-checker': '检查所选 Markdown 文件中的本地路径和标题锚点',
   },
 };

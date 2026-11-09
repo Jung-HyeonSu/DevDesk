@@ -2,12 +2,22 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 const locales = ['ko', 'en', 'ja', 'zh'];
-const expectedTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter', 'json-pointer', 'csv-json', 'url-inspector', 'html-entities'];
+const baseTools = ['json-formatter', 'sql-formatter', 'jwt-decoder', 'cron-generator', 'text-diff', 'base64', 'url-encoder', 'unix-timestamp', 'uuid-generator', 'hash-generator', 'regex-tester', 'yaml-json', 'code-formatter', 'json-pointer', 'csv-json', 'url-inspector', 'html-entities'];
+const expandedTools = ['json-schema-validator', 'openapi-explorer', 'curl-fetch-converter', 'http-header-inspector', 'env-diff', 'gitignore-tester', 'har-scrubber', 'markdown-link-checker'];
+const expectedTools = [...baseTools, ...expandedTools];
 const expectedToolReferences = {
   'json-pointer': 'https://www.rfc-editor.org/rfc/rfc6901.html',
   'csv-json': 'https://www.rfc-editor.org/rfc/rfc4180.html',
   'url-inspector': 'https://url.spec.whatwg.org/',
   'html-entities': 'https://html.spec.whatwg.org/multipage/syntax.html#character-references',
+  'json-schema-validator': 'https://json-schema.org/draft/2020-12',
+  'openapi-explorer': 'https://spec.openapis.org/oas/v3.2',
+  'curl-fetch-converter': 'https://curl.se/docs/manpage.html',
+  'http-header-inspector': 'https://www.rfc-editor.org/rfc/rfc9110.html',
+  'env-diff': 'https://nodejs.org/api/cli.html#env-files',
+  'gitignore-tester': 'https://git-scm.com/docs/gitignore',
+  'har-scrubber': 'https://github.com/ahmadnassri/har-spec/blob/master/versions/1.2.md',
+  'markdown-link-checker': 'https://spec.commonmark.org/0.31.2/',
 };
 
 async function parseTypeScript(relativePath) {
@@ -23,6 +33,17 @@ function variableObject(source, variableName) {
   };
   visit(source);
   if (!initializer || !ts.isObjectLiteralExpression(initializer)) throw new Error(`${variableName} must be an object literal`);
+  return initializer;
+}
+
+function variableInitializer(source, variableName) {
+  let initializer;
+  const visit = (node) => {
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text === variableName) initializer = node.initializer;
+    if (!initializer) ts.forEachChild(node, visit);
+  };
+  visit(source);
+  if (!initializer) throw new Error(`${variableName} has no initializer`);
   return initializer;
 }
 
@@ -78,6 +99,14 @@ const workbenchKeys = [...properties(workbenchByLocale.get('ko'), 'ko workbench 
 for (const locale of locales) assertSameKeys(properties(workbenchByLocale.get(locale), `${locale} workbench messages`), workbenchKeys, `${locale} workbench message`);
 assertPlaceholderParity(workbenchByLocale, 'workbench messages');
 
+const workflowUiSource = await parseTypeScript('src/i18n/workflows.ts');
+const workflowUi = properties(variableObject(workflowUiSource, 'workflowUiMessages'), 'workflowUiMessages');
+assertSameKeys(workflowUi, locales, 'workflow UI locale');
+const workflowUiByLocale = new Map(locales.map((locale) => [locale, workflowUi.get(locale)]));
+const workflowUiKeys = [...properties(workflowUiByLocale.get('ko'), 'ko workflow UI messages').keys()];
+for (const locale of locales) assertSameKeys(properties(workflowUiByLocale.get(locale), `${locale} workflow UI messages`), workflowUiKeys, `${locale} workflow UI message`);
+assertPlaceholderParity(workflowUiByLocale, 'workflow UI messages');
+
 const codeFormatterSource = await parseTypeScript('src/i18n/code-formatter.ts');
 const codeFormatterMessages = properties(variableObject(codeFormatterSource, 'codeFormatterMessages'), 'codeFormatterMessages');
 assertSameKeys(codeFormatterMessages, locales, 'code formatter locale');
@@ -86,16 +115,23 @@ const codeFormatterKeys = [...properties(codeFormatterByLocale.get('ko'), 'ko co
 for (const locale of locales) assertSameKeys(properties(codeFormatterByLocale.get(locale), `${locale} code formatter messages`), codeFormatterKeys, `${locale} code formatter message`);
 assertPlaceholderParity(codeFormatterByLocale, 'code formatter messages');
 
-const dataSource = await parseTypeScript('src/data/tool-content.ts');
-const toolContent = properties(variableObject(dataSource, 'toolContent'), 'toolContent');
-const toolExamples = properties(variableObject(dataSource, 'toolExamples'), 'toolExamples');
-assertSameKeys(toolContent, locales, 'tool content locale');
-assertSameKeys(toolExamples, expectedTools, 'tool example');
-const toolContentByLocale = new Map(locales.map((locale) => [locale, toolContent.get(locale)]));
-for (const locale of locales) {
-  const localeTools = properties(toolContentByLocale.get(locale), `${locale} tool content`);
-  assertSameKeys(localeTools, expectedTools, `${locale} tool content`);
-  for (const [slug, initializer] of localeTools) {
+const baseContentSource = await parseTypeScript('src/data/tool-content.ts');
+const baseContent = properties(variableObject(baseContentSource, 'baseToolContent'), 'baseToolContent');
+const baseExamples = properties(variableObject(baseContentSource, 'baseToolExamples'), 'baseToolExamples');
+const expandedContentSource = await parseTypeScript('src/data/expanded-tool-content.ts');
+const expandedContent = properties(variableObject(expandedContentSource, 'expandedToolContent'), 'expandedToolContent');
+const expandedExamples = properties(variableObject(expandedContentSource, 'expandedToolExamples'), 'expandedToolExamples');
+assertSameKeys(baseContent, locales, 'base tool content locale');
+assertSameKeys(expandedContent, locales, 'expanded tool content locale');
+assertSameKeys(baseExamples, baseTools, 'base tool example');
+assertSameKeys(expandedExamples, expandedTools, 'expanded tool example');
+
+for (const [label, content, expectedSlugs] of [['base', baseContent, baseTools], ['expanded', expandedContent, expandedTools]]) {
+  const byLocale = new Map(locales.map((locale) => [locale, content.get(locale)]));
+  for (const locale of locales) {
+    const localeTools = properties(byLocale.get(locale), `${locale} ${label} tool content`);
+    assertSameKeys(localeTools, expectedSlugs, `${locale} ${label} tool content`);
+    for (const [slug, initializer] of localeTools) {
     const fields = properties(initializer, `${locale}/${slug}`);
     const description = fields.get('description');
     if (!description || !ts.isStringLiteral(description) || !description.text.trim()) throw new Error(`${locale}/${slug} has no localized description`);
@@ -110,18 +146,23 @@ for (const locale of locales) {
     if (expectedToolReferences[slug]) {
       const references = fields.get('references');
       if (!references || !ts.isArrayLiteralExpression(references) || references.elements.length < 1) throw new Error(`${locale}/${slug} needs a linked source reference`);
+      let hasExpectedReference = false;
       for (const reference of references.elements) {
         const referenceFields = properties(reference, `${locale}/${slug} reference`);
         const label = referenceFields.get('label');
         const href = referenceFields.get('href');
         if (!label || !ts.isStringLiteral(label) || !label.text.trim()) throw new Error(`${locale}/${slug} reference needs a label`);
-        if (!href || !ts.isStringLiteral(href) || href.text !== expectedToolReferences[slug]) throw new Error(`${locale}/${slug} must link to its expected primary source`);
+        if (!href || !ts.isStringLiteral(href) || !href.text.startsWith('https://')) throw new Error(`${locale}/${slug} reference must use HTTPS`);
+        if (href.text === expectedToolReferences[slug]) hasExpectedReference = true;
       }
+      if (!hasExpectedReference) throw new Error(`${locale}/${slug} must link to its expected primary source`);
     }
+    }
+    assertPlaceholderParity(byLocale, `${label} tool content`);
   }
-  assertPlaceholderParity(new Map(locales.map((candidate) => [candidate, toolContentByLocale.get(candidate)])), 'tool content');
 }
-for (const [slug, initializer] of toolExamples) {
+
+for (const [slug, initializer] of [...baseExamples, ...expandedExamples]) {
   if (!ts.isArrayLiteralExpression(initializer) || initializer.elements.length < 2) throw new Error(`${slug} must have at least two examples`);
   for (const example of initializer.elements) {
     const fields = properties(example, `${slug} example`);
@@ -209,3 +250,61 @@ for (const slug of expectedWorkflowGuides) {
 }
 
 console.log(`Workflow content verified (${locales.length} locales, ${expectedWorkflowGuides.length} original workflow guides, five steps, localized sample actions, five checks, inline examples, and standards references per locale).`);
+
+const recipeGuideSource = await parseTypeScript('src/data/workflow-recipe-guides.ts');
+const expectedRecipeGuides = ['api-contract-triage', 'release-config-preflight', 'har-issue-prep'];
+const recipeGuideSlugsNode = variableInitializer(recipeGuideSource, 'workflowRecipeGuideSlugs');
+if (!ts.isArrayLiteralExpression(recipeGuideSlugsNode) || recipeGuideSlugsNode.elements.map((item) => item.text).join(',') !== expectedRecipeGuides.join(',')) {
+  throw new Error('Workflow recipe guide slugs do not match the three starter recipes');
+}
+const recipeGuides = properties(variableObject(recipeGuideSource, 'workflowRecipeGuides'), 'workflowRecipeGuides');
+assertSameKeys(recipeGuides, locales, 'workflow recipe guide locale');
+const requiredRecipeGuideFields = ['title', 'summary', 'introduction', 'privacyTitle', 'privacyNote', 'scenarioTitle', 'scenarioNote', 'expectedLabel', 'receivedLabel', 'expectedPayload', 'receivedPayload', 'stepsTitle', 'checklistTitle', 'referencesTitle'];
+for (const locale of locales) {
+  const localeGuides = properties(recipeGuides.get(locale), `${locale} workflow recipe guides`);
+  assertSameKeys(localeGuides, expectedRecipeGuides, `${locale} workflow recipe guide`);
+  for (const [slug, initializer] of localeGuides) {
+    const fields = properties(initializer, `${locale}/${slug} recipe guide`);
+    for (const field of requiredRecipeGuideFields) {
+      const value = fields.get(field);
+      if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} has no ${field}`);
+    }
+    const steps = fields.get('steps');
+    if (!steps || !ts.isArrayLiteralExpression(steps) || steps.elements.length !== 5) throw new Error(`${locale}/${slug} must have five recipe guide steps`);
+    for (const step of steps.elements) {
+      const stepFields = properties(step, `${locale}/${slug} recipe guide step`);
+      for (const field of ['title', 'toolSlug', 'action', 'reading', 'boundary']) {
+        const value = stepFields.get(field);
+        if (!value || !ts.isStringLiteral(value) || !value.text.trim()) throw new Error(`${locale}/${slug} step is missing ${field}`);
+      }
+      if (!expectedTools.includes(stepFields.get('toolSlug').text)) throw new Error(`${locale}/${slug} references an unknown tool`);
+    }
+    const checklist = fields.get('checklist');
+    if (!checklist || !ts.isArrayLiteralExpression(checklist) || checklist.elements.length < 5 || checklist.elements.some((item) => !ts.isStringLiteral(item) || !item.text.trim())) {
+      throw new Error(`${locale}/${slug} needs five non-empty checklist items`);
+    }
+    const references = fields.get('references');
+    if (!references || !ts.isArrayLiteralExpression(references) || references.elements.length < 3) throw new Error(`${locale}/${slug} needs three linked references`);
+    for (const reference of references.elements) {
+      const referenceFields = properties(reference, `${locale}/${slug} recipe reference`);
+      if (!ts.isStringLiteral(referenceFields.get('label')) || !referenceFields.get('label').text.trim() || !ts.isStringLiteral(referenceFields.get('href')) || !referenceFields.get('href').text.startsWith('https://')) {
+        throw new Error(`${locale}/${slug} has an invalid reference`);
+      }
+    }
+  }
+}
+console.log(`Recipe guide content verified (${locales.length} locales, ${expectedRecipeGuides.length} guides, five steps, five checks, and three references each).`);
+
+const recipeSource = await parseTypeScript('src/data/workflow-recipes.ts');
+const recipesNode = variableInitializer(recipeSource, 'workflowRecipes');
+if (!ts.isArrayLiteralExpression(recipesNode) || recipesNode.elements.length !== expectedRecipeGuides.length) throw new Error('Expected exactly three starter workflow recipes');
+for (const recipe of recipesNode.elements) {
+  const fields = properties(recipe, 'workflow recipe');
+  assertSameKeys(fields, ['id', 'title', 'description', 'nodes', 'edges'], 'workflow recipe field');
+  const nodes = fields.get('nodes');
+  const edges = fields.get('edges');
+  if (!nodes || !ts.isArrayLiteralExpression(nodes) || !nodes.elements.length || !edges || !ts.isArrayLiteralExpression(edges)) throw new Error('Workflow recipe needs nodes and edges arrays');
+  for (const node of nodes.elements) assertSameKeys(properties(node, 'workflow recipe node'), ['id', 'adapterId'], 'workflow recipe node field');
+  for (const edge of edges.elements) assertSameKeys(properties(edge, 'workflow recipe edge'), ['fromNodeId', 'fromPortId', 'toNodeId', 'toPortId'], 'workflow recipe edge field');
+}
+console.log('Workflow recipes verified (three structures contain only localized title/description, nodes, and typed edges).');

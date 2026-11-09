@@ -6,6 +6,7 @@ import { ToolWorkbench } from '@/components/tools/tool-workbench';
 import { toolContent, toolExamples } from '@/data/tool-content';
 import { toolBySlug, toolRegistry } from '@/data/tools';
 import { workflowGuideBySlug, workflowGuideSlugs } from '@/data/workflow-guides';
+import { workflowRecipeGuideBySlug, workflowRecipeGuideSlugs, workflowRecipeToolSlugs } from '@/data/workflow-recipe-guides';
 import { contentLabels } from '@/i18n/content';
 import { isLocale, locales, type Locale } from '@/i18n/config';
 import { localizedMetadata } from '@/lib/seo';
@@ -37,6 +38,9 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
   const relatedWorkflow = workflowGuideSlugs
     .map((workflowSlug) => ({ slug: workflowSlug, content: workflowGuideBySlug(locale, workflowSlug) }))
     .find(({ content }) => content?.steps.some((step) => step.toolSlug === tool.slug));
+  const relatedRecipe = workflowRecipeGuideSlugs
+    .map((workflowSlug) => ({ slug: workflowSlug, content: workflowRecipeGuideBySlug(locale, workflowSlug) }))
+    .find(({ slug }) => workflowRecipeToolSlugs[slug].includes(tool.slug));
   const related = tool.relatedToolIds
     .map((id) => toolBySlug(id))
     .filter((relatedTool): relatedTool is NonNullable<typeof relatedTool> => Boolean(relatedTool));
@@ -94,6 +98,7 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ loc
         </section>
       )}
       {relatedWorkflow?.content && <p className="guide-link"><Link href={`/${locale}/guides/${relatedWorkflow.slug}/`}>{labels.fullGuide}: {relatedWorkflow.content.title}<span aria-hidden="true"> →</span></Link></p>}
+      {relatedRecipe?.content && <p className="guide-link"><Link href={`/${locale}/guides/${relatedRecipe.slug}/`}>{labels.workflowCollectionTitle}: {relatedRecipe.content.title}<span aria-hidden="true"> →</span></Link></p>}
     </main>
   );
 }

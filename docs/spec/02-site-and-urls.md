@@ -32,6 +32,14 @@
 /{locale}/tools/csv-json/
 /{locale}/tools/url-inspector/
 /{locale}/tools/html-entities/
+/{locale}/tools/json-schema-validator/
+/{locale}/tools/openapi-explorer/
+/{locale}/tools/curl-fetch-converter/
+/{locale}/tools/http-header-inspector/
+/{locale}/tools/env-diff/
+/{locale}/tools/gitignore-tester/
+/{locale}/tools/har-scrubber/
+/{locale}/tools/markdown-link-checker/
 
 /{locale}/about/                 # 서비스 소개
 /{locale}/privacy/               # 개인정보처리방침
@@ -39,6 +47,7 @@
 /{locale}/contact/               # 문의 안내
 /{locale}/guides/                # 도구별 사용 가이드 색인
 /{locale}/guides/{guideSlug}/    # 워크플로 또는 noindex 처리된 도구별 레거시 주소
+/{locale}/workflows/             # 브라우저 내 노드형 워크플로 조립기
 
 /sitemap.xml
 /robots.txt
@@ -75,8 +84,8 @@
 
 **가이드 화면 (Desktop / Mobile)**
 
-- 도구별 가이드 색인은 17개 도구 참조를 제공한다. 홈과 색인에 별도의 실전 워크플로 모음을 반복 배치하지 않는다.
-- 세 실전 워크플로 문서는 관련 도구 상세 페이지와 sitemap에서 계속 발견할 수 있다.
+- 도구별 가이드 색인은 25개 도구 참조를 제공한다. 홈과 색인에 별도의 실전 워크플로 모음을 반복 배치하지 않는다.
+- 여섯 실전 워크플로 문서는 관련 도구 상세 페이지와 sitemap에서 발견할 수 있고, `/{locale}/workflows/`에서 세 신규 레시피와 도구 연결 기능을 제공한다.
 - 가이드 색인과 개별 가이드에서는 도구 카테고리 사이드바와 모바일 메뉴 버튼을 숨긴다.
 - 상단 헤더는 홈 화면과 같은 열 배치와 검색 바를 사용한다. `Home`과 `Guides`는 브랜드 다음 같은 위치에 두고 현재 경로를 활성 상태로 표시하며, 검색 바는 홈과 같은 너비·placeholder·반응형 축소 동작을 따른다.
 - 모바일 헤더도 홈과 같은 배치 기준을 따른다. 도구 사이드바가 없는 가이드 화면에는 모바일 메뉴 버튼을 표시하지 않는다.

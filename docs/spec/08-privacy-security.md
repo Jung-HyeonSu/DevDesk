@@ -5,6 +5,9 @@
 ## 8. 개인정보 보호·보안·안정성
 
 - 어떤 도구도 입력값을 외부 변환 API로 전송하지 않는다.
+- 워크플로 조립기의 recipe export에는 node·typed edge 구조만 담는다. 입력값과 실행 결과는 recipe 파일, URL, localStorage, 분석 이벤트, 콘솔 로그, 외부 서비스에 넣지 않는다.
+- HAR 가림 기능은 휴리스틱이다. 완전한 익명화로 설명하지 않고 내보낸 결과를 사용자가 직접 검토해야 한다.
+- OpenAPI·Markdown 검사기의 외부 링크 및 `$ref`는 가져오지 않는다. HTTP 헤더 진단도 붙여넣은 문자열만 분석하고 원격 요청을 만들지 않는다.
 - 사용자 입력값·JWT·SQL·패스워드·해시 전 원문을 URL, localStorage, sessionStorage, 분석 이벤트, 콘솔 로그, 오류 수집 플랫폼에 기록하지 않는다.
 - `localStorage` 허용 데이터: theme, 선택 locale, 즐겨찾기 toolId, 최근 방문 toolId 등 비민감 설정.
 - 외부 라이브러리 사용 전 라이선스/보안 취약점/번들 크기 점검.

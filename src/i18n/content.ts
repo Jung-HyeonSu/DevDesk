@@ -4,6 +4,7 @@ type ContentLabels = {
   backToTools: string; examples: string; example: string; input: string; output: string;
   howTo: string; caution: string; faq: string; related: string; fullGuide: string;
   guideIndexTitle: string; guideIndexDescription: string; toolCollectionTitle: string; guideFor: string; copyExample: string; openTool: string; references: string;
+  workflowStudio: string; workflowCollectionTitle: string;
 };
 
 export const contentLabels: Record<Locale, ContentLabels> = {
@@ -14,6 +15,7 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     guideIndexDescription: '입력 형식과 실제 사용 방법, 경계 조건, 개인정보 유의사항을 도구별로 확인하세요.',
     toolCollectionTitle: '도구별 참조',
     guideFor: '사용 가이드', copyExample: '예제 복사', openTool: '도구 열기', references: '표준과 참고 자료',
+    workflowStudio: '워크플로 조립기 열기', workflowCollectionTitle: '실전 워크플로',
   },
   en: {
     backToTools: 'Home', examples: 'Input and output examples', example: 'Example', input: 'Input', output: 'Output',
@@ -22,6 +24,7 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     guideIndexDescription: 'Check each tool’s input format, practical steps, edge cases, and privacy notes.',
     toolCollectionTitle: 'Tool-by-tool references',
     guideFor: 'Usage guide', copyExample: 'Copy example', openTool: 'Open tool', references: 'Standards and references',
+    workflowStudio: 'Open workflow studio', workflowCollectionTitle: 'Practical workflows',
   },
   ja: {
     backToTools: 'ホーム', examples: '入力と出力の例', example: '例', input: '入力', output: '出力',
@@ -30,6 +33,7 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     guideIndexDescription: '各ツールの入力形式、使い方、境界条件、プライバシー上の注意を確認できます。',
     toolCollectionTitle: 'ツール別リファレンス',
     guideFor: '使い方ガイド', copyExample: '例をコピー', openTool: 'ツールを開く', references: '標準仕様と参考資料',
+    workflowStudio: 'ワークフロースタジオを開く', workflowCollectionTitle: '実践ワークフロー',
   },
   zh: {
     backToTools: '首页', examples: '输入和输出示例', example: '示例', input: '输入', output: '输出',
@@ -38,6 +42,7 @@ export const contentLabels: Record<Locale, ContentLabels> = {
     guideIndexDescription: '查看各工具的输入格式、操作步骤、边界情况和隐私注意事项。',
     toolCollectionTitle: '单项工具参考',
     guideFor: '使用指南', copyExample: '复制示例', openTool: '打开工具', references: '标准与参考资料',
+    workflowStudio: '打开工作流工作室', workflowCollectionTitle: '实战工作流',
   },
 };
 
