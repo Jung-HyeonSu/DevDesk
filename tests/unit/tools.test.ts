@@ -3,9 +3,9 @@ import { toolById, toolBySlug, toolMatchesSearch, toolRegistry } from '@/data/to
 import { locales } from '@/i18n/config';
 
 describe('tool registry', () => {
-  it('contains the 17 stable tool routes with unique slugs', () => {
-    expect(toolRegistry).toHaveLength(17);
-    expect(new Set(toolRegistry.map((tool) => tool.slug)).size).toBe(17);
+  it('contains 25 stable tool routes with unique slugs', () => {
+    expect(toolRegistry).toHaveLength(25);
+    expect(new Set(toolRegistry.map((tool) => tool.slug)).size).toBe(25);
     expect(toolBySlug('json-formatter')?.id).toBe('json-formatter');
   });
 

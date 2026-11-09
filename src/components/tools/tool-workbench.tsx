@@ -28,7 +28,16 @@ const workbenches: Partial<Record<ToolSlug, ComponentType<WorkbenchProps>>> = {
   'html-entities': dynamic(() => import('./workbenches/html-entities-workbench').then((module) => module.HtmlEntitiesWorkbench)),
 };
 
+const expandedToolSlugs = new Set<ToolSlug>([
+  'json-schema-validator', 'openapi-explorer', 'curl-fetch-converter', 'http-header-inspector',
+  'env-diff', 'gitignore-tester', 'har-scrubber', 'markdown-link-checker',
+]);
+const ExpandedWorkbench = dynamic(() => import('./workbenches/expanded-tool-workbench').then((module) => module.ExpandedToolWorkbench));
+
 export function ToolWorkbench({ locale, slug }: { locale: Locale; slug: ToolSlug }) {
+  if (expandedToolSlugs.has(slug)) {
+    return <div className="tool-workbench"><ExpandedWorkbench locale={locale} slug={slug} /><SuccessConfetti /></div>;
+  }
   const Workbench = workbenches[slug];
   if (!Workbench) return null;
   return <div className="tool-workbench"><Workbench locale={locale} /><SuccessConfetti /></div>;

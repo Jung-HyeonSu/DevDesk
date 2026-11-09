@@ -1,5 +1,6 @@
 import type { Locale } from '@/i18n/config';
 import type { ToolSlug } from './tools';
+import { expandedToolContent, expandedToolExamples } from './expanded-tool-content';
 
 export type ToolExample = { input: string; output: string };
 export type ToolFaq = { question: string; answer: string };
@@ -11,7 +12,7 @@ export type ToolContent = {
   references?: { label: string; href: string }[];
 };
 
-export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
+const baseToolExamples: Partial<Record<ToolSlug, [ToolExample, ToolExample]>> = {
   'code-formatter': [
     { input: 'class Hello{public static void main(String[] args){System.out.println("Hello, DevDesk!");}}', output: 'class Hello {\n  public static void main(String[] args) {\n    System.out.println("Hello, DevDesk!");\n  }\n}' },
     { input: 'function greet(name){return "Hello, "+name+"!"}', output: 'function greet(name) {\n  return "Hello, " + name + "!";\n}' },
@@ -82,7 +83,9 @@ export const toolExamples: Record<ToolSlug, [ToolExample, ToolExample]> = {
   ],
 };
 
-export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
+export const toolExamples = { ...baseToolExamples, ...expandedToolExamples } as Record<ToolSlug, [ToolExample, ToolExample]>;
+
+const baseToolContent: Record<Locale, Partial<Record<ToolSlug, ToolContent>>> = {
   ko: {
     'code-formatter': {
       description: 'C, C#, C++, CSS, Go, HTML, Java, JavaScript, Perl, PHP, Python, Ruby, SQL, TypeScript 코드를 구문 강조와 테마 색상으로 보여주고 포맷합니다. 입력·포맷·이미지 저장은 브라우저에서 처리합니다.',
@@ -787,4 +790,11 @@ export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
       references: [{ label: 'WHATWG HTML Standard — Character references', href: 'https://html.spec.whatwg.org/multipage/syntax.html#character-references' }],
     },
   },
+};
+
+export const toolContent: Record<Locale, Record<ToolSlug, ToolContent>> = {
+  ko: { ...baseToolContent.ko, ...expandedToolContent.ko } as Record<ToolSlug, ToolContent>,
+  en: { ...baseToolContent.en, ...expandedToolContent.en } as Record<ToolSlug, ToolContent>,
+  ja: { ...baseToolContent.ja, ...expandedToolContent.ja } as Record<ToolSlug, ToolContent>,
+  zh: { ...baseToolContent.zh, ...expandedToolContent.zh } as Record<ToolSlug, ToolContent>,
 };

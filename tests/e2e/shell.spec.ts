@@ -14,7 +14,7 @@ test('each localized homepage has matching HTML language and a tool entry point'
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('.home-workflows')).toHaveCount(0);
-    await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
+    await expect(page.locator('.home-tool-list > li')).toHaveCount(25);
   }
 });
 
@@ -41,7 +41,7 @@ test('guide index uses focused navigation without the tool sidebar or workflow c
     });
     expect(guideHeaderLayout).toEqual(homeHeaderLayout);
     await expect(page.locator('.workflow-guide-list')).toHaveCount(0);
-    await expect(page.locator('.guide-index .guide-list > li')).toHaveCount(17);
+    await expect(page.locator('.guide-index .guide-list > li')).toHaveCount(25);
     if (isMobile) {
       await expect(page.locator('.mobile-menu-button')).toHaveCount(0);
       const dimensions = await page.evaluate(() => ({
@@ -60,7 +60,7 @@ test('guide index uses focused navigation without the tool sidebar or workflow c
 test('tool search, favorites, theme, and locale switching preserve the selected route', async ({ page, isMobile }) => {
   test.skip(isMobile, 'The persisted favorites workflow runs in desktop Chromium; mobile navigation is verified separately.');
   await page.goto('/ko/');
-  await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
+  await expect(page.locator('.home-tool-list > li')).toHaveCount(25);
 
   await page.keyboard.press('ControlOrMeta+k');
   const dialog = page.getByRole('dialog');
@@ -1007,7 +1007,7 @@ test('mobile navigation opens and closes after selecting a tool', async ({ page,
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   await page.getByRole('link', { name: /すべてのツール/ }).click();
   await expect(page).toHaveURL(/\/ja\/$/);
-  await expect(page.locator('.home-tool-list > li')).toHaveCount(17);
+  await expect(page.locator('.home-tool-list > li')).toHaveCount(25);
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
 });
 
