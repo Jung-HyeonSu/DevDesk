@@ -1,6 +1,6 @@
 # DevDesk 작업 현황
 
-> 마지막 갱신: 2026-11-09 (Asia/Seoul)
+> 마지막 갱신: 2026-11-13 (Asia/Seoul)
 >
 > 이 문서는 현재 구현 상태와 후속 작업을 기록한다. 현재 목표는 [`GOAL.md`](./GOAL.md), 기존 상세 요구사항 전체는 [`docs/spec/README.md`](./docs/spec/README.md), 초기 구현 결과는 [`IMPLEMENTATION_REPORT.md`](./IMPLEMENTATION_REPORT.md)를 참고한다. 정보가 서로 다르면 이 문서의 최신 확인 내용을 우선하고, 확인하지 못한 운영 상태는 완료로 단정하지 않는다.
 
@@ -19,6 +19,13 @@
 현재 콘텐츠 목표와 완료 기준은 [`GOAL.md`](./GOAL.md) 및 [콘텐츠 품질 기준](./docs/spec/16-content-quality.md)을 따른다.
 
 ## 현재 구현 상태
+
+### Cloudflare Web Analytics (2026-11-13)
+
+- 사용자가 제공한 Cloudflare Web Analytics 비컨을 공통 컴포넌트로 추가하고 두 정적 root layout에서 불러온다. 루트 언어 선택 페이지와 ko/en/ja/zh 페이지에 포함된다.
+- Cloudflare 비컨은 페이지 조회·로딩 성능 지표를 전송하며 도구 입력과 결과는 포함하지 않는다. 네 언어 개인정보처리방침과 소개 문구에 현재 분석 동작을 반영하고 Cloudflare 공식 데이터 수집 안내를 연결했다. AdSense는 계속 비활성화되어 있다.
+- `DEPLOYMENT.md`, `docs/spec/00-execution-rules.md`, `docs/spec/12-deployment-operations.md`에 수동 스니펫과 Pages 자동 삽입 중복 방지 지침을 기록했다. 토큰은 공개 클라이언트 식별자이므로 비밀정보로 취급하지 않는다.
+- 검증: lint, typecheck, 단위 테스트 158개, 정적 빌드 258개 경로, static/i18n 검증 통과. 빌드 산출물의 홈·네 로케일·정책·도구·가이드 페이지에서 `data-cf-beacon` 설정을 각각 한 번 확인했다. E2E는 이번 변경에 상호작용 변경이 없어 실행하지 않았다. 공개 Pages 배포는 확인하지 않았다.
 
 ### 도구 실행 UX와 콘텐츠 확장 (2026-11-09)
 
@@ -84,6 +91,13 @@
 
 | 검증 | 최근 확인 결과 | 참고 |
 |---|---|---|
+| `npm run lint` | 통과 | 2026-11-13, Cloudflare Web Analytics root layout·다국어 개인정보 안내 |
+| `npm run typecheck` | 통과 | 2026-11-13, Cloudflare Web Analytics 컴포넌트·정적 layout |
+| `npm run test -- --testTimeout=20000 --maxWorkers=2` | 통과: 25개 파일, 158개 테스트 | 2026-11-13. 기본 타임아웃 5초의 병렬 실행에서 포맷터 테스트 3개가 시간 초과되어 제한된 워커·20초 설정으로 재실행 |
+| `npm run build` | 통과: 258개 정적 경로 생성 | 2026-11-13, Cloudflare 비컨이 루트 및 로케일 정적 경로에 포함 |
+| `npm run verify:static` | 통과: 필수 255개 경로 | 2026-11-13, 정적 출력·내부 링크·SEO 검증 |
+| `npm run verify:i18n` | 통과 | 2026-11-13, 네 로케일 콘텐츠 검증 |
+| 정적 산출물 비컨 확인 | 통과: 확인한 8개 HTML에서 각 1개 | 루트, 네 로케일 홈, 한국어 개인정보·도구, 일본어 워크플로 경로 |
 | `npm run lint` | 통과 | 2026-11-09, 25개 도구 액션 바·워크플로 상단바/실행 바 UX 포함 |
 | `npm run typecheck` | 통과 | 2026-11-09, 현재 콘텐츠 확장 및 워크플로 조립기 포함 |
 | `npm run test -- --reporter=dot` | 통과: 25개 파일, 158개 테스트 | 2026-11-09, 기존·신규 도구와 워크플로 경계값 포함 |

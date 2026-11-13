@@ -15,6 +15,12 @@ DevDesk is built for Cloudflare Pages static hosting. It does not need Pages Fun
 
 Cloudflare's documentation, checked on 2026-10-19, lists the Free plan limits as one build at a time, 500 builds per month, 20,000 files per site, and 25 MiB per individual asset. These limits can change; confirm the [current Pages limits](https://developers.cloudflare.com/pages/platform/limits/) and the account plan before launch.
 
+## Cloudflare Web Analytics
+
+The checked-in manual beacon is included in both root layouts, covering `/` and all localized pages. Its site token is public client-side configuration, not a secret. Cloudflare Web Analytics sends page-view and page-load performance measurements to Cloudflare; tool inputs and results are not included. The localized Privacy Policy describes this behavior and links to Cloudflare's [data collection documentation](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/) and [overview](https://developers.cloudflare.com/web-analytics/about/).
+
+Use only one beacon per page. If enabling Web Analytics through the Cloudflare Pages dashboard, disable automatic snippet injection while this manual snippet is installed. Confirm that the registered analytics hostname matches the deployed hostname. To use a different analytics site, replace the public token in `src/components/analytics/cloudflare-web-analytics.tsx`.
+
 ## Public build-time settings
 
 Copy `.env.example` to `.env.local` for local builds or configure the values in the Pages project's build environment:

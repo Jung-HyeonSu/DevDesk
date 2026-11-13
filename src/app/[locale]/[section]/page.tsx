@@ -62,7 +62,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '광고와 문의',
           paragraphs: [
-            '기본 배포 설정에서는 광고와 분석 기능이 비활성화되어 있습니다. 향후 광고를 표시할 때는 실제 광고 파트너, 쿠키와 유사 기술, 동의 및 선택 방법을 개인정보처리방침에 알리고 적용 지역의 요구사항을 확인합니다.',
+            '광고는 기본 배포 설정에서 비활성화되어 있습니다. Cloudflare Web Analytics는 페이지 조회와 페이지 로딩 성능을 측정하며, 자세한 내용은 개인정보처리방침에 안내합니다. 향후 광고를 표시할 때는 실제 광고 파트너, 쿠키와 유사 기술, 동의 및 선택 방법도 안내하고 적용 지역의 요구사항을 확인합니다.',
             '서비스에 관한 질문이나 개인정보 요청은 문의 페이지를 이용해 주세요.',
           ],
           links: [
@@ -74,9 +74,9 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
     },
     privacy: {
       title: '개인정보처리방침',
-      description: 'DevDesk 도구 입력, 브라우저 설정, 호스팅 요청 및 향후 광고 기술의 개인정보 처리 방식을 안내합니다.',
+      description: 'DevDesk 도구 입력, 브라우저 설정, 호스팅 요청, Cloudflare Web Analytics 및 광고 기술의 정보 처리 방식을 안내합니다.',
       intro: '이 방침은 DevDesk 웹사이트와 브라우저 도구가 정보를 처리하는 방법을 설명합니다. 현재 사이트에는 계정이나 문의 양식이 없으며, 도구 입력과 결과는 브라우저에서 처리합니다.',
-      updatedAt: '2026-10-20',
+      updatedAt: '2026-11-13',
       updatedLabel: '최종 업데이트',
       resourceLabel: '관련 링크',
       content: [
@@ -90,7 +90,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '2. 도구 입력과 결과',
           paragraphs: [
-            'JSON, SQL, JWT, 텍스트, 정규식, YAML 등 도구에 입력한 내용과 변환 결과는 사용자의 브라우저 안에서 처리됩니다. DevDesk는 이 내용을 변환 서버, 외부 변환 API, 분석 이벤트, URL 또는 콘솔 로그로 보내거나 서버에 저장하지 않습니다. 입력과 결과는 페이지가 열려 있는 동안 브라우저 메모리에 남을 수 있으며, 사용자가 복사·다운로드하거나 다른 곳에 붙여 넣으면 해당 작업은 사용자의 기기와 선택한 앱에서 처리됩니다.',
+            'JSON, SQL, JWT, 텍스트, 정규식, YAML 등 도구에 입력한 내용과 변환 결과는 사용자의 브라우저 안에서 처리됩니다. DevDesk는 이 내용을 변환 서버, 외부 변환 API, Cloudflare Web Analytics를 포함한 분석 이벤트, URL 또는 콘솔 로그로 보내거나 서버에 저장하지 않습니다. 입력과 결과는 페이지가 열려 있는 동안 브라우저 메모리에 남을 수 있으며, 사용자가 복사·다운로드하거나 다른 곳에 붙여 넣으면 해당 작업은 사용자의 기기와 선택한 앱에서 처리됩니다.',
             '도구 사이에서 값을 전달하는 기능은 앱 메모리에 잠시 보관하고 대상 도구가 한 번 읽은 뒤 제거합니다. 이 값은 URL이나 브라우저 저장소에 기록하지 않습니다.',
           ],
         },
@@ -108,12 +108,14 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
           links: [{ label: 'Cloudflare 개인정보처리방침', href: 'https://www.cloudflare.com/privacypolicy/', external: true }],
         },
         {
-          title: '5. 광고 쿠키와 제3자 광고 기술',
+          title: '5. Cloudflare Web Analytics와 광고 쿠키',
           paragraphs: [
-            '기본 배포 설정에서는 Google AdSense와 분석 스크립트가 비활성화되어 있으며 DevDesk는 광고 목적으로 쿠키를 설정하지 않습니다. 이 사이트에 Google 광고가 표시되는 경우 Google을 비롯한 제3자 광고 사업자와 광고 기술 제공업체가 쿠키 또는 유사한 브라우저 저장 기술을 사용하거나 기존 쿠키를 읽을 수 있습니다.',
+            'DevDesk는 Cloudflare Web Analytics를 사용합니다. JavaScript 분석 비컨은 페이지 조회와 페이지 로딩 성능 지표를 측정해 Cloudflare로 전송합니다. Cloudflare는 Web Analytics가 방문자의 개인정보를 수집하거나 사용하지 않으며 Cloudflare 고객 사이트 사이에서 개별 이용자를 추적하지 않는다고 설명합니다. 분석 정보에는 도구 입력과 결과를 포함하지 않습니다. Google AdSense 광고는 비활성화되어 있고 DevDesk는 광고 목적으로 쿠키를 설정하지 않습니다. Google 광고가 표시되면 Google을 비롯한 제3자 광고 사업자와 광고 기술 제공업체가 쿠키 또는 유사한 브라우저 저장 기술을 사용하거나 기존 쿠키를 읽을 수 있습니다.',
             '이 기술은 사용자의 이 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공하는 데 사용될 수 있습니다. 광고가 활성화되면 방문한 페이지 주소와 IP 주소 등 브라우저가 광고 제공업체에 보내는 정보가 광고 제공, 광고 효과 측정, 부정 사용 방지 및 설정에 따른 광고 개인화에 이용될 수 있습니다. Google의 정보 처리 방식과 광고 맞춤설정 선택 방법은 Google 안내를 참고해 주세요.',
           ],
           links: [
+            { label: 'Cloudflare Web Analytics 데이터 수집 안내', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
+            { label: 'Cloudflare Web Analytics 소개', href: 'https://developers.cloudflare.com/web-analytics/about/', external: true },
             { label: 'Google이 파트너 사이트의 정보를 사용하는 방법', href: 'https://policies.google.com/technologies/partner-sites?hl=ko', external: true },
             { label: 'Google 광고 설정', href: 'https://adssettings.google.com/', external: true },
             { label: '맞춤형 광고 선택 거부 안내', href: 'https://www.aboutads.info/choices/', external: true },
@@ -264,7 +266,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: 'Advertising and contact',
           paragraphs: [
-            'Advertising and analytics are disabled in the default deployment settings. If advertising is enabled later, this site will explain the actual ad partners, cookies or similar technologies, and available choices in its Privacy Policy.',
+            'Advertising is disabled in the default deployment settings. Cloudflare Web Analytics measures page views and page-load performance; the Privacy Policy explains how this works. If advertising is enabled later, the policy will explain the actual ad partners, cookies or similar technologies, and available choices.',
             'For questions about the service or a privacy request, use the contact page.',
           ],
           links: [
@@ -276,9 +278,9 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
     },
     privacy: {
       title: 'Privacy Policy',
-      description: 'How DevDesk handles tool inputs, browser preferences, hosting requests, and possible future advertising.',
+      description: 'How DevDesk handles tool inputs, browser preferences, hosting requests, Cloudflare Web Analytics, and advertising.',
       intro: 'This policy describes how the DevDesk website and browser tools handle information. The current site has no user accounts or contact form; tool inputs and results are processed in your browser.',
-      updatedAt: '2026-10-20',
+      updatedAt: '2026-11-13',
       updatedLabel: 'Last updated',
       resourceLabel: 'Related links',
       content: [
@@ -292,7 +294,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '2. Tool inputs and results',
           paragraphs: [
-            'Inputs and outputs for tools such as JSON, SQL, JWT, text, regular expressions, and YAML are processed in your browser. DevDesk does not send this content to a conversion server, external conversion API, analytics event, URL, or console log, and does not store it on a DevDesk server. Input may remain in browser memory while the page is open. If you copy, download, or paste a result elsewhere, that action is handled by your device and the application you choose.',
+            'Inputs and outputs for tools such as JSON, SQL, JWT, text, regular expressions, and YAML are processed in your browser. DevDesk does not send this content to a conversion server, external conversion API, Cloudflare Web Analytics or other analytics events, a URL, or a console log, and does not store it on a DevDesk server. Input may remain in browser memory while the page is open. If you copy, download, or paste a result elsewhere, that action is handled by your device and the application you choose.',
             'The tool-to-tool handoff feature holds a value briefly in application memory and removes it after the destination tool reads it once. It is not written to a URL or browser storage.',
           ],
         },
@@ -310,12 +312,14 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
           links: [{ label: 'Cloudflare Privacy Policy', href: 'https://www.cloudflare.com/privacypolicy/', external: true }],
         },
         {
-          title: '5. Advertising cookies and third-party ad technology',
+          title: '5. Cloudflare Web Analytics and advertising cookies',
           paragraphs: [
-            'Google AdSense and analytics scripts are disabled in the default deployment settings, and DevDesk does not set cookies for advertising. If Google ads are shown on this site, Google and other third-party ad vendors may use cookies or similar browser storage, or read cookies already present, to serve ads.',
+            'DevDesk uses Cloudflare Web Analytics. Its JavaScript beacon measures page views and page-load performance and sends those measurements to Cloudflare. Cloudflare states that Web Analytics does not collect or use visitors’ personal data and does not track individual end users across its customers’ sites. Analytics measurements do not include tool inputs or results. Google AdSense advertising is disabled, and DevDesk does not set cookies for advertising. If Google ads are shown on this site, Google and other third-party ad vendors may use cookies or similar browser storage, or read cookies already present, to serve ads.',
             'These technologies may use your prior visits to this site or other sites to select ads. When ads are enabled, information your browser sends to ad providers, such as the page URL and IP address, may be used to deliver ads, measure their effectiveness, prevent abuse, and personalize ads according to your settings. See Google’s information and controls for details.',
           ],
           links: [
+            { label: 'Cloudflare Web Analytics data collection', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
+            { label: 'About Cloudflare Web Analytics', href: 'https://developers.cloudflare.com/web-analytics/about/', external: true },
             { label: 'How Google uses information from partner sites', href: 'https://policies.google.com/technologies/partner-sites?hl=en', external: true },
             { label: 'Google Ads Settings', href: 'https://adssettings.google.com/', external: true },
             { label: 'Opt out of personalized ads', href: 'https://www.aboutads.info/choices/', external: true },
@@ -464,7 +468,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '広告とお問い合わせ',
           paragraphs: [
-            '標準のビルド設定では広告と分析機能を無効にしています。今後広告を有効にする場合は、実際の広告パートナー、Cookie などの技術、同意と選択方法をプライバシーポリシーに記載します。',
+            '広告は標準のビルド設定で無効です。Cloudflare Web Analytics はページ閲覧数と読み込み性能を測定します。詳しくはプライバシーポリシーをご覧ください。今後広告を有効にする場合は、実際の広告パートナー、Cookie などの技術、同意と選択方法も記載します。',
             'サービスに関する質問やプライバシーのご相談は、お問い合わせページをご利用ください。',
           ],
           links: [
@@ -476,9 +480,9 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
     },
     privacy: {
       title: 'プライバシーポリシー',
-      description: 'ツール入力、ブラウザー設定、ホスティングへのリクエスト、将来の広告技術における情報の取り扱いを説明します。',
+      description: 'ツール入力、ブラウザー設定、ホスティングへのリクエスト、Cloudflare Web Analytics と広告技術における情報の取り扱いを説明します。',
       intro: 'このポリシーでは、DevDesk のウェブサイトとブラウザーツールにおける情報の取り扱いを説明します。現在、ユーザーアカウントや問い合わせフォームはなく、ツールの入力と結果はブラウザー内で処理します。',
-      updatedAt: '2026-10-20',
+      updatedAt: '2026-11-13',
       updatedLabel: '最終更新日',
       resourceLabel: '関連リンク',
       content: [
@@ -492,7 +496,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '2. ツールの入力と結果',
           paragraphs: [
-            'JSON、SQL、JWT、テキスト、正規表現、YAML などの入力と結果はブラウザー内で処理します。DevDesk は入力内容を変換サーバー、外部変換 API、分析イベント、URL、コンソールログへ送信せず、DevDesk のサーバーにも保存しません。ページを開いている間は入力がブラウザーのメモリに残る場合があります。結果をコピー・ダウンロードしたり別の場所へ貼り付けたりする操作は、利用者の端末と選択したアプリで行われます。',
+            'JSON、SQL、JWT、テキスト、正規表現、YAML などの入力と結果はブラウザー内で処理します。DevDesk は入力内容を変換サーバー、外部変換 API、Cloudflare Web Analytics を含む分析イベント、URL、コンソールログへ送信せず、DevDesk のサーバーにも保存しません。ページを開いている間は入力がブラウザーのメモリに残る場合があります。結果をコピー・ダウンロードしたり別の場所へ貼り付けたりする操作は、利用者の端末と選択したアプリで行われます。',
             'ツール間のデータ受け渡しはアプリのメモリに一時保持し、移動先のツールが一度読み取った後に削除します。URL やブラウザー保存領域には記録しません。',
           ],
         },
@@ -510,12 +514,14 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
           links: [{ label: 'Cloudflare プライバシーポリシー', href: 'https://www.cloudflare.com/privacypolicy/', external: true }],
         },
         {
-          title: '5. 広告 Cookie と第三者の広告技術',
+          title: '5. Cloudflare Web Analytics と広告 Cookie',
           paragraphs: [
-            '標準のビルド設定では Google AdSense と分析スクリプトを無効にしており、DevDesk は広告目的の Cookie を設定していません。このサイトに Google 広告を表示する場合、Google などの第三者広告事業者や広告技術プロバイダーが Cookie または同様のブラウザー保存技術を使ったり、既存の Cookie を読み取ったりする場合があります。',
+            'DevDesk は Cloudflare Web Analytics を使用します。JavaScript のビーコンでページ閲覧数とページ読み込みのパフォーマンスを測定し、その情報を Cloudflare に送信します。Cloudflare によると、Web Analytics は利用者の個人データを収集・使用せず、顧客サイト間で個々の利用者を追跡しません。分析情報にツールの入力や結果は含まれません。Google AdSense 広告は無効であり、DevDesk は広告目的の Cookie を設定していません。このサイトに Google 広告を表示する場合、Google などの第三者広告事業者や広告技術プロバイダーが Cookie または同様のブラウザー保存技術を使ったり、既存の Cookie を読み取ったりする場合があります。',
             'これらの技術は、このサイトや他のサイトでの過去の訪問に基づいて広告を選ぶために使われることがあります。広告の有効化後は、ページ URL や IP アドレスなどブラウザーから広告事業者へ送られる情報が、広告の配信、効果測定、不正利用の防止、設定に応じた広告のパーソナライズに使われる場合があります。詳細と選択方法は Google の案内をご覧ください。',
           ],
           links: [
+            { label: 'Cloudflare Web Analytics のデータ収集', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
+            { label: 'Cloudflare Web Analytics について', href: 'https://developers.cloudflare.com/web-analytics/about/', external: true },
             { label: 'Google によるパートナーサイト情報の利用', href: 'https://policies.google.com/technologies/partner-sites?hl=ja', external: true },
             { label: 'Google 広告設定', href: 'https://adssettings.google.com/', external: true },
             { label: 'パーソナライズ広告のオプトアウト', href: 'https://www.aboutads.info/choices/', external: true },
@@ -664,7 +670,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '广告与联系',
           paragraphs: [
-            '默认构建配置下，广告和分析功能处于关闭状态。将来启用广告时，隐私政策会说明实际广告合作方、Cookie 或类似技术以及可用的选择方式。',
+            '默认构建配置下，广告处于关闭状态。Cloudflare Web Analytics 会测量页面浏览量和加载性能，详情请参阅隐私政策。将来启用广告时，隐私政策也会说明实际广告合作方、Cookie 或类似技术以及可用的选择方式。',
             '如有服务问题或隐私请求，请使用联系页面。',
           ],
           links: [
@@ -676,9 +682,9 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
     },
     privacy: {
       title: '隐私政策',
-      description: '说明 DevDesk 如何处理工具输入、浏览器偏好、托管请求和未来可能使用的广告技术。',
+      description: '说明 DevDesk 如何处理工具输入、浏览器偏好、托管请求、Cloudflare Web Analytics 和广告技术。',
       intro: '本政策说明 DevDesk 网站和浏览器工具如何处理信息。目前网站没有用户账号或联系表单；工具输入和结果均在浏览器中处理。',
-      updatedAt: '2026-10-20',
+      updatedAt: '2026-11-13',
       updatedLabel: '最后更新',
       resourceLabel: '相关链接',
       content: [
@@ -692,7 +698,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '2. 工具输入和结果',
           paragraphs: [
-            'JSON、SQL、JWT、文本、正则表达式和 YAML 等工具的输入及结果均在浏览器中处理。DevDesk 不会将这些内容发送到转换服务器、外部转换 API、分析事件、URL 或控制台日志，也不会保存到 DevDesk 服务器。页面打开期间，输入可能暂留在浏览器内存中。复制、下载或粘贴结果的操作由你的设备和所选应用处理。',
+            'JSON、SQL、JWT、文本、正则表达式和 YAML 等工具的输入及结果均在浏览器中处理。DevDesk 不会将这些内容发送到转换服务器、外部转换 API、Cloudflare Web Analytics 等分析事件、URL 或控制台日志，也不会保存到 DevDesk 服务器。页面打开期间，输入可能暂留在浏览器内存中。复制、下载或粘贴结果的操作由你的设备和所选应用处理。',
             '工具之间传递数据时，数据会暂存在应用内存中，由目标工具读取一次后清除，不会写入 URL 或浏览器存储。',
           ],
         },
@@ -710,12 +716,14 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
           links: [{ label: 'Cloudflare 隐私政策', href: 'https://www.cloudflare.com/privacypolicy/', external: true }],
         },
         {
-          title: '5. 广告 Cookie 和第三方广告技术',
+          title: '5. Cloudflare Web Analytics 和广告 Cookie',
           paragraphs: [
-            '默认部署配置下，Google AdSense 和分析脚本处于关闭状态，DevDesk 不会为广告目的设置 Cookie。如果本网站展示 Google 广告，Google 及其他第三方广告商或广告技术提供商可能会使用 Cookie 或类似浏览器存储技术，也可能读取已有 Cookie。',
+            'DevDesk 使用 Cloudflare Web Analytics。其 JavaScript beacon 会测量页面浏览量和页面加载性能，并将这些测量信息发送给 Cloudflare。Cloudflare 表示，Web Analytics 不会收集或使用访客的个人数据，也不会在其客户的网站之间追踪个人用户。分析测量不包含工具输入或结果。Google AdSense 广告目前处于关闭状态，DevDesk 不会为广告目的设置 Cookie。如果本网站展示 Google 广告，Google 及其他第三方广告商或广告技术提供商可能会使用 Cookie 或类似浏览器存储技术，也可能读取已有 Cookie。',
             '这些技术可能根据你此前访问本网站或其他网站的情况选择广告。启用广告后，浏览器发送给广告服务商的信息（例如页面 URL 和 IP 地址）可能用于投放广告、衡量效果、防止滥用，以及根据你的设置个性化广告。详细信息和选择方式请参阅 Google 的说明。',
           ],
           links: [
+            { label: 'Cloudflare Web Analytics 数据收集说明', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
+            { label: '关于 Cloudflare Web Analytics', href: 'https://developers.cloudflare.com/web-analytics/about/', external: true },
             { label: 'Google 如何使用合作网站的信息', href: 'https://policies.google.com/technologies/partner-sites?hl=zh-CN', external: true },
             { label: 'Google 广告设置', href: 'https://adssettings.google.com/', external: true },
             { label: '选择退出个性化广告', href: 'https://www.aboutads.info/choices/', external: true },

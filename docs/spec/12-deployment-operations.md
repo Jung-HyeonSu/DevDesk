@@ -29,12 +29,12 @@ NEXT_PUBLIC_SITE_URL=https://example.pages.dev
 NEXT_PUBLIC_SITE_NAME=DevDesk
 NEXT_PUBLIC_ADS_ENABLED=false
 # NEXT_PUBLIC_ADSENSE_CLIENT_ID=ca-pub-...  # 승인 후에만 지정
-# NEXT_PUBLIC_ANALYTICS_ID=...                # 선택 사항
+# Cloudflare Web Analytics 토큰은 코드의 공개 스니펫에서 설정하며 비밀값이 아님
 # NEXT_PUBLIC_CONTACT_EMAIL=...              # 운영자가 소유한 주소만
 ```
 
 - 예시 주소를 실제 도메인이라고 가정하지 않는다. `SITE_URL` 미설정 시 로컬 검증 가능한 안전한 기본값과 배포 전 설정 경고 제공.
-- 외부 광고/분석/연락처를 설정하지 않아도 빌드·도구 사용이 가능해야 한다.
+- 외부 광고/연락처 설정 없이도 빌드·도구 사용이 가능해야 한다. Cloudflare Web Analytics는 공개 사이트 토큰 스니펫으로 선택적으로 활성화하며 입력값·결과를 전송하지 않는다.
 - 실서비스 배포 전에 정확한 도메인·문의처·개인정보 고지·AdSense 설정을 운영자가 입력한다.
 - `.env.example`에는 예시만 포함하고 비밀정보는 커밋하지 않는다.
 
@@ -44,6 +44,7 @@ NEXT_PUBLIC_ADS_ENABLED=false
 - 도메인 선택(무료 pages.dev 또는 별도 구매).
 - 소유 이메일/연락처 설정, 개인정보 고지 최종 검토.
 - Search Console 등록과 사이트맵 제출.
+- Cloudflare Web Analytics를 사용할 때 수동 스니펫과 Pages 자동 삽입을 중복 활성화하지 않고, 등록 hostname 및 개인정보 고지를 확인.
 - AdSense 심사 신청(승인 보장 없음), 승인 후 광고 ID/`ads.txt`/동의 절차 설정.
 - 콘텐츠 및 의존성 업데이트를 Git 커밋·정적 재배포로 수행. 운영 DB·서버 패치 없음.
 

@@ -31,7 +31,7 @@
 - [ ] 프론트엔드가 호출하는 자체 API, `app/api`, 서버 요청별 SSR, Server Actions, 자체 인증/회원가입, DB가 없다.
 - [ ] Vercel Functions, Cloudflare Workers/Pages Functions, Supabase, Firebase 인증·DB, 유료 SaaS가 핵심 기능에 필요하지 않다.
 - [ ] 모든 25개 도구와 핵심 페이지가 4개 언어 경로에서 실제로 작동한다.
-- [ ] 환경변수가 없더라도 핵심 도구가 실행된다. 광고·분석 기능은 설정 전 비활성화한다.
+- [ ] 환경변수가 없더라도 핵심 도구가 실행된다. AdSense 광고는 승인·동의 설정 전 비활성화한다. Cloudflare Web Analytics는 명시적으로 등록한 공개 사이트 토큰으로 사용할 수 있으며, 도구 입력값과 결과는 분석 데이터에 포함하지 않는다.
 
 ---
 

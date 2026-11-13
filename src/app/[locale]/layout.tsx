@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { localeMetadata, locales, isLocale } from '@/i18n/config';
+import { CloudflareWebAnalytics } from '@/components/analytics/cloudflare-web-analytics';
 import { AppShell } from '@/components/layout/app-shell';
 import { siteName, siteUrl } from '@/lib/seo';
 import '../globals.css';
@@ -38,7 +39,10 @@ export default async function LocaleRootLayout({
 
   return (
     <html lang={localeMetadata[locale].htmlLang}>
-      <body><AppShell locale={locale}>{children}</AppShell></body>
+      <body>
+        <AppShell locale={locale}>{children}</AppShell>
+        <CloudflareWebAnalytics />
+      </body>
     </html>
   );
 }
