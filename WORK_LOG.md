@@ -27,7 +27,9 @@
 - Google AdSense 개인 정보 보호 및 메시지에서 DevDesk 로고(`src/app/icon.svg`)와 개인정보처리방침 주소를 지정했다. EEA·영국·스위스 메시지 `DevDesk European Privacy Choices`는 영어 기본, 일본어·중국어 간체 추가 언어로 게시했다. 명시적인 동의·거부·옵션 관리가 보인다. 지원되는 미국 주 메시지도 영어·스페인어로 게시했고 현재 및 향후 지원 주 전체에 적용했다. Google 메시지 언어 선택기에 한국어가 없어 현재 한국어 메시지는 제공하지 못한다.
 - 4개 언어 개인정보처리방침과 이용약관의 광고 동작·브라우저 전송·저장 기술·동의 및 선택 안내를 실제 AdSense 설정에 맞췄다. Google CMP에서 설정한 개인정보처리방침 URL은 `https://devdesk-7e7.pages.dev/en/privacy/`이다. 두 root layout에는 Google CMP 호환을 위한 `strict-origin-when-cross-origin` referrer 정책을 지정했다. 정책은 서비스 동작 안내이며 별도의 법률 검토가 완료된 것은 아니다.
 - Cloudflare Pages의 `main` 프로덕션 환경을 읽기 전용으로 확인했다. `NEXT_PUBLIC_ADS_ENABLED`, `NEXT_PUBLIC_ADSENSE_APPROVED`, `NEXT_PUBLIC_ADS_CONSENT_READY`가 `true`이고 publisher ID가 맞다. 자동 배포가 켜져 있어 `main` 푸시가 새 정적 배포를 시작한다. 이 환경값은 이미 설정되어 있었으므로 이번 작업에서 다시 변경하지 않았다.
-- 기존 사전 구현 검증: 승인·동의 플래그를 켠 별도 정적 빌드에서 404 시스템 화면과 AdSense 소유권 확인 파일을 제외한 253개 사이트 HTML의 `<head>`에 게시자 스크립트 preload가 한 번씩 생성됐다. 기본 비활성 설정으로 다시 빌드해 257개 HTML에서 AdSense 요청 URL이 없는 것을 확인했다. 이번 변경의 lint, typecheck, build, static/i18n 검사와 공개 사이트 요청 확인 결과는 배포 후 아래에 기록한다. 단위/E2E 테스트는 실행하지 않는다.
+- 초기 구현 검증: 승인·동의 플래그를 켠 별도 정적 빌드에서 404 시스템 화면과 AdSense 소유권 확인 파일을 제외한 253개 사이트 HTML의 `<head>`에 게시자 스크립트 preload가 한 번씩 생성됐다. 기본 비활성 설정으로 다시 빌드해 257개 HTML에서 AdSense 요청 URL이 없는 것을 확인했다.
+- 검증 (2026-11-20): `npm run lint`, `npm run typecheck`, 승인·동의 플래그를 켠 `npm run build`, `npm run verify:static` (255개 필수 경로), `npm run verify:i18n` (4개 언어), `git diff --check` 통과. 활성 빌드의 253개 HTML에서 AdSense 스크립트 URL이 확인됐다. Cloudflare Pages 배포 `a2852a63-f222-4025-a65f-1a70cbab2225`가 성공했고 production 별칭 `https://devdesk-7e7.pages.dev/`에 반영됐다. 공개 `/en/privacy/` 페이지에서 갱신된 고지, AdSense 로더, Google 광고 요청 iframe을 확인했다. 광고 소재가 실제로 표시되는지는 사용자 동의·광고 수요·Google 처리에 달려 있다. 단위/E2E 테스트는 실행하지 않았다.
+- 코드 커밋 `98065eb`를 `main`에서 `origin/main`으로 push했다. 후속 운영자 할 일은 개인정보처리방침·약관에 대한 실제 법률 검토와 AdSense 메시지에 한국어가 제공되지 않는 한계의 검토다.
 
 ### Cloudflare Web Analytics (2026-11-13)
 
