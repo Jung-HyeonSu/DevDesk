@@ -11,16 +11,22 @@ export type AdEnvironment = {
 
 export type AdSlotConfig = { clientId: string; slotId: string };
 
-export function getAdSlotConfig(placement: AdPlacement, environment: AdEnvironment): AdSlotConfig | null {
+export function getAdSenseClientId(environment: AdEnvironment): string | null {
   if (
     environment.NEXT_PUBLIC_ADS_ENABLED !== 'true'
     || environment.NEXT_PUBLIC_ADSENSE_APPROVED !== 'true'
     || environment.NEXT_PUBLIC_ADS_CONSENT_READY !== 'true'
   ) return null;
   const clientId = environment.NEXT_PUBLIC_ADSENSE_CLIENT_ID?.trim() ?? '';
+  return /^ca-pub-\d{16}$/.test(clientId) ? clientId : null;
+}
+
+export function getAdSlotConfig(placement: AdPlacement, environment: AdEnvironment): AdSlotConfig | null {
+  const clientId = getAdSenseClientId(environment);
+  if (!clientId) return null;
   const slotId = (placement === 'tool-below'
     ? environment.NEXT_PUBLIC_ADSENSE_TOOL_SLOT_ID
     : environment.NEXT_PUBLIC_ADSENSE_CONTENT_SLOT_ID)?.trim() ?? '';
-  if (!/^ca-pub-\d{16}$/.test(clientId) || !/^\d+$/.test(slotId)) return null;
+  if (!/^\d+$/.test(slotId)) return null;
   return { clientId, slotId };
 }

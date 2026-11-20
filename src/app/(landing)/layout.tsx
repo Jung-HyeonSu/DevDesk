@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { CloudflareWebAnalytics } from '@/components/analytics/cloudflare-web-analytics';
+import { AdSenseAutoAds } from '@/components/ads/adsense-auto-ads';
 import '../globals.css';
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default function LandingRootLayout({ children }: Readonly<{ children: Rea
   return (
     <html lang="en">
       <body>
+        <AdSenseAutoAds />
         {children}
         <CloudflareWebAnalytics />
       </body>

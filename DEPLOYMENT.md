@@ -31,9 +31,9 @@ Copy `.env.example` to `.env.local` for local builds or configure the values in 
 | `NEXT_PUBLIC_SITE_NAME` | Open Graph site name and localized title suffix | `DevDesk` |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Adds a `mailto:` address to the contact page | unset; contact page shows a launch note |
 | `NEXT_PUBLIC_ADS_ENABLED` | Master AdSense switch | `false` |
-| `NEXT_PUBLIC_ADSENSE_APPROVED` | Operator confirmation that the site is approved | `false` |
+| `NEXT_PUBLIC_ADSENSE_APPROVED` | Operator confirmation that the site is approved | `true` (owner reported approval on 2026-11-20) |
 | `NEXT_PUBLIC_ADS_CONSENT_READY` | Operator confirmation that required consent messaging is configured | `false` |
-| `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | Real publisher ID supplied by the AdSense account | unset |
+| `NEXT_PUBLIC_ADSENSE_CLIENT_ID` | Real publisher ID supplied by the AdSense account | `ca-pub-9509272737484634` |
 | `NEXT_PUBLIC_ADSENSE_TOOL_SLOT_ID` | Real slot ID for the area below the tool | unset |
 | `NEXT_PUBLIC_ADSENSE_CONTENT_SLOT_ID` | Reserved ID for a possible later content placement | unset and currently unused |
 
@@ -41,11 +41,11 @@ All of these values are public build settings, not secrets. The site URL and nam
 
 ## AdSense activation checklist
 
-Advertising is disabled in the checked-in defaults. `AdSlot` emits no markup or script unless the master switch, approval flag, consent-readiness flag, publisher ID, and placement slot ID are all valid. The current slot sits below the workbench and before the guide content; it is never inserted between tool inputs, outputs, or actions. The disabled state is covered by a browser test that checks for both missing ad markup and missing external AdSense requests.
+Advertising is disabled in the checked-in defaults. Both root layouts preload the Auto ads script from the document head only when the master switch, approval flag, consent-readiness flag, and publisher ID are valid. `AdSlot` also requires a valid placement slot ID and reuses that loader. The current slot sits below the workbench and before the guide content; it is never inserted between tool inputs, outputs, or actions. The disabled state is covered by a browser test that checks for both missing ad markup and missing external AdSense requests.
 
 Before setting the flags to `true`:
 
-1. Obtain actual site approval and publisher/slot IDs from the operator's AdSense account. Do not copy example IDs from documentation or use placeholders.
+1. Site approval and the publisher ID were reported by the owner on 2026-11-20. Obtain the real slot IDs from the AdSense account before enabling the existing manual slot.
 2. Configure and publish AdSense Privacy & Messaging or another consent solution appropriate to the audience. For personalized ads in the EEA, UK, or Switzerland, Google requires a certified CMP integrated with the IAB TCF. See Google's [publisher CMP requirements](https://support.google.com/adsense/answer/13554116?hl=en) and [European regulations messages](https://support.google.com/adsense/answer/10961068?hl=en). `NEXT_PUBLIC_ADS_CONSENT_READY=true` is only an operator-controlled build gate; it does not implement or verify a CMP.
 3. Review the published privacy policy and terms for the service jurisdictions and actual operator identity, contact route, hosting/log-retention settings, enabled ad vendors, cookies or similar storage, and consent/withdrawal flow. The pages now describe the current browser processing and the planned Google advertising behavior; update them to match the final account and consent settings, and complete legal review before ads are served.
 4. Add real IDs and set `NEXT_PUBLIC_ADSENSE_APPROVED=true`, `NEXT_PUBLIC_ADS_CONSENT_READY=true`, and `NEXT_PUBLIC_ADS_ENABLED=true` only after those steps are complete. Rebuild, test the deployed routes, and review the browser console and network requests.

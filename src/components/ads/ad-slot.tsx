@@ -31,13 +31,6 @@ export function AdSlot({ locale, placement }: { locale: Locale; placement: AdPla
         data-full-width-responsive="true"
         style={{ display: 'block', minHeight: '280px' }}
       />
-      <Script
-        async
-        crossOrigin="anonymous"
-        id="devdesk-adsense-loader"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(config.clientId)}`}
-        strategy="afterInteractive"
-      />
       <Script id={`devdesk-adsense-${placement}`} strategy="afterInteractive">
         {'(window.adsbygoogle = window.adsbygoogle || []).push({});'}
       </Script>
