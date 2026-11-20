@@ -6,7 +6,7 @@
 
 ## 현재 목표
 
-한국어·영어·일본어·중국어 간체를 지원하는 무료 개발자 도구 사이트 **DevDesk**를 정확한 도구 안내와 실제 문제 해결 자료를 갖춘 개발 리소스로 발전시킨다. Next.js 정적 Export와 브라우저 내 처리를 유지한다. 사이트 소유자가 2026-11-20 AdSense 승인을 받았다고 알렸으며, 동의 설정과 실제 광고 요청은 별도로 확인한다. 사용자 관심은 외부 운영 상태이므로 확인 전에는 완료로 간주하지 않는다. 사이트 주소는 <https://devdesk-7e7.pages.dev/> 이다.
+한국어·영어·일본어·중국어 간체를 지원하는 무료 개발자 도구 사이트 **DevDesk**를 정확한 도구 안내와 실제 문제 해결 자료를 갖춘 개발 리소스로 발전시킨다. Next.js 정적 Export와 브라우저 내 처리를 유지한다. 사이트 소유자가 2026-11-20 AdSense 승인을 알렸다. Google 동의 메시지와 개인정보 안내를 구성했고 Cloudflare 프로덕션 광고 플래그는 켜져 있다. 공개 배포에서 실제 스크립트 요청을 확인하기 전까지 활성화를 완료로 기록하지 않는다. 사이트 주소는 <https://devdesk-7e7.pages.dev/> 이다.
 
 상세 기능 요건과 완료 기준은 [`docs/spec/README.md`](./docs/spec/README.md)에서 현재 작업에 맞는 문서를 확인한다. 핵심 제약은 다음과 같다.
 
@@ -14,18 +14,20 @@
 - 자체 API, DB, 요청별 서버 렌더링, Pages Functions, Workers 서버 기능을 추가하지 않는다. 브라우저 Web Worker는 허용한다.
 - 기본 지원 언어는 `ko`, `en`, `ja`, `zh`이며 중국어는 간체다.
 - 입력 데이터는 브라우저 밖으로 전송하지 않는다.
-- 광고는 동의 설정과 운영자 구성이 끝날 때까지 비활성화한다.
+- 저장소 기본값은 광고 비활성화다. 프로덕션은 운영자 설정에 따라 켜져 있으며, 실제 공개 배포와 광고 요청을 별도로 확인한다.
 
 현재 콘텐츠 목표와 완료 기준은 [`GOAL.md`](./GOAL.md) 및 [콘텐츠 품질 기준](./docs/spec/16-content-quality.md)을 따른다.
 
 ## 현재 구현 상태
 
-### AdSense 자동 광고 스크립트 (2026-11-20)
+### AdSense 자동 광고 동의 설정과 공개 배포 (2026-11-20)
 
 - 사이트 소유자가 AdSense 승인을 알리고 게시자 ID `ca-pub-9509272737484634`와 자동 광고 스크립트를 제공했다. 자동 광고 로더를 루트 언어 선택 페이지와 ko/en/ja/zh 페이지의 공통 root layout에 추가했다. Next.js의 `beforeInteractive` 전략으로 외부 스크립트 URL을 정적 HTML `<head>`의 preload로 생성한다.
-- 광고 마스터 스위치, 승인, 동의 준비 플래그와 유효한 게시자 ID를 확인한 뒤에만 로더를 포함한다. `AdSlot`은 공통 로더를 재사용해 외부 스크립트를 중복 요청하지 않는다. 기본 활성화와 동의 준비 플래그는 계속 꺼져 있다.
-- `.env.example`, 배포 문서와 광고 명세에 승인 상태 및 자동 광고 구성 절차를 반영했다. 실제 Pages 환경 설정, CMP/정책 검토, 공개 배포는 수행하지 않았다.
-- 검증: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run verify:static`, `npm run verify:i18n`, `git diff --check` 통과. 승인·동의 플래그를 켠 별도 정적 빌드에서 404 시스템 화면과 AdSense 소유권 확인 파일을 제외한 253개 사이트 HTML의 `<head>`에 게시자 스크립트 preload가 한 번씩 생성되는 것을 확인한 뒤, 기본 비활성 설정으로 다시 빌드해 257개 HTML에서 애드센스 요청 URL이 없는 것을 확인했다. 단위/E2E 테스트, 실제 브라우저 네트워크 요청, 공개 Pages 배포는 확인하지 않았다.
+- 광고 마스터 스위치, 승인, 동의 준비 플래그와 유효한 게시자 ID를 확인한 뒤에만 로더를 포함한다. `AdSlot`은 공통 로더를 재사용해 외부 스크립트를 중복 요청하지 않는다. 저장소의 `.env.example`은 계속 기본 비활성 상태다.
+- Google AdSense 개인 정보 보호 및 메시지에서 DevDesk 로고(`src/app/icon.svg`)와 개인정보처리방침 주소를 지정했다. EEA·영국·스위스 메시지 `DevDesk European Privacy Choices`는 영어 기본, 일본어·중국어 간체 추가 언어로 게시했다. 명시적인 동의·거부·옵션 관리가 보인다. 지원되는 미국 주 메시지도 영어·스페인어로 게시했고 현재 및 향후 지원 주 전체에 적용했다. Google 메시지 언어 선택기에 한국어가 없어 현재 한국어 메시지는 제공하지 못한다.
+- 4개 언어 개인정보처리방침과 이용약관의 광고 동작·브라우저 전송·저장 기술·동의 및 선택 안내를 실제 AdSense 설정에 맞췄다. Google CMP에서 설정한 개인정보처리방침 URL은 `https://devdesk-7e7.pages.dev/en/privacy/`이다. 두 root layout에는 Google CMP 호환을 위한 `strict-origin-when-cross-origin` referrer 정책을 지정했다. 정책은 서비스 동작 안내이며 별도의 법률 검토가 완료된 것은 아니다.
+- Cloudflare Pages의 `main` 프로덕션 환경을 읽기 전용으로 확인했다. `NEXT_PUBLIC_ADS_ENABLED`, `NEXT_PUBLIC_ADSENSE_APPROVED`, `NEXT_PUBLIC_ADS_CONSENT_READY`가 `true`이고 publisher ID가 맞다. 자동 배포가 켜져 있어 `main` 푸시가 새 정적 배포를 시작한다. 이 환경값은 이미 설정되어 있었으므로 이번 작업에서 다시 변경하지 않았다.
+- 기존 사전 구현 검증: 승인·동의 플래그를 켠 별도 정적 빌드에서 404 시스템 화면과 AdSense 소유권 확인 파일을 제외한 253개 사이트 HTML의 `<head>`에 게시자 스크립트 preload가 한 번씩 생성됐다. 기본 비활성 설정으로 다시 빌드해 257개 HTML에서 AdSense 요청 URL이 없는 것을 확인했다. 이번 변경의 lint, typecheck, build, static/i18n 검사와 공개 사이트 요청 확인 결과는 배포 후 아래에 기록한다. 단위/E2E 테스트는 실행하지 않는다.
 
 ### Cloudflare Web Analytics (2026-11-13)
 

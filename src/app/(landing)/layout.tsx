@@ -6,6 +6,7 @@ import '../globals.css';
 export const metadata: Metadata = {
   title: 'DevDesk — Browser-based developer tools',
   description: 'Free developer utilities that run in your browser.',
+  referrer: 'strict-origin-when-cross-origin',
 };
 
 export default function LandingRootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -37,6 +37,7 @@ NEXT_PUBLIC_ADS_ENABLED=false
 - 외부 광고/연락처 설정 없이도 빌드·도구 사용이 가능해야 한다. Cloudflare Web Analytics는 공개 사이트 토큰 스니펫으로 선택적으로 활성화하며 입력값·결과를 전송하지 않는다.
 - 실서비스 배포 전에 정확한 도메인·문의처·개인정보 고지·AdSense 설정을 운영자가 입력한다.
 - `.env.example`에는 예시만 포함하고 비밀정보는 커밋하지 않는다.
+- 운영 저장소의 광고 기본값은 계속 비활성화한다. 2026-11-20 Cloudflare Pages Production에는 AdSense 승인·동의 준비·광고 플래그와 게시자 ID가 설정되어 있으며, `main` 푸시가 자동 배포를 시작한다.
 
 ### 12.3 운영자 수동 단계
 
@@ -45,7 +46,7 @@ NEXT_PUBLIC_ADS_ENABLED=false
 - 소유 이메일/연락처 설정, 개인정보 고지 최종 검토.
 - Search Console 등록과 사이트맵 제출.
 - Cloudflare Web Analytics를 사용할 때 수동 스니펫과 Pages 자동 삽입을 중복 활성화하지 않고, 등록 hostname 및 개인정보 고지를 확인.
-- AdSense 심사 신청(승인 보장 없음), 승인 후 광고 ID/`ads.txt`/동의 절차 설정.
+- AdSense 승인 후 publisher ID, 승인·동의·광고 플래그 설정. Privacy & Messaging의 메시지를 게시하고 실제 서비스 동작과 맞는 개인정보 안내를 유지한다. `ads.txt`는 계정에서 정확한 내용을 제공한 경우에만 추가한다.
 - 콘텐츠 및 의존성 업데이트를 Git 커밋·정적 재배포로 수행. 운영 DB·서버 패치 없음.
 
 ---

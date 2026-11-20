@@ -62,7 +62,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '광고와 문의',
           paragraphs: [
-            '광고는 기본 배포 설정에서 비활성화되어 있습니다. Cloudflare Web Analytics는 페이지 조회와 페이지 로딩 성능을 측정하며, 자세한 내용은 개인정보처리방침에 안내합니다. 향후 광고를 표시할 때는 실제 광고 파트너, 쿠키와 유사 기술, 동의 및 선택 방법도 안내하고 적용 지역의 요구사항을 확인합니다.',
+            'DevDesk는 Google AdSense 자동 광고를 사용합니다. 광고의 위치와 형식은 Google이 정하며 모든 페이지에 항상 광고가 표시되는 것은 아닙니다. 광고 데이터 처리와 이용자의 선택 방법은 개인정보처리방침에서 확인할 수 있습니다.',
             '서비스에 관한 질문이나 개인정보 요청은 문의 페이지를 이용해 주세요.',
           ],
           links: [
@@ -76,7 +76,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '개인정보처리방침',
       description: 'DevDesk 도구 입력, 브라우저 설정, 호스팅 요청, Cloudflare Web Analytics 및 광고 기술의 정보 처리 방식을 안내합니다.',
       intro: '이 방침은 DevDesk 웹사이트와 브라우저 도구가 정보를 처리하는 방법을 설명합니다. 현재 사이트에는 계정이나 문의 양식이 없으며, 도구 입력과 결과는 브라우저에서 처리합니다.',
-      updatedAt: '2026-11-13',
+      updatedAt: '2026-11-20',
       updatedLabel: '최종 업데이트',
       resourceLabel: '관련 링크',
       content: [
@@ -110,8 +110,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '5. Cloudflare Web Analytics와 광고 쿠키',
           paragraphs: [
-            'DevDesk는 Cloudflare Web Analytics를 사용합니다. JavaScript 분석 비컨은 페이지 조회와 페이지 로딩 성능 지표를 측정해 Cloudflare로 전송합니다. Cloudflare는 Web Analytics가 방문자의 개인정보를 수집하거나 사용하지 않으며 Cloudflare 고객 사이트 사이에서 개별 이용자를 추적하지 않는다고 설명합니다. 분석 정보에는 도구 입력과 결과를 포함하지 않습니다. Google AdSense 광고는 비활성화되어 있고 DevDesk는 광고 목적으로 쿠키를 설정하지 않습니다. Google 광고가 표시되면 Google을 비롯한 제3자 광고 사업자와 광고 기술 제공업체가 쿠키 또는 유사한 브라우저 저장 기술을 사용하거나 기존 쿠키를 읽을 수 있습니다.',
-            '이 기술은 사용자의 이 사이트 또는 다른 웹사이트 방문 기록을 바탕으로 광고를 제공하는 데 사용될 수 있습니다. 광고가 활성화되면 방문한 페이지 주소와 IP 주소 등 브라우저가 광고 제공업체에 보내는 정보가 광고 제공, 광고 효과 측정, 부정 사용 방지 및 설정에 따른 광고 개인화에 이용될 수 있습니다. Google의 정보 처리 방식과 광고 맞춤설정 선택 방법은 Google 안내를 참고해 주세요.',
+            'DevDesk는 Cloudflare Web Analytics를 사용합니다. JavaScript 분석 비컨은 페이지 조회와 페이지 로딩 성능 지표를 측정해 Cloudflare로 전송합니다. Cloudflare는 Web Analytics가 방문자의 개인정보를 수집하거나 사용하지 않으며 Cloudflare 고객 사이트 사이에서 개별 이용자를 추적하지 않는다고 설명합니다. 분석 정보에는 도구 입력과 결과를 포함하지 않습니다. DevDesk는 자동 광고에 Google AdSense를 사용합니다. 광고 스크립트가 로드되면 브라우저가 방문한 페이지의 URL과 IP 주소를 Google에 보내며, Google은 쿠키 또는 유사한 기술을 저장하거나 이미 있는 쿠키를 읽을 수 있습니다.',
+            'Google은 이 정보와 이용자의 동의 및 광고 설정에 따라 광고를 제공하고, 효과를 측정하고, 사기와 남용을 방지하며, 광고를 개인화하는 데 사용할 수 있습니다. 개인 맞춤 광고가 제한되거나 꺼져 있어도 페이지 주제나 일반적인 위치 등 문맥에 따른 광고가 표시될 수 있습니다. Google의 정보 처리와 광고 선택 방법은 아래 안내를 참고해 주세요.',
           ],
           links: [
             { label: 'Cloudflare Web Analytics 데이터 수집 안내', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
@@ -124,10 +124,12 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 동의와 광고 설정',
           paragraphs: [
-            '광고 기능을 활성화하면 적용 법령과 광고 플랫폼 정책에 따라 쿠키·저장소 사용 및 개인정보 처리를 고지하고, 필요한 경우 동의를 받으며 선택을 변경하거나 철회할 수 있는 방법을 제공합니다. 유럽경제지역, 영국 또는 스위스 이용자에게 개인 맞춤 광고를 제공하는 경우 Google이 요구하는 인증된 동의 관리 플랫폼과 IAB TCF 요건을 적용합니다. 현재 광고는 비활성화되어 있으며, 실제 광고 파트너와 동의 설정에 맞춰 이 안내를 갱신합니다.',
+            'Google AdSense의 개인 정보 보호 및 메시지 기능은 유럽경제지역, 영국, 스위스의 대상 방문자에게 동의, 동의 거부, 선택 관리 옵션을 제공합니다. 해당 지역에서 개인 맞춤 광고를 제공할 때 Google 인증 및 IAB TCF 연동 CMP를 사용합니다. AdSense는 선택을 다시 열 수 있도록 사이트에 “개인정보 및 쿠키 설정” 링크를 표시합니다. AdSense는 적용되는 미국 주의 방문자에게 개인정보 판매·공유 또는 맞춤 광고에 관한 선택 메시지도 제공합니다. 다른 지역에서는 Google 광고 설정에서 광고 개인화 선택을 관리할 수 있습니다.',
           ],
           links: [
             { label: 'Google 게시자용 동의 관리 요건', href: 'https://support.google.com/adsense/answer/13554116?hl=ko', external: true },
+            { label: 'Google 유럽 규정 메시지 안내', href: 'https://support.google.com/adsense/answer/10961068?hl=ko', external: true },
+            { label: 'Google 미국 주 규정 메시지 안내', href: 'https://support.google.com/adsense/answer/10960771?hl=ko', external: true },
           ],
         },
         {
@@ -189,7 +191,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 외부 서비스와 광고',
           paragraphs: [
-            '외부 서비스로 연결되는 링크나 향후 표시될 광고는 제3자가 제공할 수 있습니다. 해당 외부 서비스의 내용, 가용성, 개인정보 처리와 거래에는 그 제공자의 조건이 적용됩니다. 광고가 활성화되면 광고 쿠키와 선택 방법을 개인정보처리방침에 안내합니다. 광고의 표시나 클릭은 특정 상품·서비스에 대한 DevDesk의 보증을 뜻하지 않습니다.',
+            '외부 서비스 링크와 Google AdSense 자동 광고는 제3자가 제공할 수 있습니다. 해당 사업자의 콘텐츠, 가용성, 개인정보 처리와 거래에는 각 사업자의 조건이 적용됩니다. 광고 데이터와 이용자 선택은 개인정보처리방침에 안내합니다. 광고의 표시나 클릭은 특정 상품·서비스에 대한 DevDesk의 보증을 뜻하지 않습니다.',
           ],
           links: [{ label: '개인정보처리방침', href: '/privacy/' }],
         },
@@ -266,7 +268,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: 'Advertising and contact',
           paragraphs: [
-            'Advertising is disabled in the default deployment settings. Cloudflare Web Analytics measures page views and page-load performance; the Privacy Policy explains how this works. If advertising is enabled later, the policy will explain the actual ad partners, cookies or similar technologies, and available choices.',
+            'DevDesk uses Google AdSense Auto ads. Google determines ad formats and placements, and an ad may not appear on every page. The Privacy Policy explains advertising data practices and available choices.',
             'For questions about the service or a privacy request, use the contact page.',
           ],
           links: [
@@ -280,7 +282,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'Privacy Policy',
       description: 'How DevDesk handles tool inputs, browser preferences, hosting requests, Cloudflare Web Analytics, and advertising.',
       intro: 'This policy describes how the DevDesk website and browser tools handle information. The current site has no user accounts or contact form; tool inputs and results are processed in your browser.',
-      updatedAt: '2026-11-13',
+      updatedAt: '2026-11-20',
       updatedLabel: 'Last updated',
       resourceLabel: 'Related links',
       content: [
@@ -314,8 +316,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '5. Cloudflare Web Analytics and advertising cookies',
           paragraphs: [
-            'DevDesk uses Cloudflare Web Analytics. Its JavaScript beacon measures page views and page-load performance and sends those measurements to Cloudflare. Cloudflare states that Web Analytics does not collect or use visitors’ personal data and does not track individual end users across its customers’ sites. Analytics measurements do not include tool inputs or results. Google AdSense advertising is disabled, and DevDesk does not set cookies for advertising. If Google ads are shown on this site, Google and other third-party ad vendors may use cookies or similar browser storage, or read cookies already present, to serve ads.',
-            'These technologies may use your prior visits to this site or other sites to select ads. When ads are enabled, information your browser sends to ad providers, such as the page URL and IP address, may be used to deliver ads, measure their effectiveness, prevent abuse, and personalize ads according to your settings. See Google’s information and controls for details.',
+            'DevDesk uses Cloudflare Web Analytics. Its JavaScript beacon measures page views and page-load performance and sends those measurements to Cloudflare. Cloudflare states that Web Analytics does not collect or use visitors’ personal data and does not track individual end users across its customers’ sites. Analytics measurements do not include tool inputs or results. DevDesk uses Google AdSense Auto ads. When the ad script loads, your browser sends Google the URL of the page you visit and your IP address. Google may set or read cookies or similar technologies.',
+            'Depending on your consent and ad settings, Google may use this information to deliver ads, measure their effectiveness, prevent fraud and abuse, and personalize ads. Contextual ads based on page topics or general location may still appear when personalized ads are limited or turned off. See Google’s information and controls for details.',
           ],
           links: [
             { label: 'Cloudflare Web Analytics data collection', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
@@ -328,9 +330,13 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. Consent and advertising choices',
           paragraphs: [
-            'If advertising is enabled, DevDesk will provide disclosures and, where required by law and platform policy, obtain consent for cookies or similar storage and the processing of personal information. Users will be given a way to change or withdraw a choice where required. For personalized ads to users in the European Economic Area, the United Kingdom, or Switzerland, Google requires a certified consent management platform integrated with the IAB Transparency and Consent Framework. Advertising is currently disabled; this notice will be aligned with the actual partners and consent setup before activation.',
+            'Google AdSense Privacy & Messaging presents eligible visitors in the European Economic Area, the United Kingdom, and Switzerland with consent, do not consent, and manage options. We use Google’s certified CMP integrated with the IAB Transparency and Consent Framework for personalized ads in those regions. AdSense adds a “Privacy and cookie settings” link to reopen the choice. Visitors in US states supported by AdSense receive privacy choices about the sale or sharing of personal information or targeted advertising. Visitors elsewhere can manage ad personalization through Google Ads Settings.',
           ],
-          links: [{ label: 'Google publisher consent requirements', href: 'https://support.google.com/adsense/answer/13554116?hl=en', external: true }],
+          links: [
+            { label: 'Google publisher consent requirements', href: 'https://support.google.com/adsense/answer/13554116?hl=en', external: true },
+            { label: 'Google European regulations messages', href: 'https://support.google.com/adsense/answer/10961068?hl=en', external: true },
+            { label: 'Google US state regulations messages', href: 'https://support.google.com/adsense/answer/10960771?hl=en', external: true },
+          ],
         },
         {
           title: '7. Email inquiries and retention',
@@ -391,7 +397,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. External services and advertising',
           paragraphs: [
-            'Links to external services and any advertising shown in the future may be provided by third parties. Their own terms and privacy practices apply to their content, availability, and transactions. If advertising is enabled, the Privacy Policy will describe ad cookies and available choices. An ad or click does not mean that DevDesk endorses the advertised product or service.',
+            'External service links and Google AdSense Auto ads may be provided by third parties. Their own terms and privacy practices apply to their content, availability, and transactions. The Privacy Policy describes advertising data practices and available choices. An ad or click does not mean that DevDesk endorses the advertised product or service.',
           ],
           links: [{ label: 'Privacy Policy', href: '/privacy/' }],
         },
@@ -468,7 +474,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '広告とお問い合わせ',
           paragraphs: [
-            '広告は標準のビルド設定で無効です。Cloudflare Web Analytics はページ閲覧数と読み込み性能を測定します。詳しくはプライバシーポリシーをご覧ください。今後広告を有効にする場合は、実際の広告パートナー、Cookie などの技術、同意と選択方法も記載します。',
+            'DevDesk は Google AdSense の自動広告を使用します。広告の形式や配置は Google が決定し、すべてのページに広告が表示されるとは限りません。広告データの取り扱いと利用者の選択についてはプライバシーポリシーをご覧ください。',
             'サービスに関する質問やプライバシーのご相談は、お問い合わせページをご利用ください。',
           ],
           links: [
@@ -482,7 +488,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: 'プライバシーポリシー',
       description: 'ツール入力、ブラウザー設定、ホスティングへのリクエスト、Cloudflare Web Analytics と広告技術における情報の取り扱いを説明します。',
       intro: 'このポリシーでは、DevDesk のウェブサイトとブラウザーツールにおける情報の取り扱いを説明します。現在、ユーザーアカウントや問い合わせフォームはなく、ツールの入力と結果はブラウザー内で処理します。',
-      updatedAt: '2026-11-13',
+      updatedAt: '2026-11-20',
       updatedLabel: '最終更新日',
       resourceLabel: '関連リンク',
       content: [
@@ -516,8 +522,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '5. Cloudflare Web Analytics と広告 Cookie',
           paragraphs: [
-            'DevDesk は Cloudflare Web Analytics を使用します。JavaScript のビーコンでページ閲覧数とページ読み込みのパフォーマンスを測定し、その情報を Cloudflare に送信します。Cloudflare によると、Web Analytics は利用者の個人データを収集・使用せず、顧客サイト間で個々の利用者を追跡しません。分析情報にツールの入力や結果は含まれません。Google AdSense 広告は無効であり、DevDesk は広告目的の Cookie を設定していません。このサイトに Google 広告を表示する場合、Google などの第三者広告事業者や広告技術プロバイダーが Cookie または同様のブラウザー保存技術を使ったり、既存の Cookie を読み取ったりする場合があります。',
-            'これらの技術は、このサイトや他のサイトでの過去の訪問に基づいて広告を選ぶために使われることがあります。広告の有効化後は、ページ URL や IP アドレスなどブラウザーから広告事業者へ送られる情報が、広告の配信、効果測定、不正利用の防止、設定に応じた広告のパーソナライズに使われる場合があります。詳細と選択方法は Google の案内をご覧ください。',
+            'DevDesk は Cloudflare Web Analytics を使用します。JavaScript のビーコンでページ閲覧数とページ読み込みのパフォーマンスを測定し、その情報を Cloudflare に送信します。Cloudflare によると、Web Analytics は利用者の個人データを収集・使用せず、顧客サイト間で個々の利用者を追跡しません。分析情報にツールの入力や結果は含まれません。DevDesk は Google AdSense の自動広告を使用します。広告スクリプトが読み込まれると、ブラウザーは閲覧中のページ URL と IP アドレスを Google に送信します。Google は Cookie または同様の技術を保存したり、既存の Cookie を読み取ったりする場合があります。',
+            '同意と広告設定に応じて、Google はこの情報を広告配信、効果測定、不正利用の防止、広告のパーソナライズに使う場合があります。パーソナライズ広告が制限または無効でも、ページのトピックやおおよその位置情報に基づく広告が表示されることがあります。Google の情報処理と選択方法は以下の案内をご覧ください。',
           ],
           links: [
             { label: 'Cloudflare Web Analytics のデータ収集', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
@@ -530,9 +536,13 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 同意と広告の選択',
           paragraphs: [
-            '広告を有効にする場合、適用法令と広告プラットフォームのポリシーに従い、Cookie などの保存技術や個人情報の処理について説明し、必要な場合は同意を取得します。必要に応じて選択を変更・撤回する方法も提供します。欧州経済領域、英国、スイスの利用者にパーソナライズ広告を配信する場合、Google が求める IAB TCF 対応の認定同意管理プラットフォームを使用します。現在広告は無効であり、有効化前に実際の広告パートナーと同意設定に合わせて案内を更新します。',
+            'Google AdSense の Privacy & Messaging は、欧州経済領域、英国、スイスの対象利用者に同意、同意しない、設定を管理する選択肢を表示します。これらの地域でパーソナライズ広告を配信する場合、Google 認定の IAB TCF 対応 CMP を使用します。AdSense は選択を再表示する「プライバシーと Cookie の設定」リンクをサイトに追加します。AdSense が対応する米国各州の利用者には、個人情報の販売・共有やターゲティング広告に関する選択肢を表示します。それ以外の地域では Google 広告設定から広告のパーソナライズを管理できます。',
           ],
-          links: [{ label: 'Google のパブリッシャー向け同意要件', href: 'https://support.google.com/adsense/answer/13554116?hl=ja', external: true }],
+          links: [
+            { label: 'Google のパブリッシャー向け同意要件', href: 'https://support.google.com/adsense/answer/13554116?hl=ja', external: true },
+            { label: 'Google の欧州規制メッセージ', href: 'https://support.google.com/adsense/answer/10961068?hl=ja', external: true },
+            { label: 'Google の米国州規制メッセージ', href: 'https://support.google.com/adsense/answer/10960771?hl=ja', external: true },
+          ],
         },
         {
           title: '7. メールでのお問い合わせと保存期間',
@@ -593,7 +603,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 外部サービスと広告',
           paragraphs: [
-            '外部サービスへのリンクや将来表示される広告は第三者が提供する場合があります。外部のコンテンツ、提供状況、取引、プライバシーの取り扱いには各提供者の条件が適用されます。広告を有効にする場合、広告 Cookie と利用者の選択方法をプライバシーポリシーに記載します。広告の表示やクリックは DevDesk による商品・サービスの保証を意味しません。',
+            '外部サービスへのリンクや Google AdSense の自動広告は第三者が提供する場合があります。外部のコンテンツ、提供状況、取引、プライバシーの取り扱いには各提供者の条件が適用されます。広告データの取り扱いと利用者の選択はプライバシーポリシーに記載しています。広告の表示やクリックは DevDesk による商品・サービスの保証を意味しません。',
           ],
           links: [{ label: 'プライバシーポリシー', href: '/privacy/' }],
         },
@@ -670,7 +680,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '广告与联系',
           paragraphs: [
-            '默认构建配置下，广告处于关闭状态。Cloudflare Web Analytics 会测量页面浏览量和加载性能，详情请参阅隐私政策。将来启用广告时，隐私政策也会说明实际广告合作方、Cookie 或类似技术以及可用的选择方式。',
+            'DevDesk 使用 Google AdSense 自动广告。广告格式和位置由 Google 决定，并非每个页面都会显示广告。有关广告数据处理和用户选择，请参阅隐私政策。',
             '如有服务问题或隐私请求，请使用联系页面。',
           ],
           links: [
@@ -684,7 +694,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
       title: '隐私政策',
       description: '说明 DevDesk 如何处理工具输入、浏览器偏好、托管请求、Cloudflare Web Analytics 和广告技术。',
       intro: '本政策说明 DevDesk 网站和浏览器工具如何处理信息。目前网站没有用户账号或联系表单；工具输入和结果均在浏览器中处理。',
-      updatedAt: '2026-11-13',
+      updatedAt: '2026-11-20',
       updatedLabel: '最后更新',
       resourceLabel: '相关链接',
       content: [
@@ -718,8 +728,8 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '5. Cloudflare Web Analytics 和广告 Cookie',
           paragraphs: [
-            'DevDesk 使用 Cloudflare Web Analytics。其 JavaScript beacon 会测量页面浏览量和页面加载性能，并将这些测量信息发送给 Cloudflare。Cloudflare 表示，Web Analytics 不会收集或使用访客的个人数据，也不会在其客户的网站之间追踪个人用户。分析测量不包含工具输入或结果。Google AdSense 广告目前处于关闭状态，DevDesk 不会为广告目的设置 Cookie。如果本网站展示 Google 广告，Google 及其他第三方广告商或广告技术提供商可能会使用 Cookie 或类似浏览器存储技术，也可能读取已有 Cookie。',
-            '这些技术可能根据你此前访问本网站或其他网站的情况选择广告。启用广告后，浏览器发送给广告服务商的信息（例如页面 URL 和 IP 地址）可能用于投放广告、衡量效果、防止滥用，以及根据你的设置个性化广告。详细信息和选择方式请参阅 Google 的说明。',
+            'DevDesk 使用 Cloudflare Web Analytics。其 JavaScript beacon 会测量页面浏览量和页面加载性能，并将这些测量信息发送给 Cloudflare。Cloudflare 表示，Web Analytics 不会收集或使用访客的个人数据，也不会在其客户的网站之间追踪个人用户。分析测量不包含工具输入或结果。DevDesk 使用 Google AdSense 自动广告。广告脚本加载时，浏览器会向 Google 发送你访问页面的 URL 和 IP 地址。Google 可能会设置或读取 Cookie 或类似技术。',
+            '根据你的同意和广告设置，Google 可能会使用这些信息投放广告、衡量效果、防止欺诈和滥用，并个性化广告。即使个性化广告受到限制或关闭，仍可能根据页面主题或大致位置显示上下文广告。有关 Google 的信息处理和选择方式，请参阅下方说明。',
           ],
           links: [
             { label: 'Cloudflare Web Analytics 数据收集说明', href: 'https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/', external: true },
@@ -732,9 +742,13 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 同意与广告选择',
           paragraphs: [
-            '启用广告后，DevDesk 会按照适用法律和广告平台政策说明 Cookie 或类似存储及个人信息处理方式，并在必要时征求同意。法律要求时，用户也可以更改或撤回选择。向欧洲经济区、英国或瑞士用户投放个性化广告时，Google 要求使用集成 IAB TCF 的认证同意管理平台。目前广告处于关闭状态；启用前会根据实际合作方和同意设置更新本说明。',
+            'Google AdSense 隐私与消息功能会向欧洲经济区、英国和瑞士的符合条件的访客提供同意、拒绝同意和管理选项。向这些地区投放个性化广告时，我们使用 Google 认证并集成 IAB TCF 的 CMP。AdSense 会在网站上添加“隐私和 Cookie 设置”链接，供用户重新打开选择。对于 AdSense 支持的美国各州访客，Google 也会提供有关个人信息销售或共享、定向广告的隐私选择。其他地区的用户可以通过 Google 广告设置管理广告个性化。',
           ],
-          links: [{ label: 'Google 面向发布商的同意要求', href: 'https://support.google.com/adsense/answer/13554116?hl=zh-CN', external: true }],
+          links: [
+            { label: 'Google 面向发布商的同意要求', href: 'https://support.google.com/adsense/answer/13554116?hl=zh-CN', external: true },
+            { label: 'Google 欧洲法规消息', href: 'https://support.google.com/adsense/answer/10961068?hl=zh-CN', external: true },
+            { label: 'Google 美国州法规消息', href: 'https://support.google.com/adsense/answer/10960771?hl=zh-CN', external: true },
+          ],
         },
         {
           title: '7. 邮件咨询与信息保留',
@@ -795,7 +809,7 @@ const sectionCopy: Record<Locale, Record<Section, SectionCopy>> = {
         {
           title: '6. 外部服务和广告',
           paragraphs: [
-            '外部服务链接和未来可能展示的广告由第三方提供。外部内容、可用性、交易和隐私处理受相应提供方的条款与政策约束。启用广告后，隐私政策会说明广告 Cookie 和可用选择。广告展示或点击不代表 DevDesk 对相关产品或服务作出保证或认可。',
+            '外部服务链接和 Google AdSense 自动广告可能由第三方提供。外部内容、可用性、交易和隐私处理受相应提供方的条款与政策约束。广告数据处理和用户选择详见隐私政策。广告展示或点击不代表 DevDesk 对相关产品或服务作出保证或认可。',
           ],
           links: [{ label: '隐私政策', href: '/privacy/' }],
         },

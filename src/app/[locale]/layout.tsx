@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     metadataBase: new URL(siteUrl),
     title: { default: siteName, template: `%s · ${siteName}` },
     description,
+    referrer: 'strict-origin-when-cross-origin',
     openGraph: { siteName, locale: language.htmlLang, type: 'website' },
   };
 }
